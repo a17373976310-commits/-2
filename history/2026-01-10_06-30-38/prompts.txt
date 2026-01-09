@@ -1,0 +1,13 @@
+原始提示词:
+front view eye-level shot medium shot
+
+========================================
+
+优化后的提示词:
+front view eye-level shot medium shot
+
+========================================
+
+模型: nano-banana-2
+比例: 1:1
+时间: 2026-01-10_06-30-38

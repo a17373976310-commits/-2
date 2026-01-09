@@ -55,6 +55,26 @@ export const PLUGINS: PluginMetadata[] = [
     icon: '📐',
     color: 'bg-violet-500'
   },
+  {
+    type: NodeType.BATCH_IMAGE_GEN,
+    category: PluginCategory.VISUAL,
+    title: 'Batch Image Gen',
+    titleZh: '批量图像生成',
+    description: 'Generate multiple images from prompts with gallery view.',
+    descriptionZh: '批量生成图像，带画廊视图和历史记录。',
+    icon: '🏞️',
+    color: 'bg-gradient-to-br from-blue-500 to-purple-600'
+  },
+  {
+    type: NodeType.IMAGE_COLLAGE,
+    category: PluginCategory.VISUAL,
+    title: 'Image Collage',
+    titleZh: '拼图工坊',
+    description: 'Combine multiple images into a grid collage.',
+    descriptionZh: '将多张图片拼合成网格大图。',
+    icon: '🧩',
+    color: 'bg-gradient-to-br from-pink-500 to-orange-500'
+  },
 
   // --- 视频生成 (Video Studio) ---
   {
@@ -98,6 +118,16 @@ export const PLUGINS: PluginMetadata[] = [
     descriptionZh: '基于实时搜索的智能问答。',
     icon: '🔍',
     color: 'bg-emerald-600'
+  },
+  {
+    type: NodeType.INTENT_PARSER,
+    category: PluginCategory.LOGIC,
+    title: 'Intent Parser',
+    titleZh: '意图解析器',
+    description: 'Parse user input into multiple creative intents using AI.',
+    descriptionZh: '使用AI解析用户输入，拆分多个创作意图。',
+    icon: '🎯',
+    color: 'bg-gradient-to-br from-cyan-500 to-blue-600'
   },
 
   // --- 感知与对话 (Interaction) ---

@@ -5,6 +5,9 @@ import { apiService, decodeAudioData, decodeBase64 } from '../services/ApiServic
 import { logger } from '../services/loggerService';
 import { historyService } from '../services/historyService';
 import { CameraControl3D } from './CameraControl3D';
+import { BatchImageGenUI } from './BatchImageGenUI';
+import { CollageWorkshopUI } from './CollageWorkshopUI';
+import { IntentParserUI } from './IntentParserUI';
 
 interface NodeUIProps {
   node: AppNode;
@@ -375,6 +378,36 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
               imageUrl={sourceNode?.data.result || sourceNode?.data.image}
             />
           </div>
+        )}
+
+        {node.type === NodeType.BATCH_IMAGE_GEN && (
+          <BatchImageGenUI
+            node={node}
+            allNodes={allNodes}
+            onUpdate={onUpdate}
+            apiConfig={apiConfig}
+            onImageClick={onImageClick}
+            isPaused={isPaused}
+            globalCategoryModel={globalCategoryModel}
+          />
+        )}
+
+        {node.type === NodeType.IMAGE_COLLAGE && (
+          <CollageWorkshopUI
+            node={node}
+            allNodes={allNodes}
+            onUpdate={onUpdate}
+            onImageClick={onImageClick}
+          />
+        )}
+
+        {node.type === NodeType.INTENT_PARSER && (
+          <IntentParserUI
+            node={node}
+            onUpdate={onUpdate}
+            apiConfig={apiConfig}
+            isPaused={isPaused}
+          />
         )}
 
         {(node.type === NodeType.IMAGE_EDIT || node.type === NodeType.IMAGE_ANALYSIS || node.type === NodeType.PROMPT_OPTIMIZER || node.type === NodeType.IMAGE_GEN) && (() => {
