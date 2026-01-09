@@ -1,0 +1,31 @@
+原始提示词:
+
+
+========================================
+
+优化后的提示词:
+收到，已接收到您的原型图。
+
+这是一组高端包装设计的数字孪生渲染任务。我将为您执行**工业级PBR（物理渲染）流程**，消除原始照片中的环境杂乱、光照不均和材质瑕疵，同时精准复刻产品的品牌视觉核心。
+
+### 材质与视觉解析 (Material & Visual Analysis)
+1.  **主体材质：** 哑光特种黑卡纸（Matte Black Paper），具有极低的反射率和细腻的类肤触感纹理，彻底消除反光。
+2.  **图形工艺：** 亮黄色丝印/烫金工艺。核心Logo“**AOMX**”及其下方的中英文标语“**Let love leave its trace / 让爱意，有迹可循**”将作为高对比度矢量层进行渲染，确保4K级的边缘清晰度。
+3.  **细节配件：** 
+    *   左侧礼盒配以同色系丝绸质感蝴蝶结。
+    *   右侧纸袋配以黑色编织绳提手。
+4.  **环境设定：** 采用影棚级柔光（Studio Lighting），模拟大面积柔光箱照射，营造极简主义美学。背景将严格按照指令设定为**纯白色(#FFFFFF)**，且**移除所有地面投影**，使产品呈现纯净的悬浮悬浮感。
+
+### 渲染作业开始
+我将为您生成一张4K、超写实、具有顶级工业设计质感的产品渲染图。
+
+{
+  "action": "generate_image",
+  "prompt": "High-end industrial design product rendering of a luxury black packaging set. On the left is a rectangular matte black gift box with a silk black ribbon bow. On the right is a vertical matte black paper shopping bag with braided rope handles. Both products feature a bright yellow logo 'AOMX' with a lightning bolt symbol, and yellow text below reading 'Let love leave its trace' and '让爱意，有迹可循'. Material: premium matte black cardstock, zero reflection. Lighting: Softbox studio lighting, no shadows, no reflections on floor. Background: Pure white (#FFFFFF). 8k resolution, Octane Render style, crisp edges, minimal aesthetic, cinematic product photography, 50mm lens."
+}
+
+========================================
+
+模型: nano-banana-2-4k
+比例: 4:3
+时间: 2026-01-10_02-12-51

@@ -1,0 +1,209 @@
+原始提示词:
+一个女孩
+
+========================================
+
+优化后的提示词:
+```json
+{
+  "metadata": {
+    "version": "3.0",
+    "generated_at": "2024-05-20 14:30:00",
+    "total_screens": 10,
+    "aspect_ratio": "9:16",
+    "visual_style": "tech_future",
+    "text_effect": "ultra_thin"
+  },
+  "recognition_report": {
+    "brand": {
+      "name_cn": "锐刻",
+      "name_en": "SHARPEN",
+      "logo_description": "极简几何图形与现代无衬线字体结合",
+      "logo_style": "科技冷峻、极简主义"
+    },
+    "product": {
+      "category": "个护家电 - 剃须刀",
+      "name_cn": "便携迷你电动剃须刀",
+      "name_en": "Mini Portable Electric Shaver",
+      "specifications": "Type-C快充 / LED电量显示 / 双头浮动刀网"
+    },
+    "selling_points": [
+      {
+        "cn": "迷你随行",
+        "en": "Pocket-Sized Portability",
+        "source": "外观结构识别：类似耳机盒大小，极致便携"
+      },
+      {
+        "cn": "双头强劲剃须",
+        "en": "Dual-Head Precise Shaving",
+        "source": "产品结构识别：双环浮动刀头设计"
+      },
+      {
+        "cn": "实时电量可见",
+        "en": "LED Power Display",
+        "source": "视觉特征提取：机身正面4段式绿色LED电量条"
+      },
+      {
+        "cn": "Type-C 闪充",
+        "en": "Type-C Fast Charging",
+        "source": "接口识别：底部标配Type-C接口，带光效引导"
+      },
+      {
+        "cn": "镜面金属质感",
+        "en": "Metallic Mirror Finish",
+        "source": "材质分析：高亮银色镀铬材质，高级质感"
+      }
+    ],
+    "color_palette": {
+      "primary": { "name": "钛空银", "hex": "#C0C0C0" },
+      "secondary": { "name": "深空灰", "hex": "#2F2F2F" },
+      "accent": { "name": "荧光绿", "hex": "#39FF14" },
+      "background": { "name": "极夜黑", "hex": "#0A0A0A" }
+    },
+    "target_audience": {
+      "age_range": "20-45岁男性",
+      "profile": "商务出差人士、精致上班族、追求科技感的年轻男性",
+      "aesthetic_preference": "极简硬核、科技美学、金属工业风"
+    },
+    "ai_recommendation": {
+      "visual_style": "tech_future",
+      "text_effect": "ultra_thin",
+      "layout_format": "stacked",
+      "reason": "产品本身具有极强的金属科技感和LED发光元素，冷色调背景能完美衬托其镜面材质。"
+    }
+  },
+  "logo": {
+    "screen_id": "00",
+    "screen_type": "logo_generation",
+    "prompt_cn": "极简科技风格品牌logo，矢量风格，干净几何形。品牌名：【\"SHARPEN\"】。图标：由三条极简斜线组成的抽象刀锋轮廓，负空间设计，现代优雅。配色：钛空银(#C0C0C0)搭配纯黑背景。字体：高端现代无衬线\"SHARPEN\"，字母间距宽松，下方小字\"锐刻\"。无渐变、无阴影、无水印。",
+    "prompt_en": "Minimalist tech style brand logo, vector style, clean geometric form. Brand name: [\"SHARPEN\"]. Icon: Abstract blade contour composed of three minimalist diagonal lines, negative space design, modern elegance. Color palette: Space Silver (#C0C0C0) on pure black background. Typography: High-end modern sans-serif \"SHARPEN\", generous letter-spacing, small text \"锐刻\" below. No gradients, no shadows, no watermarks."
+  },
+  "screens": [
+    {
+      "screen_id": "01",
+      "screen_type": "hero_kv",
+      "screen_name_cn": "主KV - 科技首屏",
+      "screen_name_en": "Hero KV",
+      "prompt_cn": "9:16竖版高端科技未来风格海报。深空黑背景，带有极简的冷蓝色光束线。产品展示：银色镜面金属迷你剃须刀悬浮在画面中心，4段绿色LED灯明亮发光，底部Type-C接口透出微弱蓝光。排版布局：左上角放置SHARPEN logo。顶部居中巨大无衬线标题：\"POCKET BLADE\" / \"掌中锋芒\"。右侧中部放置玻璃拟态卡片展示三个要点：迷你便携、双头强劲、实时电量。底部居中药丸CTA：\"立即开启科技净面 →\"。电影级质感，8K分辨率。",
+      "prompt_en": "9:16 vertical high-end futuristic tech poster. Dark space black background with minimalist cool blue light beams. Product showcase: Silver mirror metallic mini shaver floating in the center, 4 green LED bars glowing brightly, faint blue light from bottom Type-C port. Typography layout: Top-left corner SHARPEN logo. Top center large sans-serif headline: \"POCKET BLADE\" / \"掌中锋芒\". Right middle glassmorphism card showing: Ultra-Portable, Dual-Head Power, Real-time Battery. Bottom center pill CTA: \"START TECH SHAVE NOW →\". Cinematic texture, 8K resolution.",
+      "negative_prompts": "low quality, blurry, cartoon, warm colors, messy background, old fashioned, plastic feel",
+      "layout_specs": {
+        "logo": "左上角，5%宽度",
+        "headline": "顶部居中，中英堆叠，Ultra Thin字体",
+        "selling_points": "右侧浮动卡片",
+        "cta": "底部居中，极简药丸形"
+      }
+    },
+    {
+      "screen_id": "02",
+      "screen_type": "selling_points",
+      "screen_name_cn": "卖点屏 - 电量可视化",
+      "screen_name_en": "LED Display Feature",
+      "prompt_cn": "9:16竖版，特写剃须刀正面的LED电量条。背景是深灰色拉丝金属质感。绿色LED灯像能量条一样依次亮起，呈现动态感。排版：上方大标题\"掌控余电，告别焦虑 / POWER AT A GLANCE\"。下方左右两侧分布4个UI图标：100%全满、75%充足、50%适中、25%预警。极简线条风格。",
+      "prompt_en": "9:16 vertical, close-up of the LED power bars on the front of the shaver. Background is dark gray brushed metal texture. Green LED lights lighting up like energy bars, creating a sense of dynamic energy. Typography: Top headline \"掌控余电，告别焦虑 / POWER AT A GLANCE\". Below are 4 UI icons: 100% Full, 75% High, 50% Medium, 25% Low. Minimalist line style.",
+      "negative_prompts": "colorful, messy, low contrast, text errors",
+      "layout_specs": {
+        "headline": "顶部水平排版",
+        "icons": "底部网格布局"
+      }
+    },
+    {
+      "screen_id": "03",
+      "screen_type": "detail_macro",
+      "screen_name_cn": "细节屏 - 双头浮动刀网",
+      "screen_name_en": "Dual-Head Detail",
+      "prompt_cn": "9:16竖版，极致微距拍摄剃须刀头，展示精密双环浮动刀网。光线在刀片边缘形成锐利的高光，展示精钢材质质感。背景干净留白。排版：左侧放置\"精钢双刃 / DUAL STEEL BLADES\"，下方三行细小双语说明：360度浮动贴面、自动研磨、干净不留渣。底部显示DETAIL 01标签。",
+      "prompt_en": "9:16 vertical, extreme macro shot of the shaver head, showcasing the precision dual-ring floating mesh. Light creates sharp highlights on the blade edges, demonstrating the stainless steel texture. Clean white/gray background. Typography: Left side \"精钢双刃 / DUAL STEEL BLADES\", below are 3 lines of small bilingual text: 360 Degree Floating, Auto-grinding, Smooth Finish. Bottom shows DETAIL 01 tag.",
+      "negative_prompts": "blurry, out of focus, rust, scratches, dirty, fingerprint",
+      "layout_specs": {
+        "headline": "左侧对齐",
+        "macro_image": "占据画面70%"
+      }
+    },
+    {
+      "screen_id": "04",
+      "screen_type": "lifestyle_scene",
+      "screen_name_cn": "场景屏 - 职场精英包内物",
+      "screen_name_en": "Office Carry Scene",
+      "prompt_cn": "9:16竖版，俯拍（Flat Lay）风格。高质感黑色真皮公文包内，剃须刀与AirPods、钢笔、皮夹整齐摆放。展示极小尺寸。柔和侧光，商务精英调性。标题：\"如影随形，时刻体面 / ALWAYS SHARP\"。右下角CTA：\"出差必备 →\"。",
+      "prompt_en": "9:16 vertical, Flat Lay style. Inside a high-quality black leather briefcase, the shaver is neatly placed alongside AirPods, a fountain pen, and a wallet. Showing the ultra-compact size. Soft side lighting, business elite tone. Headline: \"如影随形，时刻体面 / ALWAYS SHARP\". Bottom right CTA: \"TRAVEL ESSENTIAL →\".",
+      "negative_prompts": "cluttered, messy desk, colorful toys, bright environment",
+      "layout_specs": {
+        "headline": "顶部留白区域",
+        "product": "黄金分割点位置"
+      }
+    },
+    {
+      "screen_id": "05",
+      "screen_type": "detail_macro",
+      "screen_name_cn": "细节屏 - Type-C 闪充",
+      "screen_name_en": "Type-C Charging Detail",
+      "prompt_cn": "9:16竖版，特写剃须刀底部的Type-C接口，一根黑色的数据线正在插入，接口处泛着科技感十足的蓝光。背景深蓝渐变。标题：\"高效闪充，长效续航 / TYPE-C FAST CHARGE\"。文字说明：充电1小时，持久使用60天。UI元素：显示闪电图标。",
+      "prompt_en": "9:16 vertical, close-up of the Type-C port at the bottom of the shaver, a black cable is being plugged in, port glowing with futuristic blue light. Dark blue gradient background. Headline: \"高效闪充，长效续航 / TYPE-C FAST CHARGE\". Text: 1 Hour Charge, 60 Days Use. UI Element: Lightning icon.",
+      "negative_prompts": "messy cables, old micro-usb, blurry edges",
+      "layout_specs": {
+        "headline": "顶部",
+        "icon": "接口旁悬浮"
+      }
+    },
+    {
+      "screen_id": "06",
+      "screen_type": "multi_scene_collage",
+      "screen_name_cn": "多场景屏 - 随时随地",
+      "screen_name_en": "Multi-Scenario Collage",
+      "prompt_cn": "9:16竖版拼贴风格。三个圆角照片框展示：1. 手持剃须刀在车内后视镜前剃须；2. 放在牛仔裤口袋里；3. 摆放在办公室桌面。背景是极简灰色。标题：\"全场景适用 / ANYTIME ANYWHERE\"。每张图配极简双语小标签。",
+      "prompt_en": "9:16 vertical collage style. Three rounded frames showing: 1. Shaving in front of a car rearview mirror; 2. Tucked in a jeans pocket; 3. Placed on an office desk. Background is minimalist gray. Headline: \"全场景适用 / ANYTIME ANYWHERE\". Each image paired with a minimalist bilingual tag.",
+      "negative_prompts": "inconsistent product, messy collage, low quality images",
+      "layout_specs": {
+        "collage": "三格垂直分布",
+        "headline": "中部居中贯穿"
+      }
+    },
+    {
+      "screen_id": "07",
+      "screen_type": "size_specs",
+      "screen_name_cn": "规格屏 - 参数网格",
+      "screen_name_en": "Technical Specifications",
+      "prompt_cn": "9:16竖版极简参数海报。背景纯黑，带有浅灰色几何网格线。中心放置剃须刀等轴侧视图。排版：上方\"技术规格 / TECHNICAL SPECS\"。下方6个玻璃拟态网格：[功率 5W]、[续航 60min]、[充电 Type-C]、[重量 85g]、[转速 8000RPM]、[刀头 双头浮动]。数字用荧光绿标注。",
+      "prompt_en": "9:16 vertical minimalist spec poster. Pure black background with light gray geometric grid lines. Shaver placed in isometric view. Layout: Top \"技术规格 / TECHNICAL SPECS\". Below are 6 glassmorphism grids: [Power 5W], [Runtime 60min], [Charge Type-C], [Weight 85g], [Speed 8000RPM], [Blade Dual-Head]. Numbers highlighted in neon green.",
+      "negative_prompts": "messy text, colorful background, low readability",
+      "layout_specs": {
+        "table": "3x2网格卡片",
+        "product": "居中偏上"
+      }
+    },
+    {
+      "screen_id": "08",
+      "screen_type": "care_guide",
+      "screen_name_cn": "护理屏 - 拆卸说明",
+      "screen_name_en": "Cleaning Guide",
+      "prompt_cn": "9:16竖版护理指南。展示刀头盖弹出的分解图，内部刀片清晰可见。背景干净。使用1、2、3步骤图标说明：1. 一键弹出，2. 刷去残须，3. 刀头冲洗。极简线条插画风格。标题：\"轻松自洁，久用如新 / EASY CLEAN\"。",
+      "prompt_en": "9:16 vertical care guide. Exploded view of the blade cover popping off, internal blades visible. Clean background. Use steps 1, 2, 3 icons: 1. One-touch Pop, 2. Brush Hair, 3. Rinse Head. Minimalist line illustration style. Headline: \"轻松自洁，久用如新 / EASY CLEAN\".",
+      "negative_prompts": "dirty, messy parts, complex shadows",
+      "layout_specs": {
+        "steps": "垂直线性布局",
+        "illustration": "右侧居中"
+      }
+    },
+    {
+      "screen_id": "09",
+      "screen_type": "trust_ending",
+      "screen_name_cn": "结尾屏 - 品牌保障",
+      "screen_name_en": "Trust & Guarantee",
+      "prompt_cn": "9:16竖版高端信任海报。背景是银色金属渐变，极简 SHARPEN logo居中。文字排版：\"品质传承，售后无忧 / QUALITY & TRUST\"。四个图标说明：一年质保、顺丰包邮、7天退换、正品授权。底部行动召唤按钮：\"立即下单 / BUY NOW\"。",
+      "prompt_en": "9:16 vertical high-end trust poster. Silver metallic gradient background, minimalist SHARPEN logo centered. Typography: \"品质传承，售后无忧 / QUALITY & TRUST\". Four icons: 1-Year Warranty, SF-Express, 7-Day Returns, Authentic. Bottom CTA: \"立即下单 / BUY NOW\".",
+      "negative_prompts": "cluttered, low-end feeling, bright colors",
+      "layout_specs": {
+        "logo": "中心位置",
+        "cta": "底部突出"
+      }
+    }
+  ]
+}
+```
+
+========================================
+
+模型: nano-banana-2-4k
+比例: 9:16
+时间: 2026-01-10_02-38-05

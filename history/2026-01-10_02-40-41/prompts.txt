@@ -1,0 +1,217 @@
+原始提示词:
+一个女孩
+
+========================================
+
+优化后的提示词:
+```json
+{
+  "metadata": {
+    "version": "3.0",
+    "generated_at": "2024-05-20 14:30:00",
+    "total_screens": 10,
+    "aspect_ratio": "9:16",
+    "visual_style": "tech_future",
+    "text_effect": "glassmorphism"
+  },
+  "recognition_report": {
+    "brand": {
+      "name_cn": "极影",
+      "name_en": "GLIDE PRO",
+      "logo_description": "极简线条构成的闪电与剃须刀轮廓结合",
+      "logo_style": "科技感、未来主义、极简"
+    },
+    "product": {
+      "category": "个人护理 - 电动剃须刀",
+      "name_cn": "迷你便携双头剃须刀",
+      "name_en": "Mini Portable Dual-Head Shaver",
+      "specifications": "合金机身 / Type-C快充 / LED电量显示"
+    },
+    "selling_points": [
+      {
+        "cn": "双头强劲动力",
+        "en": "Dual-Head Powerful Motor",
+        "source": "视觉识别：双旋转刀头结构"
+      },
+      {
+        "cn": "Type-C 闪速快充",
+        "en": "Type-C Fast Charging",
+        "source": "视觉识别：底部Type-C接口及光效"
+      },
+      {
+        "cn": "智能LED电量显示",
+        "en": "Smart LED Power Display",
+        "source": "视觉识别：正面四段式绿色指示灯"
+      },
+      {
+        "cn": "全合金镜面机身",
+        "en": "Full Alloy Mirror Body",
+        "source": "视觉识别：高亮金属电镀质感"
+      },
+      {
+        "cn": "掌心便携尺寸",
+        "en": "Palm-Sized Portability",
+        "source": "视觉识别：胶囊式紧凑设计"
+      }
+    ],
+    "color_palette": {
+      "primary": { "name": "钛空银", "hex": "#C0C0C0" },
+      "secondary": { "name": "极客黑", "hex": "#1A1A1A" },
+      "accent": { "name": "荧光绿", "hex": "#32FF7E" },
+      "background": { "name": "深空蓝", "hex": "#0A0E14" }
+    },
+    "target_audience": {
+      "age_range": "18-35岁",
+      "profile": "精致男士、商务出差人士、极客玩家",
+      "aesthetic_preference": "硬核科技、工业设计感、极简金属风"
+    },
+    "ai_recommendation": {
+      "visual_style": "tech_future",
+      "text_effect": "glassmorphism",
+      "layout_format": "stacked",
+      "reason": "产品具有强烈的金属质感和LED发光元素，科技未来风能完美烘托其硬核工业美感。"
+    }
+  },
+  "logo": {
+    "screen_id": "00",
+    "screen_type": "logo_generation",
+    "prompt_cn": "极简科技风格品牌logo，矢量风格，干净几何形。图标：由极简线条组成的‘G’字母变形，内含闪电元素，现代优雅。配色：钛空银(#C0C0C0)搭配透明背景。字体：现代无衬线'GLIDE PRO'，字母间距宽松，下方小字'极影'。无渐变、无阴影、无水印。",
+    "prompt_en": "Minimalist tech style brand logo, vector style, clean geometric form. Icon: A minimalist 'G' letter deformation composed of clean lines, containing a lightning element, modern elegance. Color palette: Titanium Silver (#C0C0C0) with transparent background. Typography: Modern sans-serif 'GLIDE PRO', generous letter-spacing, small text '极影' below. No gradients, no shadows, no watermarks."
+  },
+  "screens": [
+    {
+      "screen_id": "01",
+      "screen_type": "hero_kv",
+      "screen_name_cn": "主KV - 未来视界",
+      "screen_name_en": "Hero KV - Future Vision",
+      "prompt_cn": "9:16竖版高端科技感时尚海报。深空蓝背景带冷色调漫反射光。产品展示：一个银色镜面合金剃须刀悬浮在画面中心，表面折射出极致的金属光泽，绿色LED电量灯亮起。环境带有微弱的蓝色激光线条穿过背景。排版布局：左上角放置GLIDE PRO logo。顶部居中巨大无衬线标题：\"极影未来\" / \"GLIDE THE FUTURE\"(中英堆叠)。底部玻璃拟态卡片展示三个卖点。右下角圆角药丸CTA：\"开启净面之旅 → / START NOW →\"",
+      "prompt_en": "9:16 vertical high-end tech-style fashion poster. Deep space blue background with cool diffused light. Product showcase: A silver mirror alloy shaver suspended in the center, with extreme metallic reflections, green LED power lights on. Faint blue laser lines pass through the background. Typography layout: GLIDE PRO logo in top-left. Top center large sans-serif headline: \"极影未来\" / \"GLIDE THE FUTURE\" (stacked). Bottom glassmorphism info card showing 3 selling points. Bottom-right pill-shaped CTA: \"开启净面之旅 → / START NOW →\"",
+      "negative_prompts": "low quality, blurry, cartoon, warm colors, messy text, cluttered background, cheap plastic texture",
+      "layout_specs": {
+        "logo": "左上角，宽度8%",
+        "headline": "顶部1/3处居中",
+        "selling_points": "底部20%位置，半透明玻璃质感卡片",
+        "cta": "右下角贴边"
+      }
+    },
+    {
+      "screen_id": "02",
+      "screen_type": "selling_points",
+      "screen_name_cn": "核心科技展示",
+      "screen_name_en": "Core Tech Display",
+      "prompt_cn": "9:16竖版极简科技海报。背景为深灰到黑色的渐变，干净通透。画面中心展示剃须刀侧面角度，强调Type-C接口处发出的蓝色能量光束。四个卖点图标呈十字型环绕产品，每个图标配合玻璃拟态文字说明：1.闪电图标-快速充电 2.双环图标-双倍动力 3.电池图标-长效续航 4.机翼图标-轻巧便携。排版布局：左上角logo，顶部标题\"核心性能 / CORE PERFORMANCE\"。",
+      "prompt_en": "9:16 vertical minimalist tech poster. Background gradient from dark grey to black, clean and transparent. Shaver shown at a side angle in the center, emphasizing the blue energy beam from the Type-C port. Four selling point icons arranged cross-wise around the product, each with glassmorphism text: 1. Lightning-Fast Charge 2. Dual Power 3. Long Endurance 4. Ultra Portable. Layout: Top-left logo, top headline \"核心性能 / CORE PERFORMANCE\".",
+      "negative_prompts": "messy, crowded, low resolution, colorful, organic shapes, watermark",
+      "layout_specs": {
+        "logo": "左上角",
+        "headline": "顶部对齐",
+        "icons": "产品四周均匀分布",
+        "cta": "底部居中"
+      }
+    },
+    {
+      "screen_id": "03",
+      "screen_type": "lifestyle_scene",
+      "screen_name_cn": "商务出差场景",
+      "screen_name_en": "Business Travel Scene",
+      "prompt_cn": "9:16竖版，电影质感商务摄影。背景是高档皮质旅行包和一台Macbook电脑的一角，自然晨光透过百叶窗。产品（银色剃须刀）静静放置在黑色真皮包边缘，展现其极致的小巧。文字布局：左上角小号logo。左侧大标题：\"随行有型\" / \"SHAVE ON THE GO\"。下方副标题：\"出差旅行的净面专家\"。色调偏冷色系，体现高端商务感。",
+      "prompt_en": "9:16 vertical, cinematic business photography. Background features a premium leather travel bag and a corner of a Macbook, natural morning light through blinds. The product (silver shaver) sits quietly on the edge of the leather bag, highlighting its compactness. Layout: Small logo top-left. Left headline: \"随行有型\" / \"SHAVE ON THE GO\". Subtitle: \"The Shaving Expert for Travel\". Cool tones for premium business feel.",
+      "negative_prompts": "bright colors, messy room, low quality, blurry, yellow lighting",
+      "layout_specs": {
+        "logo": "左上角",
+        "headline": "左中位置，中英堆叠",
+        "atmosphere": "高冷、专业"
+      }
+    },
+    {
+      "screen_id": "04",
+      "screen_type": "detail_macro",
+      "screen_name_cn": "微距 - 双旋刀头",
+      "screen_name_en": "Macro - Dual Heads",
+      "prompt_cn": "9:16竖版超清微距摄影。镜头极近距离对准剃须刀打开后的双旋刀头，金属网膜纹理清晰可见，带有冰冷的金属光泽。背景完全模糊为深蓝色虚化。排版：右侧放置玻璃拟态长条卡片，内容为\"双环贴面刀网 / Dual-Ring Floating Blade\"。文字效果使用极细无衬线体。左上角保留Logo。",
+      "prompt_en": "9:16 vertical ultra-clear macro photography. Lens extremely close to the open dual rotary heads, metallic mesh texture clearly visible with cold metallic luster. Background completely blurred into deep blue bokeh. Layout: Right side glassmorphism strip card with text \"双环贴面刀网 / Dual-Ring Floating Blade\". Ultra-thin sans-serif font. Top-left logo preserved.",
+      "negative_prompts": "out of focus, dirty metal, fingerprints, warm colors, blurry textures",
+      "layout_specs": {
+        "focus": "刀头纹理",
+        "text_card": "右侧垂直居中",
+        "style": "硬核、精细"
+      }
+    },
+    {
+      "screen_id": "05",
+      "screen_type": "detail_macro",
+      "screen_name_cn": "微距 - 充电效能",
+      "screen_name_en": "Macro - Charging Power",
+      "prompt_cn": "9:16竖版科技细节海报。视角从产品底部向上仰视，特写Type-C充电口。蓝色数码光效从接口处如脉冲般散开，展现\"快充\"概念。背景有微弱的电路纹理背景。标题：\"能量瞬间觉醒\" / \"POWER AWAKENS\"。副标题：\"充电1小时，续航60天\"。排版布局简洁，文字位于画面上半部。",
+      "prompt_en": "9:16 vertical tech detail poster. Angle looking up from the bottom of the product, macro on Type-C port. Blue digital light effects pulse out from the port, illustrating the 'Fast Charge' concept. Faint circuit texture in the background. Headline: \"能量瞬间觉醒\" / \"POWER AWAKENS\". Subtitle: \"1 Hour Charge, 60 Days Use\". Clean layout with text in upper half.",
+      "negative_prompts": "low resolution, messy lighting, cluttered, old technology symbols",
+      "layout_specs": {
+        "logo": "左上角",
+        "focal_point": "底部充电口",
+        "light_effect": "科幻脉冲光"
+      }
+    },
+    {
+      "screen_id": "06",
+      "screen_type": "detail_macro",
+      "screen_name_cn": "微距 - 智能指示灯",
+      "screen_name_en": "Macro - Smart Indicator",
+      "prompt_cn": "9:16竖版极简科技细节。近距离特写产品正面的圆珠笔状按钮和四段式LED绿色灯条。灯条散发出柔和的荧光绿光。金属机身表面反射着周围的冷色调光影。标题：\"状态尽在掌握\" / \"STATUS AT A GLANCE\"。文字采用3D浮雕效果。右下角小字说明：\"四段式电量，精准显示\"。",
+      "prompt_en": "9:16 vertical minimalist tech detail. Close-up on the circular button and 4-bar LED green light strip on the front. Soft neon green glow. Metal body reflects cool surrounding lights. Headline: \"状态尽在掌握\" / \"STATUS AT A GLANCE\". Text with 3D embossed effect. Bottom-right small text: \"4-Bar Power indicator, precise display\".",
+      "negative_prompts": "blurry, low contrast, unrealistic glow, messy background",
+      "layout_specs": {
+        "logo": "左上角",
+        "headline": "中上位置",
+        "color_contrast": "银色机身 vs 绿色灯光"
+      }
+    },
+    {
+      "screen_id": "07",
+      "screen_type": "multi_scene_collage",
+      "screen_name_cn": "多面型男",
+      "screen_name_en": "Multi-Faceted Man",
+      "prompt_cn": "9:16竖版拼贴海报。三个圆角竖向照片块。1.模特在洗手间镜子前剃须。2.手持剃须刀放入公文包。3.产品在车载无线充旁的特写。照片块之间留有宽大的深蓝色负空间。底部大标题：\"随时随地，保持利落\"。副标题：\"EVERYWHERE, EVERYTIME\"。左上角Logo。",
+      "prompt_en": "9:16 vertical collage poster. Three rounded vertical photo blocks. 1. Model shaving in front of a bathroom mirror. 2. Hand placing shaver into a briefcase. 3. Close-up of product next to a car wireless charger. Wide deep blue negative space between blocks. Bottom headline: \"随时随地，保持利落\". Subtitle: \"EVERYWHERE, EVERYTIME\". Top-left Logo.",
+      "negative_prompts": "cluttered, mismatched colors, watermark, inconsistent lighting",
+      "layout_specs": {
+        "structure": "三栏拼贴",
+        "logo": "左上角",
+        "text": "底部居中对齐"
+      }
+    },
+    {
+      "screen_id": "08",
+      "screen_type": "size_specs",
+      "screen_name_cn": "规格参数",
+      "screen_name_en": "Specifications",
+      "prompt_cn": "9:16竖版极简参数海报。背景为产品侧视图与AirPods耳机盒的并排对比图，展现极小尺寸。下方为整洁的网格卡片展示参数：材质-锌合金、重量-120g、防水-IPX7、充电-Type-C。配色方案使用黑白灰+绿色点缀。文字排版：左上角logo，底部注释：\"*数据源自极影实验室\"。",
+      "prompt_en": "9:16 vertical minimalist spec poster. Background shows side-by-side comparison of the product and an AirPods case to show mini size. Below is a neat grid card showing specs: Material-Zinc Alloy, Weight-120g, Waterproof-IPX7, Charge-Type-C. Color scheme: B&W/Grey with green accents. Layout: Top-left logo, bottom note: \"*Data from Glide Pro Lab\".",
+      "negative_prompts": "messy text, unreadable, cluttered layout, colorful backgrounds",
+      "layout_specs": {
+        "logo": "左上角",
+        "table": "底部1/2处，玻璃拟态卡片"
+      }
+    },
+    {
+      "screen_id": "09",
+      "screen_type": "trust_ending",
+      "screen_name_cn": "品质保障",
+      "screen_name_en": "Trust & Quality",
+      "prompt_cn": "9:16竖版高端信任保障海报。深色背景，产品在中心微微旋转，带出流光效果。排列4个极简图标：1.正品保障 2.一年质保 3.闪电发货 4.七天退换。大标题：\"极影承诺，购买无忧\" / \"GLIDE PRO GUARANTEE\"。底部巨大CTA按钮：\"立即下单 → / BUY NOW →\"。左上角Logo固定位置。",
+      "prompt_en": "9:16 vertical high-end trust poster. Dark background, product rotating slightly in center with light streaks. 4 minimalist icons: 1. Authentic 2. 1-Year Warranty 3. Fast Shipping 4. 7-Day Return. Headline: \"极影承诺，购买无忧\" / \"GLIDE PRO GUARANTEE\". Bottom huge CTA button: \"立即下单 → / BUY NOW →\". Top-left Logo fixed.",
+      "negative_prompts": "cheap looking, low quality, messy, bright childish colors",
+      "layout_specs": {
+        "logo": "左上角",
+        "icons": "两横两纵排列",
+        "cta": "底部突出"
+      }
+    }
+  ]
+}
+```
+
+========================================
+
+模型: nano-banana-2-4k
+比例: 9:16
+时间: 2026-01-10_02-40-41
