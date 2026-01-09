@@ -45,6 +45,16 @@ export const PLUGINS: PluginMetadata[] = [
     icon: '🎨',
     color: 'bg-sky-500'
   },
+  {
+    type: NodeType.CAMERA_3D,
+    category: PluginCategory.VISUAL,
+    title: '3D Camera Control',
+    titleZh: '3D 视角控制',
+    description: 'Control camera angle for multi-view generation.',
+    descriptionZh: '控制相机视角，生成多角度视图提示词。',
+    icon: '📐',
+    color: 'bg-violet-500'
+  },
 
   // --- 视频生成 (Video Studio) ---
   {

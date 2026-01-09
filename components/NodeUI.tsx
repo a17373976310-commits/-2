@@ -4,6 +4,7 @@ import { NodeType, AppNode, ApiConfig, ApiProvider } from '../types';
 import { apiService, decodeAudioData, decodeBase64 } from '../services/ApiService';
 import { logger } from '../services/loggerService';
 import { historyService } from '../services/historyService';
+import { CameraControl3D } from './CameraControl3D';
 
 interface NodeUIProps {
   node: AppNode;
@@ -104,6 +105,9 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
 
       let result;
       switch (node.type) {
+        case NodeType.CAMERA_3D:
+          result = node.data.prompt || 'front view eye-level shot medium shot';
+          break;
         case NodeType.IMAGE_GEN:
           setStatus('图像生成中...');
           result = await apiService.generateImage(finalPrompt, { ratio: node.data.ratio || '1:1', model: activeModel }, provider, inheritedImages[0]);
@@ -350,6 +354,29 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
           </div>
         )}
 
+        {node.type === NodeType.CAMERA_3D && (
+          <div className="space-y-3">
+            <label className="text-slate-500 text-[8px] uppercase font-black tracking-widest px-1 block">3D 视角预览</label>
+            <CameraControl3D
+              value={{
+                azimuth: node.data.azimuth || 0,
+                elevation: node.data.elevation || 0,
+                distance: node.data.distance || 1.0
+              }}
+              onChange={(val) => {
+                onUpdate(node.id, {
+                  ...node.data,
+                  azimuth: val.azimuth,
+                  elevation: val.elevation,
+                  distance: val.distance,
+                  prompt: val.prompt
+                });
+              }}
+              imageUrl={sourceNode?.data.result || sourceNode?.data.image}
+            />
+          </div>
+        )}
+
         {(node.type === NodeType.IMAGE_EDIT || node.type === NodeType.IMAGE_ANALYSIS || node.type === NodeType.PROMPT_OPTIMIZER || node.type === NodeType.IMAGE_GEN) && (() => {
           const localImages = node.data.images || (node.data.image ? [node.data.image] : []);
           const hasLocal = localImages.length > 0;
@@ -446,6 +473,21 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
                     <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
                   </button>
                   <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">语音就绪</span>
+                </div>
+              ) : node.type === NodeType.CAMERA_3D ? (
+                <div className="p-4 bg-slate-900/50">
+                  <div className="text-[10px] font-mono text-emerald-400 break-all leading-relaxed">
+                    {node.data.result}
+                  </div>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(node.data.result);
+                      logger.info('提示词已复制到剪贴板');
+                    }}
+                    className="mt-3 w-full py-2 rounded-xl bg-slate-800 text-[8px] text-slate-400 uppercase font-black tracking-widest hover:bg-slate-700 transition-colors"
+                  >
+                    复制提示词
+                  </button>
                 </div>
               ) : (node.type === NodeType.IMAGE_GEN || node.type === NodeType.IMAGE_EDIT) && typeof node.data.result === 'string' ? (
                 <img
