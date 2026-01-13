@@ -1,0 +1,25 @@
+原始提示词:
+```json
+{
+  "nano_banana_en": "[Visual Description]\n\"A high-end fashion photography featuring a graceful European female model wearing the identified jewelry set (tiara, necklace, and earrings). The model is captured in a professional, elegant pose, perhaps gently touching her collarbone or tilting her head to showcase the brilliance of the crystals. \n[Subject Lock]: Strictly restore the silver filigree and clear crystal patterns of the uploaded tiara, V-shaped teardrop necklace, and matching earrings onto the model.\n[Outfit]: She is wearing a premium, sleek white one-piece dress with a minimalist design to ensure the jewelry remains the focus.\n[Background]: A clean, soft beige studio background with warm, sophisticated lighting. Cinematic soft-box lighting highlights the multi-faceted sparkle of the diamonds and the smooth texture of the model's skin.\"\n\n[Text & UI Layout]\n\"***Layout Style**: No Text / Pure Visual (无文案纯视觉模式).\nText Rendering Instructions:\n1. No text or graphic overlays are to be added to the image. Focus entirely on the aesthetic composition of the model and the jewelry.\"",
+  "seadream_cn": "[Visual Description]\n\"一张高端珠宝人像大片。一位气质优雅的欧洲模特佩戴着参考图中的全套珠宝（皇冠、项链、耳环）。模特做出专业的时尚姿态，神态从容高贵。\n[主体锁定]：必须精准还原上传图中银色镂空底座与纯净水钻的排列细节，特别是皇冠的尖顶轮廓和项链的V型水滴吊坠。\n[服装搭配]：模特穿着一件极简风格的纯白色连体长裙，面料呈现丝绸质感，完美衬托珠宝的光芒。\n[环境背景]：背景为高级的米色（Beige）纯色背景，影调柔和。采用商业人像布光，侧光精准勾勒出珠宝的切割面火彩，整体氛围典雅、奢华。\"\n\n[Text & UI Layout]\n\"***Layout Style**: 无文案纯美学布局。\n排版指令：\n1. 画面不包含任何文字或UI组件，保持纯净的商业摄影视觉效果，突出产品与人物的融合。\"",
+  "layout_logic": "采用黄金分割构图，将模特置于画面中心或微偏移位置，通过米色背景与白色裙子的低饱和色调对比，使高亮闪烁的银色珠宝成为视觉绝对焦点。无需添加文案，保留大面积留白感以提升品牌高级感。"
+}
+```
+
+========================================
+
+优化后的提示词:
+```json
+{
+  "nano_banana_en": "[Visual Description]\n\"A high-end fashion photography featuring a graceful European female model wearing the identified jewelry set (tiara, necklace, and earrings). The model is captured in a professional, elegant pose, perhaps gently touching her collarbone or tilting her head to showcase the brilliance of the crystals. \n[Subject Lock]: Strictly restore the silver filigree and clear crystal patterns of the uploaded tiara, V-shaped teardrop necklace, and matching earrings onto the model.\n[Outfit]: She is wearing a premium, sleek white one-piece dress with a minimalist design to ensure the jewelry remains the focus.\n[Background]: A clean, soft beige studio background with warm, sophisticated lighting. Cinematic soft-box lighting highlights the multi-faceted sparkle of the diamonds and the smooth texture of the model's skin.\"\n\n[Text & UI Layout]\n\"***Layout Style**: No Text / Pure Visual (无文案纯视觉模式).\nText Rendering Instructions:\n1. No text or graphic overlays are to be added to the image. Focus entirely on the aesthetic composition of the model and the jewelry.\"",
+  "seadream_cn": "[Visual Description]\n\"一张高端珠宝人像大片。一位气质优雅的欧洲模特佩戴着参考图中的全套珠宝（皇冠、项链、耳环）。模特做出专业的时尚姿态，神态从容高贵。\n[主体锁定]：必须精准还原上传图中银色镂空底座与纯净水钻的排列细节，特别是皇冠的尖顶轮廓和项链的V型水滴吊坠。\n[服装搭配]：模特穿着一件极简风格的纯白色连体长裙，面料呈现丝绸质感，完美衬托珠宝的光芒。\n[环境背景]：背景为高级的米色（Beige）纯色背景，影调柔和。采用商业人像布光，侧光精准勾勒出珠宝的切割面火彩，整体氛围典雅、奢华。\"\n\n[Text & UI Layout]\n\"***Layout Style**: 无文案纯美学布局。\n排版指令：\n1. 画面不包含任何文字或UI组件，保持纯净的商业摄影视觉效果，突出产品与人物的融合。\"",
+  "layout_logic": "采用黄金分割构图，将模特置于画面中心或微偏移位置，通过米色背景与白色裙子的低饱和色调对比，使高亮闪烁的银色珠宝成为视觉绝对焦点。无需添加文案，保留大面积留白感以提升品牌高级感。"
+}
+```
+
+========================================
+
+模型: nano-banana-2-2k
+比例: 1:1
+时间: 2026-01-10_09-57-42

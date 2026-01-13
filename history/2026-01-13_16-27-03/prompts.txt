@@ -1,0 +1,227 @@
+原始提示词:
+9:16 vertical mobile poster, single focused shot. Hard Studio Light, Frosted Metal texture.
+**Tone**: Gradient dark grey and Tech Blue (#0A1931) background with a glowing circular tech-ring aperture behind the product.
+**Product**: Strictly restore uploaded product features: Portable silver rounded square shaver with a central 4-bar green LED indicator and a silver circular power button with sunburst texture.
+**Visuals**: Product positioned at a 45-degree angle in the center, floating. Cybernetic blue light trails (#00CCFF) circling the base.
+**Text**: Text "极速净爽" stacked vertically above "PRO SHAVER" in Bold Sans-serif, white color with Neon Cyan accent.
+**UI**: Semi-transparent floating glassmorphism card at the bottom.
+**Quality**: 8k, commercial photography, octane render.
+--no collage, grid, split screen, multiple angles, watermark, low quality
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Hard Studio Light, metallic reflection.
+**Tone**: Deep Navy background with high-contrast sharp highlights.
+**Product**: Strictly restore uploaded product features: Portable silver shaver showing the dual rotary head assembly with precision steel mesh.
+**Visuals**: Extreme macro close-up of the dual blades, highlighting the sharp edges and metallic luster. Subtle frost texture on the metal.
+**Text**: Text "双倍锋利" stacked above "ULTRA SHARP" in Bold Sans-serif.
+**UI**: Linear outline icons indicating blade rotation.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Hard Studio Light.
+**Tone**: Tech Dark Grey background.
+**Product**: Strictly restore uploaded product features: Portable silver rounded square shaver.
+**Visuals**: A structured 4x4 matrix of 16 delicate white linear icons representing features, with the product centered and reduced in scale.
+**Text**: Text "全能黑科技" inside a Cyan capsule label at the top.
+**UI**: Grid-based functional matrix, professional industrial UI.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Hard Studio Light.
+**Tone**: Polar Silver and Tech Blue gradient.
+**Product**: Strictly restore uploaded product features: Portable silver shaver shown from the side profile to highlight its slim mechanical structure.
+**Visuals**: Exploded view effect showing the magnetic top cover hovering above the dual heads. Fine circuit lines etched in the air.
+**Text**: Text "精工细节" stacked above "PRECISION DESIGN" in Bold Sans-serif.
+**UI**: Thin pointer lines connecting text to product components.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Hard Studio Light.
+**Tone**: Dark background with vibrant Green (#00FF00) battery glow.
+**Product**: Strictly restore uploaded product features: Multiple units of the silver shaver stacked to show volume.
+**Visuals**: The 4-bar green LED indicator on the product is glowing intensely. Green frequency waves emanating from the bottom.
+**Text**: Text "双倍续航" stacked above "POWER ENDURANCE" in Bold Sans-serif with Green accent.
+**UI**: Digital battery percentage HUD overlay.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Hard Studio Light.
+**Tone**: Tech Blue (#0A1931) with Cyan electric sparks.
+**Product**: Strictly restore uploaded product features: Bottom view of the silver shaver focusing on the USB-C charging port.
+**Visuals**: A glowing blue cable tip approaching the port, with electric current visual effects.
+**Text**: Text "随时补能" stacked above "TYPE-C CHARGING" in Bold Sans-serif.
+**UI**: Three small circular icons below showing a Laptop, Car, and Powerbank.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Natural Studio Light.
+**Tone**: Cold Blue and White background, crisp and clean.
+**Product**: Strictly restore uploaded product features: Silver shaver partially submerged in clear rippling water.
+**Visuals**: High-speed photography of water splashes and crystal-clear droplets on the frosted metal surface.
+**Text**: Text "全身水洗" stacked above "IPX7 WATERPROOF" in Bold Sans-serif, Blue color.
+**UI**: Minimalist water-drop icon.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Hard Studio Light.
+**Tone**: Motion blur background with Tech Blue streaks.
+**Product**: Strictly restore uploaded product features: Portable silver shaver.
+**Visuals**: Abstract motion paths representing high-speed rotation. The product looks powerful and dynamic.
+**Text**: Text "5W大功率" stacked above "STRONG POWER" in Bold Sans-serif.
+**UI**: High-speed tachometer UI element.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Hard Studio Light.
+**Tone**: Blueprint style, dark blue with neon line art.
+**Product**: Strictly restore uploaded product features: Silver shaver with internal components visible through an X-ray transparency effect.
+**Visuals**: Glowing blue nodes indicating the intelligent sensor system inside the shaver body.
+**Text**: Text "智能感应" stacked above "SMART SENSE" in Bold Sans-serif.
+**UI**: Holographic data scanning interface.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Hard Studio Light.
+**Tone**: Dark grey background, focusing on light emission.
+**Product**: Strictly restore uploaded product features: Close-up of the front panel of the silver shaver.
+**Visuals**: The 4-bar green LED indicator is the main light source, casting a green glow on the silver sunburst button.
+**Text**: Text "实时显示" stacked above "LED DISPLAY" in Bold Sans-serif.
+**UI**: Floating status icons for "Lock" and "Clean".
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Clean Studio Light.
+**Tone**: Pure White background, Minimalist Industrial Style.
+**Product**: Strictly restore uploaded product features: Silver shaver shown as a technical wireframe drawing on the left.
+**Visuals**: Clean black lines and gray shading. Professional and engineering-focused.
+**Text**: Text "规格参数" stacked above "SPECIFICATIONS" in Bold Sans-serif.
+**UI**: A clean table on the right listing Power, Voltage, and Charging Time in Thin Sans-serif.
+--no collage, grid, split screen, multiple angles
+
+========================================
+
+优化后的提示词:
+9:16 vertical mobile poster, single focused shot. Hard Studio Light, Frosted Metal texture.
+**Tone**: Gradient dark grey and Tech Blue (#0A1931) background with a glowing circular tech-ring aperture behind the product.
+**Product**: Strictly restore uploaded product features: Portable silver rounded square shaver with a central 4-bar green LED indicator and a silver circular power button with sunburst texture.
+**Visuals**: Product positioned at a 45-degree angle in the center, floating. Cybernetic blue light trails (#00CCFF) circling the base.
+**Text**: Text "极速净爽" stacked vertically above "PRO SHAVER" in Bold Sans-serif, white color with Neon Cyan accent.
+**UI**: Semi-transparent floating glassmorphism card at the bottom.
+**Quality**: 8k, commercial photography, octane render.
+--no collage, grid, split screen, multiple angles, watermark, low quality
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Hard Studio Light, metallic reflection.
+**Tone**: Deep Navy background with high-contrast sharp highlights.
+**Product**: Strictly restore uploaded product features: Portable silver shaver showing the dual rotary head assembly with precision steel mesh.
+**Visuals**: Extreme macro close-up of the dual blades, highlighting the sharp edges and metallic luster. Subtle frost texture on the metal.
+**Text**: Text "双倍锋利" stacked above "ULTRA SHARP" in Bold Sans-serif.
+**UI**: Linear outline icons indicating blade rotation.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Hard Studio Light.
+**Tone**: Tech Dark Grey background.
+**Product**: Strictly restore uploaded product features: Portable silver rounded square shaver.
+**Visuals**: A structured 4x4 matrix of 16 delicate white linear icons representing features, with the product centered and reduced in scale.
+**Text**: Text "全能黑科技" inside a Cyan capsule label at the top.
+**UI**: Grid-based functional matrix, professional industrial UI.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Hard Studio Light.
+**Tone**: Polar Silver and Tech Blue gradient.
+**Product**: Strictly restore uploaded product features: Portable silver shaver shown from the side profile to highlight its slim mechanical structure.
+**Visuals**: Exploded view effect showing the magnetic top cover hovering above the dual heads. Fine circuit lines etched in the air.
+**Text**: Text "精工细节" stacked above "PRECISION DESIGN" in Bold Sans-serif.
+**UI**: Thin pointer lines connecting text to product components.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Hard Studio Light.
+**Tone**: Dark background with vibrant Green (#00FF00) battery glow.
+**Product**: Strictly restore uploaded product features: Multiple units of the silver shaver stacked to show volume.
+**Visuals**: The 4-bar green LED indicator on the product is glowing intensely. Green frequency waves emanating from the bottom.
+**Text**: Text "双倍续航" stacked above "POWER ENDURANCE" in Bold Sans-serif with Green accent.
+**UI**: Digital battery percentage HUD overlay.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Hard Studio Light.
+**Tone**: Tech Blue (#0A1931) with Cyan electric sparks.
+**Product**: Strictly restore uploaded product features: Bottom view of the silver shaver focusing on the USB-C charging port.
+**Visuals**: A glowing blue cable tip approaching the port, with electric current visual effects.
+**Text**: Text "随时补能" stacked above "TYPE-C CHARGING" in Bold Sans-serif.
+**UI**: Three small circular icons below showing a Laptop, Car, and Powerbank.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Natural Studio Light.
+**Tone**: Cold Blue and White background, crisp and clean.
+**Product**: Strictly restore uploaded product features: Silver shaver partially submerged in clear rippling water.
+**Visuals**: High-speed photography of water splashes and crystal-clear droplets on the frosted metal surface.
+**Text**: Text "全身水洗" stacked above "IPX7 WATERPROOF" in Bold Sans-serif, Blue color.
+**UI**: Minimalist water-drop icon.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Hard Studio Light.
+**Tone**: Motion blur background with Tech Blue streaks.
+**Product**: Strictly restore uploaded product features: Portable silver shaver.
+**Visuals**: Abstract motion paths representing high-speed rotation. The product looks powerful and dynamic.
+**Text**: Text "5W大功率" stacked above "STRONG POWER" in Bold Sans-serif.
+**UI**: High-speed tachometer UI element.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Hard Studio Light.
+**Tone**: Blueprint style, dark blue with neon line art.
+**Product**: Strictly restore uploaded product features: Silver shaver with internal components visible through an X-ray transparency effect.
+**Visuals**: Glowing blue nodes indicating the intelligent sensor system inside the shaver body.
+**Text**: Text "智能感应" stacked above "SMART SENSE" in Bold Sans-serif.
+**UI**: Holographic data scanning interface.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Hard Studio Light.
+**Tone**: Dark grey background, focusing on light emission.
+**Product**: Strictly restore uploaded product features: Close-up of the front panel of the silver shaver.
+**Visuals**: The 4-bar green LED indicator is the main light source, casting a green glow on the silver sunburst button.
+**Text**: Text "实时显示" stacked above "LED DISPLAY" in Bold Sans-serif.
+**UI**: Floating status icons for "Lock" and "Clean".
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Clean Studio Light.
+**Tone**: Pure White background, Minimalist Industrial Style.
+**Product**: Strictly restore uploaded product features: Silver shaver shown as a technical wireframe drawing on the left.
+**Visuals**: Clean black lines and gray shading. Professional and engineering-focused.
+**Text**: Text "规格参数" stacked above "SPECIFICATIONS" in Bold Sans-serif.
+**UI**: A clean table on the right listing Power, Voltage, and Charging Time in Thin Sans-serif.
+--no collage, grid, split screen, multiple angles
+
+========================================
+
+模型: nano-banana-2-4k
+比例: 9:16
+时间: 2026-01-13_16-27-03

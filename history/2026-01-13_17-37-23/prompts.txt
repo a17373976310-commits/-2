@@ -1,0 +1,159 @@
+原始提示词:
+9:16 vertical mobile poster, single focused shot. Soft morning studio light, matte texture, warm cream tones (#F8F4ED).
+**Tone**: Social media planting atmosphere, high-end lifestyle.
+**Product**: Strictly restore uploaded product features: Minimalist matte white electric steamer with a single rotary dial and stackable light-wood texture steaming tiers.
+**Visuals**: Human hands gently placing a light-wood steaming tier filled with buns onto the white base. Steam rising softly. Background is a clean, modern kitchen.
+**Layout**: Use a light gradient overlay at bottom. Include a Social Media UI overlay with "Like" and "Comment" icons at the bottom left.
+**Text**: Text "[悦享轻食生活]" **in Massive Extra-Bold Font**, stacked vertically above "[ENJOY LIGHT FOOD LIFE]" **in Small Thin Font with Wide Spacing (Tracking 200)**. Color: #333333.
+**UI**: Pill-shaped button at top right saying "1.5L Capacity".
+**Quality**: 8k, commercial photography, octane render.
+--no collage, grid, split screen, multiple angles, watermark, low quality
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Soft studio lighting, minimalist aesthetics.
+**Tone**: Product definition and core value.
+**Product**: Strictly restore uploaded product features: Minimalist matte white electric steamer with a single rotary dial and stackable light-wood texture steaming tiers.
+**Visuals**: 45-degree hero shot of the steamer fully assembled. Floating minimalist icons representing "Steam", "Boil", "Stew" surround the product. 
+**Layout**: Central focus. Use a distinct large card-style container for the main claim.
+**Text**: Text "[1台顶6台]" **in Massive Extra-Bold Font**, stacked above "[VERSATILE KITCHEN MASTER]" **in Small Thin Font with Wide Spacing**. Color: #D98D5F.
+**UI**: Clean dashed line connectors between icons and the product.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. 
+**Tone**: Efficiency and structure.
+**Product**: Strictly restore uploaded product features: Minimalist matte white electric steamer with a single rotary dial and stackable light-wood texture steaming tiers.
+**Visuals**: Vertical exploded view. Top tier contains vibrant vegetables, bottom tier contains dim sum, base contains boiling water. Soft natural light from the side.
+**Layout**: Top-to-bottom flow. Text placed in the middle-right empty space.
+**Text**: Text "[上蒸下煮省时省心]" **in Bold Font**, stacked above "[SYNC COOKING EFFICIENCY]" **in Thin Font**.
+**UI**: Small pill labels pointing to different tiers.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Macro photography, high-end texture.
+**Tone**: Safety and material backlink.
+**Product**: Strictly restore uploaded product features: Minimalist matte white electric steamer with a single rotary dial and stackable light-wood texture steaming tiers.
+**Visuals**: Extreme close-up of the clean white inner pot and the 304 stainless steel components. Reflections are soft and professional.
+**Layout**: Macro focus on the interior. Text is placed in a semi-transparent glassmorphism card at the bottom.
+**Text**: Text "[0涂层更健康]" **in Massive Bold Font**, stacked above "[PURE MATERIAL SAFETY]" **in Tiny Thin Font**.
+**UI**: Minimalist "304" material certification seal icon.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. 
+**Tone**: Functional logic and power control.
+**Product**: Strictly restore uploaded product features: Minimalist matte white electric steamer with a single rotary dial and stackable light-wood texture steaming tiers.
+**Visuals**: Close-up of the rotary dial on the white base. One side of the frame shows a light breakfast (300W), the other side shows a hearty soup (600W) using a subtle depth-of-field transition.
+**Layout**: Horizontal visual split in the background, but the product dial remains the center focus.
+**Text**: Text "[双档火力随心控]" **in Bold Font**, stacked above "[DUAL POWER CONTROL]" **in Thin Font**.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Warm, cozy, home atmosphere.
+**Tone**: Emotional lifestyle.
+**Product**: Strictly restore uploaded product features: Minimalist matte white electric steamer with a single rotary dial and stackable light-wood texture steaming tiers.
+**Visuals**: The product sits on a wooden dining table surrounded by various small dishes: corn, sweet potatoes, and eggs. Warm afternoon sun casting soft shadows.
+**Layout**: Large-scale scene. Text is vertically aligned on the left side in a "Magazine Cover" style.
+**Text**: Text "[三餐四季的温柔]" **in Serif Bold Font**, stacked above "[FOUR SEASONS GOURMET]" **in Thin Spaced Font**.
+**UI**: Fine dashed line border around the frame.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Close-up technical shot.
+**Tone**: Detail-oriented and quality assurance.
+**Product**: Strictly restore uploaded product features: Minimalist matte white electric steamer with a single rotary dial and stackable light-wood texture steaming tiers.
+**Visuals**: Close-up of the anti-scald handle with a smooth matte finish and the precise scale markings around the dial.
+**Layout**: Left-to-right composition. Left side is text, right side is the macro detail.
+**Text**: Text "[匠心考究细节]" **in Massive Extra-Bold Font**, stacked above "[ARTISAN CRAFT DETAILS]" **in Small Thin Font**.
+**UI**: Subtle pill buttons highlighting "Anti-Scald" and "Precise Timer".
+--no collage, grid, split screen, multiple angles
+
+========================================
+
+优化后的提示词:
+9:16 vertical mobile poster, single focused shot. Soft morning studio light, matte texture, warm cream tones (#F8F4ED).
+**Tone**: Social media planting atmosphere, high-end lifestyle.
+**Product**: Strictly restore uploaded product features: Minimalist matte white electric steamer with a single rotary dial and stackable light-wood texture steaming tiers.
+**Visuals**: Human hands gently placing a light-wood steaming tier filled with buns onto the white base. Steam rising softly. Background is a clean, modern kitchen.
+**Layout**: Use a light gradient overlay at bottom. Include a Social Media UI overlay with "Like" and "Comment" icons at the bottom left.
+**Text**: Text "[悦享轻食生活]" **in Massive Extra-Bold Font**, stacked vertically above "[ENJOY LIGHT FOOD LIFE]" **in Small Thin Font with Wide Spacing (Tracking 200)**. Color: #333333.
+**UI**: Pill-shaped button at top right saying "1.5L Capacity".
+**Quality**: 8k, commercial photography, octane render.
+--no collage, grid, split screen, multiple angles, watermark, low quality
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Soft studio lighting, minimalist aesthetics.
+**Tone**: Product definition and core value.
+**Product**: Strictly restore uploaded product features: Minimalist matte white electric steamer with a single rotary dial and stackable light-wood texture steaming tiers.
+**Visuals**: 45-degree hero shot of the steamer fully assembled. Floating minimalist icons representing "Steam", "Boil", "Stew" surround the product. 
+**Layout**: Central focus. Use a distinct large card-style container for the main claim.
+**Text**: Text "[1台顶6台]" **in Massive Extra-Bold Font**, stacked above "[VERSATILE KITCHEN MASTER]" **in Small Thin Font with Wide Spacing**. Color: #D98D5F.
+**UI**: Clean dashed line connectors between icons and the product.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. 
+**Tone**: Efficiency and structure.
+**Product**: Strictly restore uploaded product features: Minimalist matte white electric steamer with a single rotary dial and stackable light-wood texture steaming tiers.
+**Visuals**: Vertical exploded view. Top tier contains vibrant vegetables, bottom tier contains dim sum, base contains boiling water. Soft natural light from the side.
+**Layout**: Top-to-bottom flow. Text placed in the middle-right empty space.
+**Text**: Text "[上蒸下煮省时省心]" **in Bold Font**, stacked above "[SYNC COOKING EFFICIENCY]" **in Thin Font**.
+**UI**: Small pill labels pointing to different tiers.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Macro photography, high-end texture.
+**Tone**: Safety and material backlink.
+**Product**: Strictly restore uploaded product features: Minimalist matte white electric steamer with a single rotary dial and stackable light-wood texture steaming tiers.
+**Visuals**: Extreme close-up of the clean white inner pot and the 304 stainless steel components. Reflections are soft and professional.
+**Layout**: Macro focus on the interior. Text is placed in a semi-transparent glassmorphism card at the bottom.
+**Text**: Text "[0涂层更健康]" **in Massive Bold Font**, stacked above "[PURE MATERIAL SAFETY]" **in Tiny Thin Font**.
+**UI**: Minimalist "304" material certification seal icon.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. 
+**Tone**: Functional logic and power control.
+**Product**: Strictly restore uploaded product features: Minimalist matte white electric steamer with a single rotary dial and stackable light-wood texture steaming tiers.
+**Visuals**: Close-up of the rotary dial on the white base. One side of the frame shows a light breakfast (300W), the other side shows a hearty soup (600W) using a subtle depth-of-field transition.
+**Layout**: Horizontal visual split in the background, but the product dial remains the center focus.
+**Text**: Text "[双档火力随心控]" **in Bold Font**, stacked above "[DUAL POWER CONTROL]" **in Thin Font**.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Warm, cozy, home atmosphere.
+**Tone**: Emotional lifestyle.
+**Product**: Strictly restore uploaded product features: Minimalist matte white electric steamer with a single rotary dial and stackable light-wood texture steaming tiers.
+**Visuals**: The product sits on a wooden dining table surrounded by various small dishes: corn, sweet potatoes, and eggs. Warm afternoon sun casting soft shadows.
+**Layout**: Large-scale scene. Text is vertically aligned on the left side in a "Magazine Cover" style.
+**Text**: Text "[三餐四季的温柔]" **in Serif Bold Font**, stacked above "[FOUR SEASONS GOURMET]" **in Thin Spaced Font**.
+**UI**: Fine dashed line border around the frame.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Close-up technical shot.
+**Tone**: Detail-oriented and quality assurance.
+**Product**: Strictly restore uploaded product features: Minimalist matte white electric steamer with a single rotary dial and stackable light-wood texture steaming tiers.
+**Visuals**: Close-up of the anti-scald handle with a smooth matte finish and the precise scale markings around the dial.
+**Layout**: Left-to-right composition. Left side is text, right side is the macro detail.
+**Text**: Text "[匠心考究细节]" **in Massive Extra-Bold Font**, stacked above "[ARTISAN CRAFT DETAILS]" **in Small Thin Font**.
+**UI**: Subtle pill buttons highlighting "Anti-Scald" and "Precise Timer".
+--no collage, grid, split screen, multiple angles
+
+========================================
+
+模型: nano-banana-2-4k
+比例: 9:16
+时间: 2026-01-13_17-37-23

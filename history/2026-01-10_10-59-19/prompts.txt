@@ -1,0 +1,25 @@
+原始提示词:
+```json
+{
+  "nano_banana_en": "[Visual Description]\n\"Professional commercial jewelry photography. Replace the silver jewelry set in the original beige studio scene with the new gold and emerald set from the reference. \n[Subject Lock]: A majestic gold tiara, a matching necklace, and earrings adorned with vibrant emerald green teardrop gemstones and small white diamonds.\n[Position]: The gold emerald set should be placed in the exact same layout as the original silver set: the tiara stands in the background, the necklace flows in the mid-ground, and one earring lies in the foreground.\n[Background]: Retain the minimalist beige/sand-colored smooth surface and the soft, elegant directional studio lighting from Image 1. \n[Details]: Ensure the shadows cast by the new gold jewelry match the angle and soft-focus quality of the original scene. The emeralds should show realistic light refraction.\"\n\n[Text & UI Layout]\n\"***Layout Style**: No Text / Product Focus.\nText Rendering Instructions: No text required for this modification task.\"",
+  "seadream_cn": "[Visual Description]\n\"专业商业珠宝摄影。将图一米色工作室场景中的银色钻饰替换为图二中的金底祖母绿套装。\n[主体锁定]：一套华丽的金色珠宝，包括镶嵌有祖母绿水滴宝石的皇冠、配套项链及耳环。金色材质应具有细腻的金属拉丝光泽，祖母绿宝石展现深邃的透明度与折射效果。\n[场景融合]：严格保留图一中的米色简约背景及柔和的侧向商业光影。新替换进去的金色套装必须根据原图的光源方向产生自然的投影。\n[构图]：保持原图的斜向构图，皇冠居后，项链居中，耳坠置于前景，形成错落有致的空间感。\"\n\n[Text & UI Layout]\n\"***Layout Style**: 纯净产品呈现模式。\n排版指令：无需添加文字，专注于产品材质的真实还原与场景无痕融合。\"",
+  "layout_logic": "此任务属于‘物体替换’。核心逻辑是锁定图一的背景像素和光影参数（米色调、柔和侧光），并将图二中的金绿珠宝进行像素级提取，调整其透视角度以符合图一的俯视斜向构图，最后补全珠宝在米色地面上的环境遮挡阴影（AO）和投影。"
+}
+```
+
+========================================
+
+优化后的提示词:
+```json
+{
+  "nano_banana_en": "[Visual Description]\n\"Professional commercial jewelry photography. Replace the silver jewelry set in the original beige studio scene with the new gold and emerald set from the reference. \n[Subject Lock]: A majestic gold tiara, a matching necklace, and earrings adorned with vibrant emerald green teardrop gemstones and small white diamonds.\n[Position]: The gold emerald set should be placed in the exact same layout as the original silver set: the tiara stands in the background, the necklace flows in the mid-ground, and one earring lies in the foreground.\n[Background]: Retain the minimalist beige/sand-colored smooth surface and the soft, elegant directional studio lighting from Image 1. \n[Details]: Ensure the shadows cast by the new gold jewelry match the angle and soft-focus quality of the original scene. The emeralds should show realistic light refraction.\"\n\n[Text & UI Layout]\n\"***Layout Style**: No Text / Product Focus.\nText Rendering Instructions: No text required for this modification task.\"",
+  "seadream_cn": "[Visual Description]\n\"专业商业珠宝摄影。将图一米色工作室场景中的银色钻饰替换为图二中的金底祖母绿套装。\n[主体锁定]：一套华丽的金色珠宝，包括镶嵌有祖母绿水滴宝石的皇冠、配套项链及耳环。金色材质应具有细腻的金属拉丝光泽，祖母绿宝石展现深邃的透明度与折射效果。\n[场景融合]：严格保留图一中的米色简约背景及柔和的侧向商业光影。新替换进去的金色套装必须根据原图的光源方向产生自然的投影。\n[构图]：保持原图的斜向构图，皇冠居后，项链居中，耳坠置于前景，形成错落有致的空间感。\"\n\n[Text & UI Layout]\n\"***Layout Style**: 纯净产品呈现模式。\n排版指令：无需添加文字，专注于产品材质的真实还原与场景无痕融合。\"",
+  "layout_logic": "此任务属于‘物体替换’。核心逻辑是锁定图一的背景像素和光影参数（米色调、柔和侧光），并将图二中的金绿珠宝进行像素级提取，调整其透视角度以符合图一的俯视斜向构图，最后补全珠宝在米色地面上的环境遮挡阴影（AO）和投影。"
+}
+```
+
+========================================
+
+模型: nano-banana-2-2k
+比例: 4:3
+时间: 2026-01-10_10-59-19

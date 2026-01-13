@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-01-10_09-46-36",
+  "model": "nano-banana-2-2k",
+  "ratio": "3:4",
+  "nodeType": "IMAGE_GEN",
+  "hasOriginalImage": false,
+  "hasGeneratedImage": true,
+  "originalPrompt": "```json\n{\n  \"nano_banana_en\": \"[Visual Description]\\nProfessional high-fashion editorial photography. An elegant European female model with sophisticated features is wearing the [Subject Lock: Gold filigree jewelry set featuring royal blue teardrop crystals and clear diamonds, including the tiara, necklace, and earrings]. She is striking a dynamic, professional haute couture pose. \\n[Environment]: The background is an impactful, dark-toned luxury architectural space with dramatic Chiaroscuro lighting. \\n[Lighting]: Cinematic spotlighting hitting the jewelry to create brilliant prismatic reflections on the blue gemstones and polished gold surfaces. Sharp focus on product textures.\\n\\n[Text & UI Layout]\\n***Layout Style: Luxury Fashion Magazine Cover Style.\\nText Rendering Instructions:\\n1. Main Title: 内容: \\\"ROYAL ELEGANCE\\\". Position: Center Top. Style: Elegant Serif, gold foil texture.\\n2. Sub Title: 内容: \\\"The Midnight Sapphire Collection\\\". Style: Minimalist Sans-serif, tracking spaced out.\\n3. Brand Tag: 内容: \\\"PREMIUM QUALITY\\\". Style: Small vertical text on the right edge.\",\n  \"seadream_cn\": \"[画面描述]\\n高端时尚大片视觉。一位气质冷艳的欧洲顶级模特，佩戴着[产品锁定：金色镂空底座、镶嵌皇家蓝水滴宝石与碎钻的皇冠、项链及耳环套装]。模特摆出极具张力的专业高级感姿势。\\n[背景场景]：极具冲击力的深色调奢华大理石空间，伴有丁达尔效应的侧光，营造出神秘而高贵的氛围。\\n[光影质感]：电影级聚光灯精准打在珠宝上，突出皇家蓝宝石的深邃火彩与黄金的镜面质感，画面细节锐利，充满金钱感。\\n\\n[文案与排版]\\n***排版风格: 国际一线大牌画册排版.\\n文字渲染指令:\\n1. 主标题: 内容: \\\"璀璨之境\\\". 位置: 画面顶部居中. 风格: 衬线体, 带有淡金色金属光泽.\\n2. 副标题: 内容: \\\"皇家蓝宝石系列\\\". 风格: 极简纤细黑体, 位于主标题下方.\\n3. 装饰文案: 内容: \\\"ROYAL BLUE LUXURY\\\". 风格: 侧边装饰性排版.\",\n  \"layout_logic\": \"采用‘黄金分割’构图，将模特与珠宝置于视觉中心，背景采用大面积的暗调以衬托珠宝的闪耀。文字排版模仿《VOGUE》或《Harper's BAZAAR》等奢侈品杂志，保持大量留白，增强品牌的高级感。\"\n}\n```",
+  "optimizedPrompt": ""
+}

@@ -1,0 +1,25 @@
+原始提示词:
+```json
+{
+  "nano_banana_en": "[Visual Description]\nAn outpainting/image extension task. The central subject is a young woman with two-tone (blonde and dark brown) hair, soft pink makeup, and a green beaded necklace with a pink heart pendant. The background is a vibrant pink 'sticker-bomb' or 'Y2K collage' style featuring Sanrio-inspired characters (Kuromi, Hello Kitty), stars, hearts, and graffiti-style text. \n\n[Text & UI Layout]\n***Layout Style: Texture Extrapolation & Background Extension.\nInstructions:\n1. Lock original pixels of the woman and her clothing (grey mesh top).\n2. Extend the pink background outward, generating more hand-drawn doodles, stars, and cute stickers that match the existing aesthetic.\n3. Continue the natural fall of her shoulders and the texture of the knit sweater seamlessly.\n4. Maintain the soft, bright lighting and the high-saturation pink color palette.",
+  "seadream_cn": "[画面描述]\n这是一个扩图（背景延伸）任务。画面中心是一位留着金棕双色发型、画着粉嫩妆容的年轻女性，佩戴绿色珠串心形项链。背景是极具Y2K风格的粉色贴纸涂鸦墙，包含酷洛米、Hello Kitty风格的卡通形象、星星、爱心以及手写体文字。\n\n[修改逻辑]\n***布局风格：背景纹理外推与元素延续。\n指令详情：\n1. 像素锁定：严格保留原图中人像、妆容、发丝及颈部项链的原始像素，确保主体不走样。\n2. 背景延伸：向四周扩展粉色背景，自动补全并增加更多符合原图风格的卡通贴纸、手绘线条和可爱涂鸦元素。\n3. 衣物补全：自然延伸灰紫色镂空针织衫的肩部线条与材质纹理。\n4. 影调一致：保持高饱和度的粉色调与明亮的柔光商拍质感，严禁在新增区域生成无关或写实物。 ",
+  "layout_logic": "采用‘中心锁定，外围扩散’的逻辑。将原图置于画面中央，通过纹理外推技术延伸背景的贴纸涂鸦氛围。确保新增的卡通元素在疏密程度上与原图保持一致，维持Y2K甜酷风的视觉平衡。"
+}
+```
+
+========================================
+
+优化后的提示词:
+```json
+{
+  "nano_banana_en": "[Visual Description]\nAn outpainting/image extension task. The central subject is a young woman with two-tone (blonde and dark brown) hair, soft pink makeup, and a green beaded necklace with a pink heart pendant. The background is a vibrant pink 'sticker-bomb' or 'Y2K collage' style featuring Sanrio-inspired characters (Kuromi, Hello Kitty), stars, hearts, and graffiti-style text. \n\n[Text & UI Layout]\n***Layout Style: Texture Extrapolation & Background Extension.\nInstructions:\n1. Lock original pixels of the woman and her clothing (grey mesh top).\n2. Extend the pink background outward, generating more hand-drawn doodles, stars, and cute stickers that match the existing aesthetic.\n3. Continue the natural fall of her shoulders and the texture of the knit sweater seamlessly.\n4. Maintain the soft, bright lighting and the high-saturation pink color palette.",
+  "seadream_cn": "[画面描述]\n这是一个扩图（背景延伸）任务。画面中心是一位留着金棕双色发型、画着粉嫩妆容的年轻女性，佩戴绿色珠串心形项链。背景是极具Y2K风格的粉色贴纸涂鸦墙，包含酷洛米、Hello Kitty风格的卡通形象、星星、爱心以及手写体文字。\n\n[修改逻辑]\n***布局风格：背景纹理外推与元素延续。\n指令详情：\n1. 像素锁定：严格保留原图中人像、妆容、发丝及颈部项链的原始像素，确保主体不走样。\n2. 背景延伸：向四周扩展粉色背景，自动补全并增加更多符合原图风格的卡通贴纸、手绘线条和可爱涂鸦元素。\n3. 衣物补全：自然延伸灰紫色镂空针织衫的肩部线条与材质纹理。\n4. 影调一致：保持高饱和度的粉色调与明亮的柔光商拍质感，严禁在新增区域生成无关或写实物。 ",
+  "layout_logic": "采用‘中心锁定，外围扩散’的逻辑。将原图置于画面中央，通过纹理外推技术延伸背景的贴纸涂鸦氛围。确保新增的卡通元素在疏密程度上与原图保持一致，维持Y2K甜酷风的视觉平衡。"
+}
+```
+
+========================================
+
+模型: nano-banana-2-2k
+比例: 1:1
+时间: 2026-01-12_18-39-13

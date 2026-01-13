@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-01-10_07-56-48",
+  "model": "nano-banana-2-4k",
+  "ratio": "4:3",
+  "nodeType": "IMAGE_GEN",
+  "hasOriginalImage": false,
+  "hasGeneratedImage": true,
+  "originalPrompt": "{\n  \"nano_banana_en\": \"{\\\"task_type\\\": \\\"Object Replacement / Recolor\\\", \\\"instructions\\\": \\\"Strictly maintain the original background color (#EADCCA), lighting angle, and shadow placement from the first image. Replace the silver and clear crystal jewelry (crown, necklace, earrings) with the exact style and color from the second image: Gold metal base with deep emerald green gemstones. The new jewelry must follow the exact perspective and layout of the original image (crown tilted back, necklace laid flat in a V-shape, earrings in the front). Ensure the gold reflects the soft studio lighting naturally. Keep the original text 'Radiant Elegance' and 'Teardrop Focal Stone' untouched.\\\"}\",\n  \"seadream_cn\": \"{\\\"任务类型\\\": \\\"智能换款/重绘\\\", \\\"指令\\\": \\\"锁定第一张图的米色背景、光影投射角度及文字排版。将画面中的银色水钻皇冠、项链和耳环，精准替换为第二张图中的‘金底祖母绿’款式。新生成的珠宝需完美贴合原图的透视关系（皇冠略微仰视、项链V型平铺、耳环在前景）。材质表现为高光泽的金色金属与深邃通透的绿宝石，模拟原图的柔和影棚光感。严禁改动原有的文字内容和位置。\\\"}\",\n  \"layout_logic\": \"Since this is a modification task, the layout logic is to rigidly adhere to the original composition (Structure Preservation). The primary goal is 'In-painting' the new product textures onto the old geometry coordinates.\"\n}",
+  "optimizedPrompt": ""
+}

@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-01-13_11-22-13",
+  "model": "nano-banana-2-2k",
+  "ratio": "1:1",
+  "nodeType": "IMAGE_GEN",
+  "hasOriginalImage": false,
+  "hasGeneratedImage": true,
+  "originalPrompt": "图片修改：扩图, ",
+  "optimizedPrompt": ""
+}

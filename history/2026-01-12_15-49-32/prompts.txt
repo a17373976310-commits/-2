@@ -1,0 +1,13 @@
+原始提示词:
+front-right quarter view elevated shot medium shot, front-right quarter view elevated shot medium shot
+
+========================================
+
+优化后的提示词:
+front-right quarter view elevated shot medium shot, front-right quarter view elevated shot medium shot
+
+========================================
+
+模型: nano-banana-2
+比例: 1:1
+时间: 2026-01-12_15-49-32

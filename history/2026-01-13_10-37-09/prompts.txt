@@ -1,0 +1,13 @@
+原始提示词:
+Vibrant 2D anime-style digital illustration of a whimsical tropical summer scene. Extend the expansive bright blue sky with towering, fluffy white and golden-yellow cumulus clouds catching the warm afternoon sunlight. Continue the lush tropical environment with more curving palm trees, large green tropical leaves, and a soft sandy ground dappled with patches of bright green grass and tiny yellow flowers. The winding metal railway tracks should extend naturally into the new space. Maintain the soft, painterly texture and warm, cheerful color palette consisting of azure, gold, emerald green, and soft terracotta. The lighting should remain bright and sunny with gentle, diffused shadows, creating a cozy and adventurous summer mood. Ensure the seamless continuation of the stylized, hand-drawn aesthetic with sparkling dust particles floating in the air. Do not replicate specific text or character faces in the extended areas.
+
+========================================
+
+优化后的提示词:
+Vibrant 2D anime-style digital illustration of a whimsical tropical summer scene. Extend the expansive bright blue sky with towering, fluffy white and golden-yellow cumulus clouds catching the warm afternoon sunlight. Continue the lush tropical environment with more curving palm trees, large green tropical leaves, and a soft sandy ground dappled with patches of bright green grass and tiny yellow flowers. The winding metal railway tracks should extend naturally into the new space. Maintain the soft, painterly texture and warm, cheerful color palette consisting of azure, gold, emerald green, and soft terracotta. The lighting should remain bright and sunny with gentle, diffused shadows, creating a cozy and adventurous summer mood. Ensure the seamless continuation of the stylized, hand-drawn aesthetic with sparkling dust particles floating in the air. Do not replicate specific text or character faces in the extended areas.
+
+========================================
+
+模型: nano-banana-2-2k
+比例: 1:1
+时间: 2026-01-13_10-37-09

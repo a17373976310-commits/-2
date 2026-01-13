@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-01-10_09-53-55",
+  "model": "nano-banana-2-2k",
+  "ratio": "3:4",
+  "nodeType": "IMAGE_GEN",
+  "hasOriginalImage": false,
+  "hasGeneratedImage": true,
+  "originalPrompt": "```json\n{\n  \"nano_banana_en\": \"[Visual Description]\\n\\\"A high-end editorial fashion photograph of a professional European female model with elegant features and a graceful pose. She is wearing the exact jewelry set from the reference image, including the intricate silver crystal tiara, the V-shaped necklace with a large teardrop pendant, and the matching drop earrings. The jewelry must maintain 100% fidelity to the original design, showing brilliant light refraction. She is dressed in a minimalist, sophisticated white jumpsuit. The background is a clean, textured beige/cream studio setting with soft, professional lighting that creates gentle shadows and highlights the jewelry's sparkle.\\\"\\n\\n[Text & UI Layout]\\n\\\"***Layout Style**: Minimalist Luxury (极简奢华排版).\\nText Rendering Instructions:\\n1. **Brand Title**: 内容: \\\"ELEGANCE SERIES\\\". Position: [Top Center]. Style: [Thin Serif, Tracking 500]. Color: [Deep Gold or Charcoal].\\n2. **Slogan**: 内容: \\\"璀璨瞬间，永恒流传\\\". Style: [Elegant Simplified Chinese, smaller font below the title].\\n3. **Detail Tag**: 内容: \\\"Handcrafted Crystal Collection\\\". Style: [Bottom Right, Vertical orientation, minimalist sans-serif].\\\"\",\n  \"seadream_cn\": \"[Visual Description]\\n\\\"一张专业高端的珠宝人像商业摄影。一位气质高雅的欧洲模特正以专业姿态展示这套首饰。她佩戴着参考图中完全一致的银色水钻皇冠、V型水钻项链（带水滴形吊坠）及配套耳环，首饰的金属质感与宝石火彩需完美复刻。模特身着一件剪裁利落的白色连体裙，整体风格极简且高级。背景为纯净的米色调影棚背景，采用商业柔光照明，光影层次分明，重点突出珠宝的璀璨感。\\\"\\n\\n[Text & UI Layout]\\n\\\"***Layout Style**: Premium Editorial (高级杂志封面排版).\\nText Rendering Instructions:\\n1. **主标题**: 内容: \\\"璀璨系列 / ELEGANCE\\\". Style: [衬线体与英文叠发, 居中对齐].\\n2. **副标题**: 内容: \\\"见证每一个闪耀时刻\\\". Style: [极细字体, 位于主标题下方].\\n3. **装饰元素**: 画面四周保留充足留白，文字采用高对比色，确保易读性。\\\"\",\n  \"layout_logic\": \"采用‘人像居中、文案留白’的构图逻辑。将模特作为视觉重心，首饰通过微距感光线进行强调。排版上使用极简的衬线体文字置于画面顶部或负空间，营造出高端定制珠宝的品牌调性。米色背景与白色服装的搭配能最大程度衬托出银色水钻的闪耀，避免色彩杂乱。\"\n}\n```",
+  "optimizedPrompt": ""
+}

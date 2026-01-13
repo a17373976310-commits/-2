@@ -1,0 +1,85 @@
+原始提示词:
+[Prompt 1: Hero Screen]
+A single vertical mobile poster, Tech-Minimalism style. **Composition**: A single focused hero shot. The product is floating in the center, strictly facing forward.
+**Product Anchor**: A compact, pebble-shaped portable electric shaver with a high-gloss electroplated silver metallic finish, a circular brushed metal power button, and a vertical green 4-bar LED battery indicator.
+**Visuals**: Background is a dark natural scene with rugged black reefs and cinematic deep navy blue (#0A1931) atmosphere, with subtle ice-blue light rays focusing on the product. 
+**Text**: Format A: Chinese stacked above English. Text "致敬非凡" stacked above "SALUTE TO EXTRAORDINARY" in bold Sans-serif font, placed at top center. 
+**Quality**: 8k, octane render, commercial photography, hard studio light.
+--ar 9:16 --no grid, collage, split screen, multiple angles, bad text
+
+|||
+
+[Prompt 2: Feature Screen]
+A single vertical mobile poster, Tech-Minimalism style.
+**Composition**: A single focused shot visualizing the motor power. 
+**Product Anchor**: A compact, pebble-shaped portable electric shaver with a high-gloss electroplated silver metallic finish, a circular brushed metal power button, and a vertical green 4-bar LED battery indicator.
+**Visuals**: Macro view of the shaver head, visualized ice-blue neon air streams and energy vortex flowing through the product to represent 360-degree shaving power. Background is clean grey with high-tech HUD elements.
+**Text**: Format A: Chinese stacked above English. Text "强劲动力" stacked above "POWERFUL MOTOR" in minimalist Sans-serif font, placed at bottom using a Glassmorphism card.
+--ar 9:16 --no collage, grid, messy background, multiple devices
+
+|||
+
+[Prompt 3: Detail Screen]
+A single vertical mobile poster, Tech-Minimalism style.
+**Composition**: Extreme macro close-up of the shaver head and metallic mesh.
+**Product Anchor**: A compact, pebble-shaped portable electric shaver with high-gloss electroplated silver metallic texture and high-contrast mirror finish.
+**Visuals**: High contrast hard lighting highlighting the metal texture and the precision of the blade net. Water droplets splashing on the surface to show IPX7 waterproof rating, bright clean white-to-blue gradient background.
+**Text**: Format A: Chinese stacked above English. Minimalist text "全身防水" stacked above "IPX7 WATERPROOF" with a thin line pointer.
+--ar 9:16 --no collage, grid, full body shot, blurry textures
+
+|||
+
+[Prompt 4: Scene Screen]
+A single vertical mobile poster, Tech-Minimalism style.
+**Composition**: Lifestyle/Scene-based composition focusing on portability.
+**Product Anchor**: A compact, pebble-shaped portable electric shaver with a high-gloss electroplated silver metallic finish, showing the Type-C charging port at the bottom.
+**Visuals**: The shaver is placed next to a sleek laptop and a leather travel bag. Use a "Bento Box" layout for the background with small icons representing travel, office, and home scenarios. Warm accent light hitting the silver surface.
+**Text**: Format A: Chinese stacked above English. Text "随行续航" stacked above "TRAVEL READY" in thin Sans-serif font, placed at top left.
+--ar 9:16 --no collage, grid, split screen, distorted product shape
+
+========================================
+
+优化后的提示词:
+[Prompt 1: Hero Screen]
+A single vertical mobile poster, Tech-Minimalism style. **Composition**: A single focused hero shot. The product is floating in the center, strictly facing forward.
+**Product Anchor**: A compact, pebble-shaped portable electric shaver with a high-gloss electroplated silver metallic finish, a circular brushed metal power button, and a vertical green 4-bar LED battery indicator.
+**Visuals**: Background is a dark natural scene with rugged black reefs and cinematic deep navy blue (#0A1931) atmosphere, with subtle ice-blue light rays focusing on the product. 
+**Text**: Format A: Chinese stacked above English. Text "致敬非凡" stacked above "SALUTE TO EXTRAORDINARY" in bold Sans-serif font, placed at top center. 
+**Quality**: 8k, octane render, commercial photography, hard studio light.
+--ar 9:16 --no grid, collage, split screen, multiple angles, bad text
+
+|||
+
+[Prompt 2: Feature Screen]
+A single vertical mobile poster, Tech-Minimalism style.
+**Composition**: A single focused shot visualizing the motor power. 
+**Product Anchor**: A compact, pebble-shaped portable electric shaver with a high-gloss electroplated silver metallic finish, a circular brushed metal power button, and a vertical green 4-bar LED battery indicator.
+**Visuals**: Macro view of the shaver head, visualized ice-blue neon air streams and energy vortex flowing through the product to represent 360-degree shaving power. Background is clean grey with high-tech HUD elements.
+**Text**: Format A: Chinese stacked above English. Text "强劲动力" stacked above "POWERFUL MOTOR" in minimalist Sans-serif font, placed at bottom using a Glassmorphism card.
+--ar 9:16 --no collage, grid, messy background, multiple devices
+
+|||
+
+[Prompt 3: Detail Screen]
+A single vertical mobile poster, Tech-Minimalism style.
+**Composition**: Extreme macro close-up of the shaver head and metallic mesh.
+**Product Anchor**: A compact, pebble-shaped portable electric shaver with high-gloss electroplated silver metallic texture and high-contrast mirror finish.
+**Visuals**: High contrast hard lighting highlighting the metal texture and the precision of the blade net. Water droplets splashing on the surface to show IPX7 waterproof rating, bright clean white-to-blue gradient background.
+**Text**: Format A: Chinese stacked above English. Minimalist text "全身防水" stacked above "IPX7 WATERPROOF" with a thin line pointer.
+--ar 9:16 --no collage, grid, full body shot, blurry textures
+
+|||
+
+[Prompt 4: Scene Screen]
+A single vertical mobile poster, Tech-Minimalism style.
+**Composition**: Lifestyle/Scene-based composition focusing on portability.
+**Product Anchor**: A compact, pebble-shaped portable electric shaver with a high-gloss electroplated silver metallic finish, showing the Type-C charging port at the bottom.
+**Visuals**: The shaver is placed next to a sleek laptop and a leather travel bag. Use a "Bento Box" layout for the background with small icons representing travel, office, and home scenarios. Warm accent light hitting the silver surface.
+**Text**: Format A: Chinese stacked above English. Text "随行续航" stacked above "TRAVEL READY" in thin Sans-serif font, placed at top left.
+--ar 9:16 --no collage, grid, split screen, distorted product shape
+
+========================================
+
+模型: nano-banana-2-4k
+比例: 9:16
+时间: 2026-01-13_16-13-20

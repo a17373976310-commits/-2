@@ -1,0 +1,65 @@
+原始提示词:
+收到，为您启动**顶级工业设计可视化工作流**。
+
+### 1. 材质与几何分析 (Digital Audit)
+*   **材质属性：** 高透聚碳酸酯（Polycarbonate）或亚克力。具有高折射率（IOR ≈ 1.58）和全镜面反射。
+*   **几何结构：** 经典的“竹节”造型框架（Bamboo-style joints），靠背采用菱形交叉网格（Lattice back），坐垫为平整的透明薄板，**明确要求：无裙边（No Skirt）**，即坐垫边缘直接与支撑结构衔接。
+*   **视觉修正：** 将消除原图中仓储环境的黄色反光，校正透视畸变，应用 85mm 长焦镜头表现产品的纯粹比例。
+
+### 2. 渲染策略 (Rendering Strategy)
+*   **引擎：** Cinema 4D + Octane Render (Path Tracing)
+*   **光照：** 三点式影棚柔光，重点通过**边缘光（Rim Light）**勾勒透明物体的轮廓，确保在白底背景下依然层次分明。
+*   **背景：** 绝对纯白 (#FFFFFF)，无阴影，无反射。
+
+---
+
+**正在为您生成 4K 超写实工业设计渲染图...**
+
+{
+  "action": "generate_image",
+  "prompt": "High-end industrial design render of a transparent acrylic chair, lattice diamond backrest pattern, bamboo-textured frame joints. The seat is a thin flat transparent plate without any skirt or valance (no skirt design). Crystal clear material with high-quality refraction and caustics. Professional studio lighting with soft highlights on edges. 85mm lens, centered composition. Absolute pure white background (#FFFFFF), no floor, no shadows, no reflections on the ground. Octane render style, 8k resolution, photorealistic, clean and minimalist aesthetic."
+}
+
+---
+
+**渲染解析报告：**
+1.  **材质还原：** 模拟了真实的物理光线追踪，捕捉了透明骨架内的折射细节，展现了如水晶般的通透感。
+2.  **几何修正：** 严格遵循您的要求，移除了坐垫下方的裙边，使结构更显现代与轻盈。
+3.  **纯净展示：** 移除了所有指纹和环境干扰，产品以完美的“电商白底”姿态呈现，适合作为画册或产品展示使用。
+
+========================================
+
+优化后的提示词:
+收到，为您启动**顶级工业设计可视化工作流**。
+
+### 1. 材质与几何分析 (Digital Audit)
+*   **材质属性：** 高透聚碳酸酯（Polycarbonate）或亚克力。具有高折射率（IOR ≈ 1.58）和全镜面反射。
+*   **几何结构：** 经典的“竹节”造型框架（Bamboo-style joints），靠背采用菱形交叉网格（Lattice back），坐垫为平整的透明薄板，**明确要求：无裙边（No Skirt）**，即坐垫边缘直接与支撑结构衔接。
+*   **视觉修正：** 将消除原图中仓储环境的黄色反光，校正透视畸变，应用 85mm 长焦镜头表现产品的纯粹比例。
+
+### 2. 渲染策略 (Rendering Strategy)
+*   **引擎：** Cinema 4D + Octane Render (Path Tracing)
+*   **光照：** 三点式影棚柔光，重点通过**边缘光（Rim Light）**勾勒透明物体的轮廓，确保在白底背景下依然层次分明。
+*   **背景：** 绝对纯白 (#FFFFFF)，无阴影，无反射。
+
+---
+
+**正在为您生成 4K 超写实工业设计渲染图...**
+
+{
+  "action": "generate_image",
+  "prompt": "High-end industrial design render of a transparent acrylic chair, lattice diamond backrest pattern, bamboo-textured frame joints. The seat is a thin flat transparent plate without any skirt or valance (no skirt design). Crystal clear material with high-quality refraction and caustics. Professional studio lighting with soft highlights on edges. 85mm lens, centered composition. Absolute pure white background (#FFFFFF), no floor, no shadows, no reflections on the ground. Octane render style, 8k resolution, photorealistic, clean and minimalist aesthetic."
+}
+
+---
+
+**渲染解析报告：**
+1.  **材质还原：** 模拟了真实的物理光线追踪，捕捉了透明骨架内的折射细节，展现了如水晶般的通透感。
+2.  **几何修正：** 严格遵循您的要求，移除了坐垫下方的裙边，使结构更显现代与轻盈。
+3.  **纯净展示：** 移除了所有指纹和环境干扰，产品以完美的“电商白底”姿态呈现，适合作为画册或产品展示使用。
+
+========================================
+
+模型: nano-banana-2
+比例: 3:4
+时间: 2026-01-12_15-02-22

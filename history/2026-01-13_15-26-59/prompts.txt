@@ -1,0 +1,169 @@
+原始提示词:
+[Global_Design_System: Space Black #0A0A0B background, Fluid Silver Chrome product texture, Neon Orange and Cyber Blue accent lighting, Hard Cinematic Lighting, Mirror reflections, HUD UI elements, Typography: Source Han Sans Heavy and Orbitron]. 9:16 vertical poster.
+**Product**: Strictly restore CYBER SHAVE features: a silver square-ish body, brushed metal circular button, and green vertical 4-bar LED indicator. 
+**Visuals**: A minimalist brand identity shot. The "CS" logo glows with neon orange aura against a dark, mechanical texture background with subtle circuit board patterns.
+**Text**: Text "[赛博品牌]" stacked above "[BRAND IDENTITY]" in Extra Bold Sans-serif, center position.
+--no collage, grid, split screen, low quality
+
+|||
+
+[Global_Design_System: Space Black #0A0A0B, Fluid Silver Chrome, Neon Orange light trails, Cinematic High Contrast]. 9:16 vertical poster.
+**Product**: Strictly restore CYBER SHAVE features. The product is floating at a 45-degree angle in the center.
+**Visuals**: The shaver is positioned in a high-speed light tunnel with perspective lines. Bright neon orange light bands streak past the chrome body, creating intense high-gloss reflections.
+**Text**: Text "[未来锋芒]" stacked above "[FUTURE EDGE]" in Orbitron typography, placed at the top.
+--no collage, grid, split screen
+
+|||
+
+[Global_Design_System: Space Black, Fluid Silver, Hard Light, Low Saturation]. 9:16 vertical poster.
+**Product**: Strictly restore CYBER SHAVE features. A hand is holding the shaver.
+**Visuals**: A masculine, sharp-jawed male model holds the silver shaver near a bathroom mirror. High contrast lighting highlights the model's facial structure and the chrome finish of the product.
+**Text**: Text "[随行所欲]" stacked above "[FREEDOM TO GO]" in Global Typography Style, placed on the left.
+--no collage, grid, split screen
+
+|||
+
+[Global_Design_System: Space Black, Blueprint Grid Lines, Cyber Blue HUD, Hard Light]. 9:16 vertical poster.
+**Product**: Strictly restore CYBER SHAVE features. Multi-angle view showing the top and side.
+**Visuals**: The shaver is presented as a technical masterpiece. Background features white and blue blueprint-style reference lines and HUD data panels.
+**Text**: Text "[双面绅士]" stacked above "[DUAL GENTLEMAN]" in Global Typography Style.
+**UI**: Semi-transparent HUD frames surrounding the product.
+--no collage, grid, split screen
+
+|||
+
+[Global_Design_System: Fluid Silver Chrome texture, Macro Lighting, Hard Light reflections]. 9:16 vertical poster.
+**Product**: Strictly restore CYBER SHAVE features. Focus on the metal casing.
+**Visuals**: Extreme macro close-up of the shaver's surface. The silver chrome appears like liquid metal ripples, merging with the product body. High-gloss mirror effect reflecting neon orange light.
+**Text**: Text "[流体银工艺]" stacked above "[FLUID SILVER CRAFT]" in Global Typography Style, floating with an indicator line.
+--no collage, grid, split screen
+
+|||
+
+[Global_Design_System: Space Black, Cyber Blue light, Macro focus, Bokeh]. 9:16 vertical poster.
+**Product**: Strictly restore CYBER SHAVE's green 4-bar vertical LED battery indicator and circular button.
+**Visuals**: Extreme macro shot of the UI area on the shaver. The green bars glow vibrantly against the dark silver metal. The background has a soft blue cybernetic blur.
+**Text**: Text "[智能数显]" stacked above "[SMART DISPLAY]" in Global Typography Style, centered.
+--no collage, grid, split screen
+
+|||
+
+[Global_Design_System: Space Black, Cyber Blue rays, Hard Light, Metallic texture]. 9:16 vertical poster.
+**Product**: Strictly restore the CYBER SHAVE dual rotary blade head system.
+**Visuals**: Close-up of the top blade heads. Blue energy rays and light streaks simulate high-speed rotation and cutting power. HUD UI circles frame the blades.
+**Text**: Text "[强劲动力]" stacked above "[9000 RPM POWER]" in Global Typography Style.
+--no collage, grid, split screen
+
+|||
+
+[Global_Design_System: Space Black, Real-world texture, Hard Light]. 9:16 vertical poster.
+**Product**: Strictly restore CYBER SHAVE features. Shown relative to a human hand.
+**Visuals**: The shaver is being tucked into the pocket of dark indigo denim jeans. The shot emphasizes its tiny, portable size compared to the hand and pocket.
+**Text**: Text "[一手掌握]" stacked above "[POCKET SIZE]" in Global Typography Style, placed at the top-left.
+--no collage, grid, split screen
+
+|||
+
+[Global_Design_System: Space Black, EDC Aesthetic, Neon Orange & Chrome Silver color chips]. 9:16 vertical poster.
+**Product**: Strictly restore CYBER SHAVE features. Placed on a matte black desk.
+**Visuals**: "Every Day Carry" (EDC) setup. The shaver is placed next to a high-end mechanical keyboard and a metal watch. CMF color swatches (Silver/Orange) are displayed on the side.
+**Text**: Text "[赛博美学]" stacked above "[CYBER AESTHETIC]" in Global Typography Style.
+--no collage, grid, split screen
+
+|||
+
+[Global_Design_System: Space Black, HUD Border, Cyber Blue data tables]. 9:16 vertical poster.
+**Product**: Strictly restore CYBER SHAVE features. Small icon view.
+**Visuals**: A clean, technical summary screen. Two semi-transparent HUD cards: the left shows technical specifications, the right shows after-sales service icons (1-year warranty, waterproof).
+**Text**: Text "[技术规格]" stacked above "[TECH SPECS]" in Global Typography Style.
+**UI**: Precise HUD thin lines and pill-shaped labels.
+--no collage, grid, split screen
+
+========================================
+
+优化后的提示词:
+[Global_Design_System: Space Black #0A0A0B background, Fluid Silver Chrome product texture, Neon Orange and Cyber Blue accent lighting, Hard Cinematic Lighting, Mirror reflections, HUD UI elements, Typography: Source Han Sans Heavy and Orbitron]. 9:16 vertical poster.
+**Product**: Strictly restore CYBER SHAVE features: a silver square-ish body, brushed metal circular button, and green vertical 4-bar LED indicator. 
+**Visuals**: A minimalist brand identity shot. The "CS" logo glows with neon orange aura against a dark, mechanical texture background with subtle circuit board patterns.
+**Text**: Text "[赛博品牌]" stacked above "[BRAND IDENTITY]" in Extra Bold Sans-serif, center position.
+--no collage, grid, split screen, low quality
+
+|||
+
+[Global_Design_System: Space Black #0A0A0B, Fluid Silver Chrome, Neon Orange light trails, Cinematic High Contrast]. 9:16 vertical poster.
+**Product**: Strictly restore CYBER SHAVE features. The product is floating at a 45-degree angle in the center.
+**Visuals**: The shaver is positioned in a high-speed light tunnel with perspective lines. Bright neon orange light bands streak past the chrome body, creating intense high-gloss reflections.
+**Text**: Text "[未来锋芒]" stacked above "[FUTURE EDGE]" in Orbitron typography, placed at the top.
+--no collage, grid, split screen
+
+|||
+
+[Global_Design_System: Space Black, Fluid Silver, Hard Light, Low Saturation]. 9:16 vertical poster.
+**Product**: Strictly restore CYBER SHAVE features. A hand is holding the shaver.
+**Visuals**: A masculine, sharp-jawed male model holds the silver shaver near a bathroom mirror. High contrast lighting highlights the model's facial structure and the chrome finish of the product.
+**Text**: Text "[随行所欲]" stacked above "[FREEDOM TO GO]" in Global Typography Style, placed on the left.
+--no collage, grid, split screen
+
+|||
+
+[Global_Design_System: Space Black, Blueprint Grid Lines, Cyber Blue HUD, Hard Light]. 9:16 vertical poster.
+**Product**: Strictly restore CYBER SHAVE features. Multi-angle view showing the top and side.
+**Visuals**: The shaver is presented as a technical masterpiece. Background features white and blue blueprint-style reference lines and HUD data panels.
+**Text**: Text "[双面绅士]" stacked above "[DUAL GENTLEMAN]" in Global Typography Style.
+**UI**: Semi-transparent HUD frames surrounding the product.
+--no collage, grid, split screen
+
+|||
+
+[Global_Design_System: Fluid Silver Chrome texture, Macro Lighting, Hard Light reflections]. 9:16 vertical poster.
+**Product**: Strictly restore CYBER SHAVE features. Focus on the metal casing.
+**Visuals**: Extreme macro close-up of the shaver's surface. The silver chrome appears like liquid metal ripples, merging with the product body. High-gloss mirror effect reflecting neon orange light.
+**Text**: Text "[流体银工艺]" stacked above "[FLUID SILVER CRAFT]" in Global Typography Style, floating with an indicator line.
+--no collage, grid, split screen
+
+|||
+
+[Global_Design_System: Space Black, Cyber Blue light, Macro focus, Bokeh]. 9:16 vertical poster.
+**Product**: Strictly restore CYBER SHAVE's green 4-bar vertical LED battery indicator and circular button.
+**Visuals**: Extreme macro shot of the UI area on the shaver. The green bars glow vibrantly against the dark silver metal. The background has a soft blue cybernetic blur.
+**Text**: Text "[智能数显]" stacked above "[SMART DISPLAY]" in Global Typography Style, centered.
+--no collage, grid, split screen
+
+|||
+
+[Global_Design_System: Space Black, Cyber Blue rays, Hard Light, Metallic texture]. 9:16 vertical poster.
+**Product**: Strictly restore the CYBER SHAVE dual rotary blade head system.
+**Visuals**: Close-up of the top blade heads. Blue energy rays and light streaks simulate high-speed rotation and cutting power. HUD UI circles frame the blades.
+**Text**: Text "[强劲动力]" stacked above "[9000 RPM POWER]" in Global Typography Style.
+--no collage, grid, split screen
+
+|||
+
+[Global_Design_System: Space Black, Real-world texture, Hard Light]. 9:16 vertical poster.
+**Product**: Strictly restore CYBER SHAVE features. Shown relative to a human hand.
+**Visuals**: The shaver is being tucked into the pocket of dark indigo denim jeans. The shot emphasizes its tiny, portable size compared to the hand and pocket.
+**Text**: Text "[一手掌握]" stacked above "[POCKET SIZE]" in Global Typography Style, placed at the top-left.
+--no collage, grid, split screen
+
+|||
+
+[Global_Design_System: Space Black, EDC Aesthetic, Neon Orange & Chrome Silver color chips]. 9:16 vertical poster.
+**Product**: Strictly restore CYBER SHAVE features. Placed on a matte black desk.
+**Visuals**: "Every Day Carry" (EDC) setup. The shaver is placed next to a high-end mechanical keyboard and a metal watch. CMF color swatches (Silver/Orange) are displayed on the side.
+**Text**: Text "[赛博美学]" stacked above "[CYBER AESTHETIC]" in Global Typography Style.
+--no collage, grid, split screen
+
+|||
+
+[Global_Design_System: Space Black, HUD Border, Cyber Blue data tables]. 9:16 vertical poster.
+**Product**: Strictly restore CYBER SHAVE features. Small icon view.
+**Visuals**: A clean, technical summary screen. Two semi-transparent HUD cards: the left shows technical specifications, the right shows after-sales service icons (1-year warranty, waterproof).
+**Text**: Text "[技术规格]" stacked above "[TECH SPECS]" in Global Typography Style.
+**UI**: Precise HUD thin lines and pill-shaped labels.
+--no collage, grid, split screen
+
+========================================
+
+模型: nano-banana-2-4k
+比例: 9:16
+时间: 2026-01-13_15-26-59

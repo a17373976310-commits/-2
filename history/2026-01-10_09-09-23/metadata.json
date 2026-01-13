@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-01-10_09-09-23",
+  "model": "nano-banana-2-2k",
+  "ratio": "1:1",
+  "nodeType": "IMAGE_GEN",
+  "hasOriginalImage": false,
+  "hasGeneratedImage": true,
+  "originalPrompt": "```json\n{\n  \"nano_banana_en\": \"Precise digital editing task: Remove all jewelry from the grey velvet mannequin bust. Specifically, eliminate the silver crystal tiara, the pair of dangling earrings, and the ornate teardrop-pendant necklace. Fill the resulting areas with the original grey velvet texture, maintaining consistent soft studio lighting and shadows on the mannequin's surface. Ensure the background couple and the blurred interior remain completely unchanged. Do not alter the physical structure of the mannequin bust itself.\",\n  \"seadream_cn\": \"高精度像素级修改任务：移除灰色丝绒模特架上的所有首饰。具体包括：顶部的银色水晶皇冠、一对耳环以及精美的泪滴形吊坠项链。移除后，使用与原图完全一致的灰色丝绒材质进行无痕填充，确保光影过渡自然，模特架表面的漫反射质感保持连贯。背景中的人物、餐桌及模糊的室内场景需严格保持锁定，不产生任何幻觉或变动。\",\n  \"layout_logic\": \"此任务属于‘消除类修改’。重点在于保持模特架（Mannequin）中轴线区域的材质一致性，通过像素克隆或生成式填充还原丝绒的细腻质感，同时避免在移除皇冠时破坏架子顶部的轮廓边缘。\"\n}\n```",
+  "optimizedPrompt": ""
+}

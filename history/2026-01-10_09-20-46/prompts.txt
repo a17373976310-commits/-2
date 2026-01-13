@@ -1,0 +1,25 @@
+原始提示词:
+```json
+{
+  "nano_banana_en": "[Visual Description]\n\"A high-end fashion photography shot featuring a beautiful European female model with elegant features. She is wearing the [Subject Lock: regal silver jewelry set consisting of an intricate tiara, teardrop earrings, and a V-shaped necklace, all adorned with pear-shaped lavender crystals and brilliant white diamonds]. The model is posed elegantly in a luxurious Christmas setting. \n[Scenario]: A warm, festive interior with a grand Christmas tree in the background, decorated with golden ornaments and soft glowing bokeh lights. \n[Lighting]: Cinematic studio lighting with warm highlights on the model's skin and crisp, sharp reflections on the jewelry's crystal facets to emphasize their brilliance.\"\n\n[Text & UI Layout]\n\"***Layout Style**: Luxury Editorial (奢侈品杂志排版).\nText Rendering Instructions (White/Gold High-Contrast Text):\n1. **Main Title**: 内容: \"皇家圣诞 / Royal Christmas\". Position: [Center Top]. Style: [Elegant Serif Typography with Gold Foil effect].\n2. **Sub Title**: 内容: \"璀璨时刻，优雅同行 / Sparkle in Elegance\". Style: [Clean Sans-serif, tracking spaced out].\n3. **Branding**: 内容: \"LIMITED EDITION\". Style: [Small minimalist text at the bottom center].\"",
+  "seadream_cn": "[Visual Description]\n\"高端珠宝时尚大片。一位气质高贵的欧洲模特完美佩戴着[Subject Lock：这套由梨形淡紫色宝石和银色底座组成的珠宝套装，包含华丽皇冠、耳坠及V型吊坠项链]。\n[场景]：室内圣诞庆典氛围。背景点缀着带有金色暖光虚化的圣诞树，营造出浪漫、奢华且温馨的节日感。\n[光影]：电影级柔光表现，精确捕捉紫色水晶的火彩折射，金属质感细腻清晰。\"\n\n[Text & UI Layout]\n\"***Layout Style**: 极简奢华画报布局。\n文字排版指令：\n1. **主标题**：内容: \"皇家圣诞\". 位置: [顶部居中]. 风格: [高定衬线体，带微弱发光质感].\n2. **副标题**：内容: \"璀璨时刻，优雅同行\". 风格: [极细现代无衬线体].\n3. **营销标签**：内容: \"圣诞限量臻选\". 风格: [位于画面底部的小字，增加品牌高级感].\"",
+  "layout_logic": "采用对角线构图，通过模特的姿态引导视觉中心落在皇冠和项链上。背景圣诞树使用大光圈虚化，确保不抢夺主体珠宝的细节。文案采用顶部悬浮排版，留足呼吸感，保持奢侈品大刊的视觉标准。"
+}
+```
+
+========================================
+
+优化后的提示词:
+```json
+{
+  "nano_banana_en": "[Visual Description]\n\"A high-end fashion photography shot featuring a beautiful European female model with elegant features. She is wearing the [Subject Lock: regal silver jewelry set consisting of an intricate tiara, teardrop earrings, and a V-shaped necklace, all adorned with pear-shaped lavender crystals and brilliant white diamonds]. The model is posed elegantly in a luxurious Christmas setting. \n[Scenario]: A warm, festive interior with a grand Christmas tree in the background, decorated with golden ornaments and soft glowing bokeh lights. \n[Lighting]: Cinematic studio lighting with warm highlights on the model's skin and crisp, sharp reflections on the jewelry's crystal facets to emphasize their brilliance.\"\n\n[Text & UI Layout]\n\"***Layout Style**: Luxury Editorial (奢侈品杂志排版).\nText Rendering Instructions (White/Gold High-Contrast Text):\n1. **Main Title**: 内容: \"皇家圣诞 / Royal Christmas\". Position: [Center Top]. Style: [Elegant Serif Typography with Gold Foil effect].\n2. **Sub Title**: 内容: \"璀璨时刻，优雅同行 / Sparkle in Elegance\". Style: [Clean Sans-serif, tracking spaced out].\n3. **Branding**: 内容: \"LIMITED EDITION\". Style: [Small minimalist text at the bottom center].\"",
+  "seadream_cn": "[Visual Description]\n\"高端珠宝时尚大片。一位气质高贵的欧洲模特完美佩戴着[Subject Lock：这套由梨形淡紫色宝石和银色底座组成的珠宝套装，包含华丽皇冠、耳坠及V型吊坠项链]。\n[场景]：室内圣诞庆典氛围。背景点缀着带有金色暖光虚化的圣诞树，营造出浪漫、奢华且温馨的节日感。\n[光影]：电影级柔光表现，精确捕捉紫色水晶的火彩折射，金属质感细腻清晰。\"\n\n[Text & UI Layout]\n\"***Layout Style**: 极简奢华画报布局。\n文字排版指令：\n1. **主标题**：内容: \"皇家圣诞\". 位置: [顶部居中]. 风格: [高定衬线体，带微弱发光质感].\n2. **副标题**：内容: \"璀璨时刻，优雅同行\". 风格: [极细现代无衬线体].\n3. **营销标签**：内容: \"圣诞限量臻选\". 风格: [位于画面底部的小字，增加品牌高级感].\"",
+  "layout_logic": "采用对角线构图，通过模特的姿态引导视觉中心落在皇冠和项链上。背景圣诞树使用大光圈虚化，确保不抢夺主体珠宝的细节。文案采用顶部悬浮排版，留足呼吸感，保持奢侈品大刊的视觉标准。"
+}
+```
+
+========================================
+
+模型: nano-banana-2-2k
+比例: 1:1
+时间: 2026-01-10_09-20-46

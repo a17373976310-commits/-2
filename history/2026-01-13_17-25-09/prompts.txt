@@ -1,0 +1,227 @@
+原始提示词:
+9:16 vertical mobile poster, single focused shot. Studio hard lighting with deep black shadows and subtle orange rim light on chrome edges. 
+**Tone**: Tech-wear industrial aesthetic, high-end gift presentation.
+**Product**: Strictly restore uploaded product features: Silver mini alloy shaver with four neon green LED battery bars and a central circular silver power button.
+**Visuals**: The silver shaver and a premium black gift box with gold "AOMX" logo are placed on a dark, coarse sand texture. Dramatic top-down lighting creates sharp shadows, emphasizing the alloy texture.
+**Layout**: Top-left aligned text container with a thin frame.
+**Text**: Text "[礼赠首选]" **in Massive Extra-Bold Font**, stacked vertically above "[PREMIUM GIFT CHOICE]" **in Small Thin Font with Wide Spacing (Tracking 200)**. Color: Orange (#FF6600).
+**UI**: HUD-style thin border around the main title.
+**Quality**: 8k, commercial photography, octane render.
+--no collage, grid, split screen, multiple angles, watermark, low quality
+
+|||
+
+9:16 vertical mobile poster, single focused shot. High-tech laboratory lighting, clean and sharp.
+**Tone**: Modular function overview, futuristic menu style.
+**Product**: Strictly restore uploaded product features: Silver mini alloy shaver with neon green LED indicators.
+**Visuals**: Six futuristic circular icons representing different features arranged in a balanced 2x3 grid around the centered product. Each icon contains a macro detail of the shaver (blade, motor, charging port).
+**Layout**: Use a HUD (Heads-Up Display) layout with thin orange crosshair lines connecting the icons.
+**Text**: Text "[型男打造计划]" **in Massive Extra-Bold Font**, stacked above "[GROOMING SYSTEM]" **in Small Thin Font with Wide Spacing**.
+**UI**: Tiny technical data readouts in the corners.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Soft studio light against a deep matte black background.
+**Tone**: Size comparison, emphasis on portability and "Mini" scale.
+**Product**: Strictly restore uploaded product features: Silver mini alloy shaver held by a male hand.
+**Visuals**: A male hand holds the silver shaver between the thumb and forefinger, showing its incredibly small size. The product appears to be floating slightly.
+**Layout**: Center-weighted composition with an orange "MINI" tag floating next to the product.
+**Text**: Text "[一手掌握]" **in Massive Extra-Bold Font**, stacked above "[ULTRA PORTABLE SIZE]" **in Small Thin Font with Wide Spacing**.
+**UI**: A pill-shaped tag with orange dot decoration containing the text "03".
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. High-contrast macro photography, orange glow emanating from the motor area.
+**Tone**: Hardcore performance, mechanical strength.
+**Product**: Strictly restore uploaded product features: Micro特写 of the shaver head with silver mesh.
+**Visuals**: Extreme close-up of the rotating shaver head. Visualized orange energy waves circle the blades to signify 35,000 RPM speed. Industrial textures are highly visible.
+**Layout**: Huge镂空 (hollow) orange number "01" in the top right corner.
+**Text**: Text "[澎湃动力]" **in Massive Extra-Bold Font**, stacked above "[35000 RPM POWER]" **in Small Thin Font with Wide Spacing**.
+**UI**: 45-degree orange diagonal decorative stripes.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Dynamic "explosion" view with motion blur.
+**Tone**: Precision engineering, magnetic interaction.
+**Product**: Strictly restore uploaded product features: Silver mini alloy shaver with the top cap detached and floating.
+**Visuals**: The magnetic cap is shown suspended in mid-air above the shaver body. Blue energy arcs suggest magnetic force.
+**Layout**: Text placed in a semi-transparent glassmorphism container at the bottom.
+**Text**: Text "[磁吸开合]" **in Massive Extra-Bold Font**, stacked above "[MAGNETIC ATTACHMENT]" **in Small Thin Font with Wide Spacing**.
+**UI**: Large orange number "02" as a background element.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Hyper-realistic micro-texture, metallic sheen.
+**Tone**: Quality craftsmanship, material focus.
+**Product**: Strictly restore uploaded product features: Silver mini alloy shaver focusing on the blade mesh.
+**Visuals**: Macro shot of the honeycomb metal mesh. Light glints off every edge of the silver alloy. The background is a gradient of deep charcoal.
+**Layout**: Vertical text on the right side, overlapping the dark areas of the image.
+**Text**: Text "[匠心品质]" **in Massive Extra-Bold Font**, stacked above "[CRAFTED PRECISION]" **in Small Thin Font with Wide Spacing**.
+**UI**: Orange crosshair UI element pointing to a mesh hole.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Low-key lighting, neon green glow.
+**Tone**: Intelligent tech, digital interface.
+**Product**: Strictly restore uploaded product features: Side view of the silver shaver highlighting the neon green LED battery bars.
+**Visuals**: The four green bars are illuminated brightly against the brushed silver body. The rest of the scene is dark to make the "Smart Display" pop.
+**Layout**: The product is angled at 45 degrees. Large orange "04" in the corner.
+**Text**: Text "[智感屏显]" **in Massive Extra-Bold Font**, stacked above "[SMART LED INTERFACE]" **in Small Thin Font with Wide Spacing**.
+**UI**: HUD scanning lines over the LED screen area.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Lifestyle photography with a cinematic teal and orange color grade.
+**Tone**: Fashionable, urban, professional use-case.
+**Product**: Strictly restore uploaded product features: Silver mini alloy shaver used by a male model.
+**Visuals**: A sharp-jawed male model in a dark tech-wear outfit is using the shaver. The background is a blurry urban night scene with neon lights.
+**Layout**: Large vertical English text "URBAN" used as a semi-transparent mask over the model.
+**Text**: Text "[职场礼仪]" **in Massive Extra-Bold Font**, stacked above "[DAILY GROOMING]" **in Small Thin Font with Wide Spacing**.
+**UI**: Pill-shaped orange button icon in the UI.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. High-speed liquid photography.
+**Tone**: Durability, waterproof performance.
+**Product**: Strictly restore uploaded product features: Silver mini alloy shaver partially submerged in water.
+**Visuals**: Crystal clear water splashes around the shaver. Droplets are frozen in mid-air. A reflection of the shaver is visible on the water surface.
+**Layout**: Center-aligned layout with text at the top.
+**Text**: Text "[全身水洗]" **in Massive Extra-Bold Font**, stacked above "[IPX7 WATERPROOF]" **in Small Thin Font with Wide Spacing**.
+**UI**: Circular dashed border around the water splash.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Semi-transparent X-ray / Technical blueprint style.
+**Tone**: Internal hardware, extreme endurance.
+**Product**: Strictly restore uploaded product features: Internal view showing the motor and battery of the silver shaver.
+**Visuals**: A "see-through" render of the shaver body showing the powerful motor and high-capacity battery cell glowing with orange energy.
+**Layout**: Massive bold orange text "75" in the background representing days of battery life.
+**Text**: Text "[超长续航]" **in Massive Extra-Bold Font**, stacked above "[75 DAYS ENDURANCE]" **in Small Thin Font with Wide Spacing**.
+**UI**: Technical data specs listed in tiny font on the left edge.
+--no collage, grid, split screen, multiple angles
+
+========================================
+
+优化后的提示词:
+9:16 vertical mobile poster, single focused shot. Studio hard lighting with deep black shadows and subtle orange rim light on chrome edges. 
+**Tone**: Tech-wear industrial aesthetic, high-end gift presentation.
+**Product**: Strictly restore uploaded product features: Silver mini alloy shaver with four neon green LED battery bars and a central circular silver power button.
+**Visuals**: The silver shaver and a premium black gift box with gold "AOMX" logo are placed on a dark, coarse sand texture. Dramatic top-down lighting creates sharp shadows, emphasizing the alloy texture.
+**Layout**: Top-left aligned text container with a thin frame.
+**Text**: Text "[礼赠首选]" **in Massive Extra-Bold Font**, stacked vertically above "[PREMIUM GIFT CHOICE]" **in Small Thin Font with Wide Spacing (Tracking 200)**. Color: Orange (#FF6600).
+**UI**: HUD-style thin border around the main title.
+**Quality**: 8k, commercial photography, octane render.
+--no collage, grid, split screen, multiple angles, watermark, low quality
+
+|||
+
+9:16 vertical mobile poster, single focused shot. High-tech laboratory lighting, clean and sharp.
+**Tone**: Modular function overview, futuristic menu style.
+**Product**: Strictly restore uploaded product features: Silver mini alloy shaver with neon green LED indicators.
+**Visuals**: Six futuristic circular icons representing different features arranged in a balanced 2x3 grid around the centered product. Each icon contains a macro detail of the shaver (blade, motor, charging port).
+**Layout**: Use a HUD (Heads-Up Display) layout with thin orange crosshair lines connecting the icons.
+**Text**: Text "[型男打造计划]" **in Massive Extra-Bold Font**, stacked above "[GROOMING SYSTEM]" **in Small Thin Font with Wide Spacing**.
+**UI**: Tiny technical data readouts in the corners.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Soft studio light against a deep matte black background.
+**Tone**: Size comparison, emphasis on portability and "Mini" scale.
+**Product**: Strictly restore uploaded product features: Silver mini alloy shaver held by a male hand.
+**Visuals**: A male hand holds the silver shaver between the thumb and forefinger, showing its incredibly small size. The product appears to be floating slightly.
+**Layout**: Center-weighted composition with an orange "MINI" tag floating next to the product.
+**Text**: Text "[一手掌握]" **in Massive Extra-Bold Font**, stacked above "[ULTRA PORTABLE SIZE]" **in Small Thin Font with Wide Spacing**.
+**UI**: A pill-shaped tag with orange dot decoration containing the text "03".
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. High-contrast macro photography, orange glow emanating from the motor area.
+**Tone**: Hardcore performance, mechanical strength.
+**Product**: Strictly restore uploaded product features: Micro特写 of the shaver head with silver mesh.
+**Visuals**: Extreme close-up of the rotating shaver head. Visualized orange energy waves circle the blades to signify 35,000 RPM speed. Industrial textures are highly visible.
+**Layout**: Huge镂空 (hollow) orange number "01" in the top right corner.
+**Text**: Text "[澎湃动力]" **in Massive Extra-Bold Font**, stacked above "[35000 RPM POWER]" **in Small Thin Font with Wide Spacing**.
+**UI**: 45-degree orange diagonal decorative stripes.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Dynamic "explosion" view with motion blur.
+**Tone**: Precision engineering, magnetic interaction.
+**Product**: Strictly restore uploaded product features: Silver mini alloy shaver with the top cap detached and floating.
+**Visuals**: The magnetic cap is shown suspended in mid-air above the shaver body. Blue energy arcs suggest magnetic force.
+**Layout**: Text placed in a semi-transparent glassmorphism container at the bottom.
+**Text**: Text "[磁吸开合]" **in Massive Extra-Bold Font**, stacked above "[MAGNETIC ATTACHMENT]" **in Small Thin Font with Wide Spacing**.
+**UI**: Large orange number "02" as a background element.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Hyper-realistic micro-texture, metallic sheen.
+**Tone**: Quality craftsmanship, material focus.
+**Product**: Strictly restore uploaded product features: Silver mini alloy shaver focusing on the blade mesh.
+**Visuals**: Macro shot of the honeycomb metal mesh. Light glints off every edge of the silver alloy. The background is a gradient of deep charcoal.
+**Layout**: Vertical text on the right side, overlapping the dark areas of the image.
+**Text**: Text "[匠心品质]" **in Massive Extra-Bold Font**, stacked above "[CRAFTED PRECISION]" **in Small Thin Font with Wide Spacing**.
+**UI**: Orange crosshair UI element pointing to a mesh hole.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Low-key lighting, neon green glow.
+**Tone**: Intelligent tech, digital interface.
+**Product**: Strictly restore uploaded product features: Side view of the silver shaver highlighting the neon green LED battery bars.
+**Visuals**: The four green bars are illuminated brightly against the brushed silver body. The rest of the scene is dark to make the "Smart Display" pop.
+**Layout**: The product is angled at 45 degrees. Large orange "04" in the corner.
+**Text**: Text "[智感屏显]" **in Massive Extra-Bold Font**, stacked above "[SMART LED INTERFACE]" **in Small Thin Font with Wide Spacing**.
+**UI**: HUD scanning lines over the LED screen area.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Lifestyle photography with a cinematic teal and orange color grade.
+**Tone**: Fashionable, urban, professional use-case.
+**Product**: Strictly restore uploaded product features: Silver mini alloy shaver used by a male model.
+**Visuals**: A sharp-jawed male model in a dark tech-wear outfit is using the shaver. The background is a blurry urban night scene with neon lights.
+**Layout**: Large vertical English text "URBAN" used as a semi-transparent mask over the model.
+**Text**: Text "[职场礼仪]" **in Massive Extra-Bold Font**, stacked above "[DAILY GROOMING]" **in Small Thin Font with Wide Spacing**.
+**UI**: Pill-shaped orange button icon in the UI.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. High-speed liquid photography.
+**Tone**: Durability, waterproof performance.
+**Product**: Strictly restore uploaded product features: Silver mini alloy shaver partially submerged in water.
+**Visuals**: Crystal clear water splashes around the shaver. Droplets are frozen in mid-air. A reflection of the shaver is visible on the water surface.
+**Layout**: Center-aligned layout with text at the top.
+**Text**: Text "[全身水洗]" **in Massive Extra-Bold Font**, stacked above "[IPX7 WATERPROOF]" **in Small Thin Font with Wide Spacing**.
+**UI**: Circular dashed border around the water splash.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Semi-transparent X-ray / Technical blueprint style.
+**Tone**: Internal hardware, extreme endurance.
+**Product**: Strictly restore uploaded product features: Internal view showing the motor and battery of the silver shaver.
+**Visuals**: A "see-through" render of the shaver body showing the powerful motor and high-capacity battery cell glowing with orange energy.
+**Layout**: Massive bold orange text "75" in the background representing days of battery life.
+**Text**: Text "[超长续航]" **in Massive Extra-Bold Font**, stacked above "[75 DAYS ENDURANCE]" **in Small Thin Font with Wide Spacing**.
+**UI**: Technical data specs listed in tiny font on the left edge.
+--no collage, grid, split screen, multiple angles
+
+========================================
+
+模型: nano-banana-2-4k
+比例: 9:16
+时间: 2026-01-13_17-25-09

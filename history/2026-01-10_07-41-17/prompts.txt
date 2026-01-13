@@ -1,0 +1,51 @@
+原始提示词:
+Based on your request, I will generate a prompt to replace the silver jewelry in Image 1 with the **Gold and Red Gemstone** set from Image 2, while maintaining the original four-panel layout and the model's poses.
+
+Here is the structured prompt optimized for this specific editing task:
+
+```json
+{
+  "nano_banana_en": "A four-panel instructional collage featuring a bride putting on a specific jewelry set. [Subject Lock]: The jewelry must be strictly replaced with a gold metal set featuring large teardrop-shaped red ruby gemstones and clear crystal accents (as seen in the reference product image). \n\nPanel 1: Close-up of hands placing the gold and red ruby crown onto the back of the bride's updo hairstyle. \nPanel 2: Side profile of the bride putting on a matching gold earring with a central red stone. \nPanel 3: Neck and chest shot showing the bride clasping the matching gold necklace with a large red teardrop pendant. \nPanel 4: Portrait of the smiling bride wearing the complete set (crown, earrings, necklace). \n\nThe lighting remains soft, warm, and romantic (bokeh background). The model's pose, the white wedding dress, and the text overlay 'Complete Your Royal Look' and the bottom steps (1. The Crown, 2. The Earrings, etc.) should remain consistent with the original layout.",
+  "seadream_cn": "保持原图四格拼图的布局和模特姿势。将模特佩戴的所有银色首饰替换为【金色金属镶嵌红宝石】的款式（基于参考图2）。\n\n1. 第一格：特写双手将一顶金底红宝石皇冠戴在原本的发髻上。\n2. 第二格：侧颜特写，模特正在佩戴一只金底红宝石耳环，保持原有动作。\n3. 第三格：颈部特写，展示脖子上佩戴的同系列金色项链，项链中心有大的水滴形红宝石吊坠。\n4. 第四格：模特正面微笑定妆照，同时佩戴红宝石皇冠、耳环和项链。\n\n严格保留原图的柔和暖色调光影、婚纱细节以及底部的文字说明（Complete Your Royal Look等）。重点在于精准还原参考图中的红色宝石和金色底托质感。",
+  "layout_logic": "This is a complex 'Inpainting' or 'Image-to-Image' task. \n1. Use Image 1 as the **Structure Reference (ControlNet Depth/Canny)** to keep the 4-panel layout and poses exact.\n2. Use Image 2 as the **IP-Adapter (Style/Content Reference)** to transfer the specific gold/red jewelry features.\n3. The prompt focuses on the material change: Silver -> Gold, Clear Stones -> Red Rubies."
+}
+```
+
+### 💡 Execution Tips (for AI Drawing Tools):
+
+*   **If using Midjourney:** Use Image 1 as an Image Prompt and use the `Vary (Region)` feature if possible to select just the jewelry areas and re-prompt with "Gold crown with red rubies," etc.
+*   **If using Stable Diffusion:**
+    *   Load Image 1 into **Inpaint**.
+    *   Mask the crown, earrings, and necklace areas.
+    *   Load Image 2 into **IP-Adapter** to force the specific jewelry style.
+    *   Use the prompt above to guide the generation.
+
+========================================
+
+优化后的提示词:
+Based on your request, I will generate a prompt to replace the silver jewelry in Image 1 with the **Gold and Red Gemstone** set from Image 2, while maintaining the original four-panel layout and the model's poses.
+
+Here is the structured prompt optimized for this specific editing task:
+
+```json
+{
+  "nano_banana_en": "A four-panel instructional collage featuring a bride putting on a specific jewelry set. [Subject Lock]: The jewelry must be strictly replaced with a gold metal set featuring large teardrop-shaped red ruby gemstones and clear crystal accents (as seen in the reference product image). \n\nPanel 1: Close-up of hands placing the gold and red ruby crown onto the back of the bride's updo hairstyle. \nPanel 2: Side profile of the bride putting on a matching gold earring with a central red stone. \nPanel 3: Neck and chest shot showing the bride clasping the matching gold necklace with a large red teardrop pendant. \nPanel 4: Portrait of the smiling bride wearing the complete set (crown, earrings, necklace). \n\nThe lighting remains soft, warm, and romantic (bokeh background). The model's pose, the white wedding dress, and the text overlay 'Complete Your Royal Look' and the bottom steps (1. The Crown, 2. The Earrings, etc.) should remain consistent with the original layout.",
+  "seadream_cn": "保持原图四格拼图的布局和模特姿势。将模特佩戴的所有银色首饰替换为【金色金属镶嵌红宝石】的款式（基于参考图2）。\n\n1. 第一格：特写双手将一顶金底红宝石皇冠戴在原本的发髻上。\n2. 第二格：侧颜特写，模特正在佩戴一只金底红宝石耳环，保持原有动作。\n3. 第三格：颈部特写，展示脖子上佩戴的同系列金色项链，项链中心有大的水滴形红宝石吊坠。\n4. 第四格：模特正面微笑定妆照，同时佩戴红宝石皇冠、耳环和项链。\n\n严格保留原图的柔和暖色调光影、婚纱细节以及底部的文字说明（Complete Your Royal Look等）。重点在于精准还原参考图中的红色宝石和金色底托质感。",
+  "layout_logic": "This is a complex 'Inpainting' or 'Image-to-Image' task. \n1. Use Image 1 as the **Structure Reference (ControlNet Depth/Canny)** to keep the 4-panel layout and poses exact.\n2. Use Image 2 as the **IP-Adapter (Style/Content Reference)** to transfer the specific gold/red jewelry features.\n3. The prompt focuses on the material change: Silver -> Gold, Clear Stones -> Red Rubies."
+}
+```
+
+### 💡 Execution Tips (for AI Drawing Tools):
+
+*   **If using Midjourney:** Use Image 1 as an Image Prompt and use the `Vary (Region)` feature if possible to select just the jewelry areas and re-prompt with "Gold crown with red rubies," etc.
+*   **If using Stable Diffusion:**
+    *   Load Image 1 into **Inpaint**.
+    *   Mask the crown, earrings, and necklace areas.
+    *   Load Image 2 into **IP-Adapter** to force the specific jewelry style.
+    *   Use the prompt above to guide the generation.
+
+========================================
+
+模型: nano-banana-2-4k
+比例: 4:3
+时间: 2026-01-10_07-41-17

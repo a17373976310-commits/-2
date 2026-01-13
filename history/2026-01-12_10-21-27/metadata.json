@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-01-12_10-21-27",
+  "model": "nano-banana-2",
+  "ratio": "3:4",
+  "nodeType": "IMAGE_GEN",
+  "hasOriginalImage": true,
+  "hasGeneratedImage": true,
+  "originalPrompt": "一个欧洲模特拿着这个剃须刀",
+  "optimizedPrompt": ""
+}

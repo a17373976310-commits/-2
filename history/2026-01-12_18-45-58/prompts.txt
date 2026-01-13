@@ -1,0 +1,25 @@
+原始提示词:
+```json
+{
+  "nano_banana_en": "Task: Image Outpainting/Expansion. Strictly lock the central subject (young woman with two-tone blonde hair, pink makeup, and grey mesh top). Extend the borders of the image using texture extrapolation logic. The background must seamlessly continue the solid pink color and the dense Y2K 'Kawaii' graffiti style, including hand-drawn doodles of characters like Kuromi, stars, hearts, and sketchy lettering. Maintain the soft, diffused commercial studio lighting and ensure the mesh texture of the clothing is naturally extended if applicable. No new complex objects or characters should be introduced in the expanded areas.",
+  "seadream_cn": "任务：图片扩图。严格锁定中心主体（金发双色染发、粉系少女妆容、灰色网眼针织衫的女性）。利用背景纹理外推技术进行画幅延伸，背景需完美衔接原有的粉色调及密集的Y2K‘辣妹风’手绘涂鸦，包含三丽鸥风格库洛米贴纸、星星、爱心及手绘字母。保持柔和的漫反射光影效果，确保扩图区域与原图色度、噪点及笔触风格高度统一。严禁在新增区域生成无关的新物体，仅进行背景样式的自然延伸。",
+  "layout_logic": "扩图逻辑：采用边缘纹理推断。重点在于维持背景中手绘涂鸦的分布密度与随机感，确保扩图后的视觉流向依然聚焦于中心人物，建议进行3:4或9:16比例的纵向及横向延展，以增强海报感。"
+}
+```
+
+========================================
+
+优化后的提示词:
+```json
+{
+  "nano_banana_en": "Task: Image Outpainting/Expansion. Strictly lock the central subject (young woman with two-tone blonde hair, pink makeup, and grey mesh top). Extend the borders of the image using texture extrapolation logic. The background must seamlessly continue the solid pink color and the dense Y2K 'Kawaii' graffiti style, including hand-drawn doodles of characters like Kuromi, stars, hearts, and sketchy lettering. Maintain the soft, diffused commercial studio lighting and ensure the mesh texture of the clothing is naturally extended if applicable. No new complex objects or characters should be introduced in the expanded areas.",
+  "seadream_cn": "任务：图片扩图。严格锁定中心主体（金发双色染发、粉系少女妆容、灰色网眼针织衫的女性）。利用背景纹理外推技术进行画幅延伸，背景需完美衔接原有的粉色调及密集的Y2K‘辣妹风’手绘涂鸦，包含三丽鸥风格库洛米贴纸、星星、爱心及手绘字母。保持柔和的漫反射光影效果，确保扩图区域与原图色度、噪点及笔触风格高度统一。严禁在新增区域生成无关的新物体，仅进行背景样式的自然延伸。",
+  "layout_logic": "扩图逻辑：采用边缘纹理推断。重点在于维持背景中手绘涂鸦的分布密度与随机感，确保扩图后的视觉流向依然聚焦于中心人物，建议进行3:4或9:16比例的纵向及横向延展，以增强海报感。"
+}
+```
+
+========================================
+
+模型: nano-banana-2-2k
+比例: 1:1
+时间: 2026-01-12_18-45-58

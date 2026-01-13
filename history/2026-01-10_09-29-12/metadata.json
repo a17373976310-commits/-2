@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-01-10_09-29-12",
+  "model": "nano-banana-2-2k",
+  "ratio": "1:1",
+  "nodeType": "IMAGE_GEN",
+  "hasOriginalImage": false,
+  "hasGeneratedImage": true,
+  "originalPrompt": "```json\n{\n  \"nano_banana_en\": \"[Visual Description]\\nA high-end lifestyle commercial photograph of an elegant European bride wearing the exact jewelry set from the reference. The [Product] (tiara, necklace, and earrings) must be strictly locked to the original design: polished yellow gold frame, vibrant emerald green teardrop gemstones, and sparkling white crystal accents. The bride is dressed in a sophisticated white lace wedding gown. \\n[Scenario]: A luxurious wedding ceremony at a grand estate or garden. In the background, an audience of guests is visible but softly blurred (bokeh effect), creating a sense of a grand occasion. \\n[Lighting]: Warm, natural sunlight with a subtle Tyndall effect, highlighting the crystalline luster of the emeralds. High-end fashion photography style.\\n\\n[Text & UI Layout]\\n***Layout Style: Lifestyle Integration (场景融合排版).\\nText Rendering Instructions:\\n1. Main Title: 内容: \\\"璀璨时刻 / Radiant Moment\\\". Style: [Elegant Gold Serif with soft glow]. Position: [Upper Right Negative Space].\\n2. Sub Title: 内容: \\\"复古宫廷系列 | Emerald Wedding Collection\\\". Style: [Clean Sans-serif, white].\",\n  \"seadream_cn\": \"[画面描述]\\n一张极具高级感的商业人像摄影。一位气质高雅的欧洲模特（新娘）正佩戴着参考图中的金绿宝石套装：皇冠、项链和耳环。必须严格还原产品的“像素指纹”：明亮的黄金镀层、深邃的祖母绿水滴形主石以及密镶的白色锆石。模特身穿蕾丝婚纱，神态从容。\\n[场景细节]：盛大的婚礼现场，背景中隐约可见观礼的嘉宾，背景经过深景深虚化处理（大光圈效果）。\\n[光影]：温暖的晨曦光线，营造出一种神圣且浪漫的氛围，宝石折射出耀眼的火彩。画面色彩丰富且通透。\\n\\n[排版与UI布局]\\n***排版风格: 杂志大片感布局.\\n文字渲染指令:\\n1. 主标题: 内容: \\\"梦中的婚礼\\\". 字体: [高级衬线体, 烫金质感]. 位置: [画面右上角留白处].\\n2. 营销文案: 内容: \\\"这一刻，唯你闪耀\\\". 风格: [极简细体, 白色].\",\n  \"layout_logic\": \"采用黄金分割构图，将模特置于画面中心略偏侧位置，确保珠宝（特别是皇冠和项链）处于视觉焦点。利用大光圈虚化背景中的观众，既交代了“婚礼现场”的叙事背景，又不会喧宾夺主，保持画面的高级质感。\"\n}\n```",
+  "optimizedPrompt": ""
+}

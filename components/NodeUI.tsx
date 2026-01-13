@@ -1,6 +1,7 @@
 
 import React, { useState, useRef, useMemo, useEffect } from 'react';
-import { NodeType, AppNode, ApiConfig, ApiProvider } from '../types';
+import { NodeType, AppNode, ApiConfig, ApiProvider, PluginCategory } from '../types';
+import { PLUGINS } from '../constants';
 import { apiService, decodeAudioData, decodeBase64 } from '../services/ApiService';
 import { logger } from '../services/loggerService';
 import { historyService } from '../services/historyService';
@@ -8,6 +9,8 @@ import { CameraControl3D } from './CameraControl3D';
 import { BatchImageGenUI } from './BatchImageGenUI';
 import { CollageWorkshopUI } from './CollageWorkshopUI';
 import { IntentParserUI } from './IntentParserUI';
+import { AIChatUI } from './AIChatUI';
+import { ImageOutpaintUI } from './ImageOutpaintUI';
 
 interface NodeUIProps {
   node: AppNode;
@@ -25,10 +28,43 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
   const [status, setStatus] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [templates, setTemplates] = useState<{ name: string; content: string }[]>([]);
+  const [hoveredImage, setHoveredImage] = useState<string | null>(null); // For copy shortcut
+  const [isUploadAreaHovered, setIsUploadAreaHovered] = useState(false); // For paste shortcut
+  const [isResizing, setIsResizing] = useState(false); // For node resize
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Node dimensions
+  const nodeWidth = node.data.width || 320; // Default w-80 = 320px
+  const minWidth = 280;
+  const maxWidth = 600;
+
+  // Resize handler
+  const handleResizeStart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsResizing(true);
+    const startX = e.clientX;
+    const startWidth = nodeWidth;
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const delta = moveEvent.clientX - startX;
+      const newWidth = Math.max(minWidth, Math.min(maxWidth, startWidth + delta));
+      onUpdate(node.id, { ...node.data, width: newWidth });
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+  };
+
   useEffect(() => {
-    if (node.type === NodeType.PROMPT_OPTIMIZER) {
+    const plugin = PLUGINS.find(p => p.type === node.type);
+    if (plugin?.category === PluginCategory.LOGIC) {
       loadTemplates();
     }
   }, [node.type]);
@@ -37,6 +73,63 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
     const data = await historyService.getTemplates();
     setTemplates(data);
   };
+
+  // Copy image to clipboard
+  const handleCopyImage = async (imageBase64: string) => {
+    try {
+      // Convert base64 to blob
+      const response = await fetch(imageBase64);
+      const blob = await response.blob();
+      await navigator.clipboard.write([
+        new ClipboardItem({ [blob.type]: blob })
+      ]);
+      logger.success('图片已复制到剪贴板');
+    } catch (err) {
+      logger.error('复制失败: ' + (err as Error).message);
+    }
+  };
+
+  // Paste image from clipboard
+  const handlePasteImage = async () => {
+    try {
+      const items = await navigator.clipboard.read();
+      for (const item of items) {
+        for (const type of item.types) {
+          if (type.startsWith('image/')) {
+            const blob = await item.getType(type);
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              const base64 = e.target?.result as string;
+              const currentImages = node.data.images || [];
+              onUpdate(node.id, { ...node.data, images: [...currentImages, base64], image: base64 });
+              logger.success('图片已粘贴');
+            };
+            reader.readAsDataURL(blob);
+            return;
+          }
+        }
+      }
+      logger.warn('剪贴板中没有图片');
+    } catch (err) {
+      logger.error('粘贴失败: ' + (err as Error).message);
+    }
+  };
+
+  // Keyboard shortcuts for copy/paste
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'c' && hoveredImage) {
+        e.preventDefault();
+        handleCopyImage(hoveredImage);
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'v' && isUploadAreaHovered) {
+        e.preventDefault();
+        handlePasteImage();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [hoveredImage, isUploadAreaHovered]);
 
   const handleSaveTemplate = async () => {
     if (!node.data.promptEngineering) return;
@@ -67,6 +160,62 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
     return allNodes.find(n => n.id === node.data.sourceNodeId);
   }, [allNodes, node.data.sourceNodeId]);
 
+  // Recursive helper to find images up the chain
+  const findInheritedImages = (nodeId: string | undefined): string[] => {
+    if (!nodeId) return [];
+    const n = allNodes.find(item => item.id === nodeId);
+    if (!n) return [];
+
+    const local = n.data.images || (n.data.image ? [n.data.image] : []);
+    if (local.length > 0) return local;
+
+    return findInheritedImages(n.data.sourceNodeId);
+  };
+
+  const inheritedImages = useMemo(() => {
+    const localImages = node.data.images || (node.data.image ? [node.data.image] : []);
+    if (localImages.length > 0) return localImages;
+    return findInheritedImages(node.data.sourceNodeId);
+  }, [node.data.images, node.data.image, node.data.sourceNodeId, allNodes]);
+
+  // Recursive helper to find outpaint ratio up the chain
+  const findInheritedRatio = (nodeId: string | undefined): { ratio: string; sourceTitle: string } | null => {
+    if (!nodeId) return null;
+    const n = allNodes.find(item => item.id === nodeId);
+    if (!n) return null;
+    if (n.type === NodeType.IMAGE_OUTPAINT) {
+      return { ratio: n.data.outpaint?.ratio || '1:1', sourceTitle: n.titleZh };
+    }
+    return findInheritedRatio(n.data.sourceNodeId);
+  };
+
+  const inheritanceInfo = useMemo(() => {
+    if (node.type === NodeType.IMAGE_GEN) {
+      return findInheritedRatio(node.data.sourceNodeId);
+    }
+    return null;
+  }, [node.data.sourceNodeId, allNodes, node.type]);
+
+  const activeRatio = useMemo(() => {
+    if (inheritanceInfo) return inheritanceInfo.ratio;
+    return node.data.ratio || '1:1';
+  }, [inheritanceInfo, node.data.ratio]);
+
+  // Recursive helper to find outpaint config up the chain
+  const findInheritedOutpaintConfig = (nodeId: string | undefined): any | null => {
+    if (!nodeId) return null;
+    const n = allNodes.find(item => item.id === nodeId);
+    if (!n) return null;
+    if (n.type === NodeType.IMAGE_OUTPAINT) {
+      return n.data.outpaint;
+    }
+    return findInheritedOutpaintConfig(n.data.sourceNodeId);
+  };
+
+  const inheritedOutpaintConfig = useMemo(() => {
+    return findInheritedOutpaintConfig(node.data.sourceNodeId);
+  }, [node.data.sourceNodeId, allNodes]);
+
   const handleRun = async () => {
     // Check if globally paused
     if (isPaused) {
@@ -78,6 +227,8 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
     setLoading(true);
     setError(null);
     setStatus('Initializing...');
+
+    const isLogicNode = PLUGINS.find(p => p.type === node.type)?.category === PluginCategory.LOGIC;
 
     const originalPrompt = node.data.prompt || '';
     let finalPrompt = originalPrompt;
@@ -100,20 +251,37 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
         throw new Error("请先配置 API 提供商");
       }
 
-      // 图像继承逻辑：如果当前节点没图，尝试从来源节点继承
-      const localImages = node.data.images || (node.data.image ? [node.data.image] : []);
-      const inheritedImages = (localImages.length === 0 && sourceNode)
-        ? (sourceNode.data.images || (sourceNode.data.image ? [sourceNode.data.image] : []))
-        : localImages;
-
       let result;
       switch (node.type) {
         case NodeType.CAMERA_3D:
-          result = node.data.prompt || 'front view eye-level shot medium shot';
-          break;
+          // Combine incoming prompt (subject) with 3D camera settings
+          // node.data.prompt is the camera setting generated by the 3D UI
+          const cameraSettings = node.data.prompt || 'front view eye-level shot medium shot';
+
+          // If finalPrompt already contains cameraSettings, don't duplicate
+          if (finalPrompt && finalPrompt.includes(cameraSettings)) {
+            result = finalPrompt;
+          } else {
+            result = finalPrompt ? `${finalPrompt}, ${cameraSettings}` : cameraSettings;
+          }
+
+          // Pass through images to help downstream nodes
+          onUpdate(node.id, { ...node.data, result, images: inheritedImages });
+          return; // Early return as we already called onUpdate
         case NodeType.IMAGE_GEN:
           setStatus('图像生成中...');
-          result = await apiService.generateImage(finalPrompt, { ratio: node.data.ratio || '1:1', model: activeModel }, provider, inheritedImages[0]);
+          if (inheritedOutpaintConfig) {
+            setStatus('正在执行智能扩图生成...');
+            result = await apiService.outpaintImage(
+              inheritedImages[0],
+              finalPrompt, // The optimized prompt should already come from the upstream outpaint node
+              inheritedOutpaintConfig,
+              provider,
+              activeModel
+            );
+          } else {
+            result = await apiService.generateImage(finalPrompt, { ratio: activeRatio, model: activeModel }, provider, inheritedImages[0]);
+          }
           break;
         case NodeType.VIDEO_GEN:
           setStatus('视频渲染中 (较慢)...');
@@ -155,6 +323,49 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
             node.data.promptEngineering
           );
           break;
+        case NodeType.IMAGE_OUTPAINT:
+          // Smart Outpaint now acts as a controller with built-in prompt optimization
+          setStatus('正在分析原图...');
+
+          const localOutpaintPrompt = node.data.outpaint?.prompt || "";
+          const basePrompt = finalPrompt ? `${finalPrompt}, ${localOutpaintPrompt}` : localOutpaintPrompt;
+
+          // Step 1: Analyze the original image and optimize the prompt using the template
+          const outpaintSystemPrompt = node.data.promptEngineering ||
+            `You are an expert at describing images for AI outpainting. Analyze the provided image and create a detailed prompt that describes the background, patterns, textures, colors, and style. Focus on elements that should be seamlessly extended. Be specific about:
+            1. Color palette and gradients
+            2. Repeating patterns and their style (e.g., cartoon stickers, geometric shapes)
+            3. Lighting and shadows
+            4. Overall mood and aesthetic
+            5. Any text or logos that should NOT be extended
+            Output ONLY the optimized prompt in English, no explanation.`;
+
+          let optimizedOutpaintPrompt = basePrompt;
+          if (inheritedImages.length > 0) {
+            try {
+              setStatus('正在优化扩图提示词...');
+              const analysisPrompt = basePrompt
+                ? `Analyze this image and optimize the following prompt for outpainting: "${basePrompt}"`
+                : `Analyze this image and create a detailed prompt for seamlessly extending its background.`;
+
+              optimizedOutpaintPrompt = await apiService.optimizePrompt(
+                analysisPrompt,
+                globalCategoryModel || 'gemini-3-flash-preview',
+                provider,
+                inheritedImages,
+                outpaintSystemPrompt
+              );
+              logger.success(`扩图提示词优化完成`);
+            } catch (err) {
+              logger.warn('提示词优化失败，使用原始提示词');
+            }
+          }
+
+          result = optimizedOutpaintPrompt;
+
+          // Pass through images and config to help downstream nodes
+          onUpdate(node.id, { ...node.data, result, images: inheritedImages });
+          return; // Early return
       }
 
       // 保存历史记录（仅图像生成类节点）
@@ -221,8 +432,10 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
   return (
     <div
       onWheel={(e) => e.stopPropagation()} // 核心修复：阻止缩放联动
-      className={`group bg-[#1e293b]/95 border-2 transition-all duration-300 rounded-3xl w-80 overflow-hidden flex flex-col shadow-2xl backdrop-blur-md cursor-auto
+      style={{ width: nodeWidth }}
+      className={`group relative bg-[#1e293b]/95 border-2 transition-all duration-300 rounded-3xl overflow-hidden flex flex-col shadow-2xl backdrop-blur-md cursor-auto
       ${loading ? 'border-blue-500 ring-4 ring-blue-500/10' : isProModel ? 'border-amber-500/30 shadow-amber-900/10 hover:border-amber-500' : 'border-slate-700 hover:border-slate-500'}
+      ${isResizing ? 'select-none' : ''}
     `}>
       {/* Header - 拖拽区 */}
       <div className={`p-4 flex justify-between items-center border-b transition-colors cursor-grab active:cursor-grabbing ${isProModel ? 'bg-amber-500/10 border-amber-500/20' : 'bg-slate-800/50 border-slate-700'}`}>
@@ -238,7 +451,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
         </button>
       </div>
 
-      <div className="p-5 space-y-5 overflow-y-auto max-h-[600px] custom-scrollbar" onMouseDown={(e) => e.stopPropagation()}>
+      <div className="p-5 space-y-5 overflow-y-auto max-h-[600px] custom-scrollbar select-text" onMouseDown={(e) => e.stopPropagation()}>
         {/* 内容区交互 */}
         <div className="space-y-3">
           <div className="flex items-center justify-between px-1">
@@ -269,65 +482,79 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
           </div>
         )}
 
-        {(node.type === NodeType.PROMPT_OPTIMIZER) && (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between px-1">
-              <label className="text-slate-500 text-[8px] uppercase font-black tracking-widest">提示词工程模板</label>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => {
-                    const input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = '.txt,.md';
-                    input.onchange = (e: any) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        const reader = new FileReader();
-                        reader.onload = (re) => onUpdate(node.id, { ...node.data, promptEngineering: re.target?.result });
-                        reader.readAsText(file);
-                      }
-                    };
-                    input.click();
-                  }}
-                  className="text-[7px] bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 px-2 py-1 rounded-md border border-blue-500/20 transition-all uppercase font-bold"
-                >
-                  上传
-                </button>
-                <button
-                  onClick={handleSaveTemplate}
-                  className="text-[7px] bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-md border border-emerald-500/20 transition-all uppercase font-bold"
-                >
-                  保存
-                </button>
+        {(() => {
+          const plugin = PLUGINS.find(p => p.type === node.type);
+          const isLogic = plugin?.category === PluginCategory.LOGIC;
+          if (!isLogic) return null;
+
+          return (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between px-1">
+                <label className="text-slate-500 text-[8px] uppercase font-black tracking-widest">提示词工程模板</label>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      const input = document.createElement('input');
+                      input.type = 'file';
+                      input.accept = '.txt,.md';
+                      input.onchange = (e: any) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onload = (re) => onUpdate(node.id, { ...node.data, promptEngineering: re.target?.result });
+                          reader.readAsText(file);
+                        }
+                      };
+                      input.click();
+                    }}
+                    className="text-[7px] bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 px-2 py-1 rounded-md border border-blue-500/20 transition-all uppercase font-bold"
+                  >
+                    上传
+                  </button>
+                  <button
+                    onClick={handleSaveTemplate}
+                    className="text-[7px] bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-md border border-emerald-500/20 transition-all uppercase font-bold"
+                  >
+                    保存
+                  </button>
+                  {node.data.promptEngineering && (
+                    <button
+                      onClick={() => onUpdate(node.id, { ...node.data, promptEngineering: '' })}
+                      className="text-[7px] bg-red-500/10 hover:bg-red-500/20 text-red-400 px-2 py-1 rounded-md border border-red-500/20 transition-all uppercase font-bold"
+                    >
+                      清空
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
 
-            <div className="space-y-1.5">
-              <select
-                className="w-full bg-slate-900 border border-slate-700/50 rounded-xl px-3 py-2 text-[10px] text-slate-300 font-bold focus:outline-none focus:ring-1 focus:ring-blue-500/50 appearance-none cursor-pointer"
-                onChange={(e) => {
-                  const selected = templates.find(t => t.name === e.target.value);
-                  if (selected) {
-                    onUpdate(node.id, { ...node.data, promptEngineering: selected.content });
-                  }
-                }}
-                value=""
-              >
-                <option value="" disabled>选择已保存模板...</option>
-                {templates.map(t => (
-                  <option key={t.name} value={t.name}>{t.name}</option>
-                ))}
-              </select>
-            </div>
+              <div className="space-y-1.5">
+                <select
+                  className="w-full bg-slate-900 border border-slate-700/50 rounded-xl px-3 py-2 text-[10px] text-slate-300 font-bold focus:outline-none focus:ring-1 focus:ring-blue-500/50 appearance-none cursor-pointer"
+                  onChange={(e) => {
+                    const selected = templates.find(t => t.name === e.target.value);
+                    if (selected) {
+                      onUpdate(node.id, { ...node.data, promptEngineering: selected.content });
+                    }
+                  }}
+                  value=""
+                >
+                  <option value="" disabled>选择已保存模板...</option>
+                  {templates.map(t => (
+                    <option key={t.name} value={t.name}>{t.name}</option>
+                  ))}
+                </select>
+              </div>
 
-            <textarea
-              className="w-full bg-slate-950/50 border border-slate-700/30 rounded-xl p-3 text-slate-400 text-[10px] focus:outline-none focus:ring-1 focus:ring-blue-500/30 min-h-[120px] transition-all resize-none font-mono"
-              placeholder="输入自定义优化指令（System Prompt）... 如果为空则使用默认逻辑。"
-              value={node.data.promptEngineering || ''}
-              onChange={(e) => onUpdate(node.id, { ...node.data, promptEngineering: e.target.value })}
-            />
-          </div>
-        )}
+              <textarea
+                className="w-full bg-slate-950/50 border border-slate-700/30 rounded-xl p-3 text-slate-400 text-[10px] focus:outline-none focus:ring-1 focus:ring-blue-500/30 min-h-[120px] transition-all resize-none font-mono"
+                placeholder="输入自定义优化指令（System Prompt）... 如果为空则使用默认逻辑。"
+                value={node.data.promptEngineering || ''}
+                onChange={(e) => onUpdate(node.id, { ...node.data, promptEngineering: e.target.value })}
+              />
+            </div>
+          );
+        })()}
 
         {(node.type !== NodeType.AUDIO_LIVE) && (
           <div className="space-y-1.5">
@@ -346,13 +573,21 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
 
         {(node.type === NodeType.IMAGE_GEN) && (
           <div className="flex-1 space-y-1">
-            <label className="text-slate-500 text-[8px] uppercase font-black tracking-widest px-1">比例</label>
+            <label className="text-slate-500 text-[8px] uppercase font-black tracking-widest px-1 flex justify-between">
+              <span>比例</span>
+              {inheritanceInfo && (
+                <span className="text-blue-500 italic lowercase opacity-80">
+                  (已从 {inheritanceInfo.sourceTitle} 继承)
+                </span>
+              )}
+            </label>
             <select
-              className="w-full bg-slate-900 border border-slate-700/50 rounded-xl p-2 text-slate-300 text-[10px] font-bold cursor-pointer"
-              value={node.data.ratio || '1:1'}
+              disabled={!!inheritanceInfo}
+              className={`w-full bg-slate-900 border border-slate-700/50 rounded-xl p-2 text-slate-300 text-[10px] font-bold cursor-pointer ${inheritanceInfo ? 'opacity-60 cursor-not-allowed' : ''}`}
+              value={activeRatio}
               onChange={(e) => onUpdate(node.id, { ...node.data, ratio: e.target.value })}
             >
-              {['1:1', '3:4', '4:3', '9:16', '16:9'].map(r => <option key={r} value={r}>{r}</option>)}
+              {['1:1', '3:4', '4:3', '9:16', '16:9', '21:9'].map(r => <option key={r} value={r}>{r}</option>)}
             </select>
           </div>
         )}
@@ -375,7 +610,19 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
                   prompt: val.prompt
                 });
               }}
-              imageUrl={sourceNode?.data.result || sourceNode?.data.image}
+              imageUrl={inheritedImages[0]}
+            />
+          </div>
+        )}
+
+        {node.type === NodeType.IMAGE_OUTPAINT && (
+          <div className="space-y-3">
+            <label className="text-slate-500 text-[8px] uppercase font-black tracking-widest px-1 block">扩图范围设定</label>
+            <ImageOutpaintUI
+              node={node}
+              onUpdate={onUpdate}
+              imageUrl={inheritedImages[0]}
+              activeModel={activeModel}
             />
           </div>
         )}
@@ -407,10 +654,22 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
             onUpdate={onUpdate}
             apiConfig={apiConfig}
             isPaused={isPaused}
+            globalCategoryModel={globalCategoryModel}
           />
         )}
 
-        {(node.type === NodeType.IMAGE_EDIT || node.type === NodeType.IMAGE_ANALYSIS || node.type === NodeType.PROMPT_OPTIMIZER || node.type === NodeType.IMAGE_GEN) && (() => {
+        {node.type === NodeType.AI_CHAT && (
+          <AIChatUI
+            node={node}
+            allNodes={allNodes}
+            onUpdate={onUpdate}
+            apiConfig={apiConfig}
+            isPaused={isPaused}
+            globalCategoryModel={globalCategoryModel}
+          />
+        )}
+
+        {(node.type === NodeType.IMAGE_EDIT || node.type === NodeType.IMAGE_ANALYSIS || node.type === NodeType.PROMPT_OPTIMIZER || node.type === NodeType.IMAGE_GEN || node.type === NodeType.IMAGE_OUTPAINT) && (() => {
           const localImages = node.data.images || (node.data.image ? [node.data.image] : []);
           const hasLocal = localImages.length > 0;
           const sourceImages = sourceNode ? (sourceNode.data.images || (sourceNode.data.image ? [sourceNode.data.image] : [])) : [];
@@ -435,20 +694,37 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
               </div>
               <div
                 onClick={() => fileInputRef.current?.click()}
+                onMouseEnter={() => setIsUploadAreaHovered(true)}
+                onMouseLeave={() => setIsUploadAreaHovered(false)}
                 className={`group/upload relative border-2 border-dashed rounded-2xl p-2 flex flex-col items-center justify-center cursor-pointer transition-all overflow-hidden min-h-[120px]
                   ${isInherited ? 'border-blue-500/30 bg-blue-500/5' : 'border-slate-700 bg-slate-900/30 hover:border-blue-500/50 hover:bg-blue-500/5'}
+                  ${isUploadAreaHovered ? 'ring-2 ring-emerald-500/30' : ''}
                 `}
               >
                 {displayImages.length > 0 ? (
                   <div className="w-full flex gap-2 overflow-x-auto py-1 no-scrollbar" onClick={(e) => e.stopPropagation()}>
                     {displayImages.map((img: string, idx: number) => (
-                      <div key={idx} className="relative shrink-0 w-24 h-24 group/img">
+                      <div key={idx} className="relative shrink-0 w-24 h-24 group/img"
+                        onMouseEnter={() => setHoveredImage(img)}
+                        onMouseLeave={() => setHoveredImage(null)}
+                      >
                         <img
                           src={img}
                           alt={`Input ${idx}`}
                           className={`w-full h-full object-cover rounded-xl cursor-zoom-in hover:opacity-80 transition-opacity ${isInherited ? 'ring-2 ring-blue-500/20' : ''}`}
                           onClick={() => onImageClick(img)}
                         />
+                        {/* Copy button */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCopyImage(img);
+                          }}
+                          className="absolute top-1 left-1 bg-blue-500 text-white rounded-full p-1 opacity-0 group-hover/img:opacity-100 transition-opacity shadow-lg"
+                          title="复制图片 (Ctrl+C)"
+                        >
+                          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        </button>
                         {hasLocal && (
                           <button
                             onClick={(e) => {
@@ -463,11 +739,10 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
                         )}
                       </div>
                     ))}
-                    {!isInherited && (
-                      <div className="shrink-0 w-24 h-24 border-2 border-dashed border-slate-700 rounded-xl flex items-center justify-center text-slate-500 hover:border-blue-500/50 hover:text-blue-400 transition-all" onClick={() => fileInputRef.current?.click()}>
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-                      </div>
-                    )}
+                    {/* Always show add button, even when inheriting */}
+                    <div className="shrink-0 w-24 h-24 border-2 border-dashed border-slate-700 rounded-xl flex items-center justify-center text-slate-500 hover:border-blue-500/50 hover:text-blue-400 transition-all" onClick={() => fileInputRef.current?.click()}>
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                    </div>
                   </div>
                 ) : (
                   <div className="flex flex-col items-center gap-2 py-4">
@@ -475,6 +750,15 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                     </div>
                     <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">上传素材 (支持多选)</span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePasteImage();
+                      }}
+                      className="text-[8px] bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 px-2 py-1 rounded-md border border-emerald-500/30 transition-all uppercase font-bold"
+                    >
+                      粘贴图片 (Ctrl+V)
+                    </button>
                   </div>
                 )}
               </div>
@@ -490,7 +774,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
             ${loading ? 'bg-slate-700 text-slate-500' : isProModel ? 'bg-gradient-to-br from-amber-500 to-orange-600 text-white' : 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white'}
           `}
         >
-          {loading ? '处理中...' : (node.type === NodeType.PROMPT_OPTIMIZER ? '优化提示词' : '开始执行')}
+          {loading ? '处理中...' : (node.type === NodeType.PROMPT_OPTIMIZER ? '优化提示词' : node.type === NodeType.IMAGE_OUTPAINT ? '确认构图' : '开始执行')}
           {loading && status && <div className="absolute bottom-1 left-0 right-0 text-[7px] text-center opacity-60 animate-pulse">{status}</div>}
         </button>
 
@@ -546,6 +830,17 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
             </div>
           </div>
         )}
+      </div>
+
+      {/* Resize Handle */}
+      <div
+        onMouseDown={handleResizeStart}
+        className="absolute bottom-0 right-0 w-4 h-4 cursor-se-resize opacity-0 group-hover:opacity-100 transition-opacity"
+        title="拖动调整大小"
+      >
+        <svg className="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M22 22H20V20H22V22ZM22 18H20V16H22V18ZM18 22H16V20H18V22ZM22 14H20V12H22V14ZM18 18H16V16H18V18ZM14 22H12V20H14V22ZM18 14H16V12H18V14ZM14 18H12V16H14V18ZM10 22H8V20H10V22Z" />
+        </svg>
       </div>
     </div>
   );

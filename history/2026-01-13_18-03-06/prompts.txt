@@ -1,0 +1,169 @@
+原始提示词:
+9:16 vertical mobile poster, single focused shot. Soft morning side light with matte textures.
+**Product**: Strictly restore uploaded product features: Matte white cylindrical base, analog rotary timer knob, natural stackable bamboo wood steamers. (Ignore reference product shape).
+**Tone**: Hero shot, Sage green and creamy white brand palette, warm and healing atmosphere.
+**Visuals**: Product placed on a light-colored wooden dining table, surrounded by a glass of milk and green plants, soft shadows.
+**Text**: Text "元气早餐" stacked vertically above "MORNING ENERGY" in bold sans-serif, Sage Green.
+**UI**: Floating white super-ellipse card with micro-shadow and NO.01 pill label.
+**Quality**: 8k, commercial photography, octane render.
+--no collage, grid, split screen, multiple angles, watermark, low quality, deformation, wrong product shape
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Soft morning side light with matte textures.
+**Product**: Strictly restore uploaded product features: Matte white cylindrical base, analog rotary timer knob, natural stackable bamboo wood steamers. (Keep identical to Screen 1).
+**Tone**: Pain point/Efficiency logic, warm beige background, slightly blurred morning kitchen scene.
+**Visuals**: Close-up of steam rising from the bamboo layers, glowing indicator light on the base, steaming buns visible inside.
+**Text**: Text "15分钟" stacked vertically above "EFFICIENT STEAM" in bold sans-serif, Sage Green.
+**UI**: Glassmorphism card showing a "Time Saved" icon in a pill shape.
+**Quality**: 8k, commercial photography, realistic steam.
+--no collage, grid, split screen, multiple angles, deformation
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Soft morning side light with matte textures.
+**Product**: Strictly restore uploaded product features: Matte white cylindrical base, analog rotary timer knob, natural stackable bamboo wood steamers.
+**Tone**: Flexibility logic, top-down 45-degree angle, Sage green accents.
+**Visuals**: Multiple bamboo layers stacked differently, showing eggs in one layer and corn/sweet potatoes in another, organized layout.
+**Text**: Text "百变组合" stacked above "FLEXIBLE LAYERS" in bold sans-serif.
+**UI**: Three small super-ellipse cards at the bottom showing different food icons.
+--no collage, grid, split screen, multiple angles, deformation
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Soft morning side light with matte textures.
+**Product**: Strictly restore uploaded product features: Matte white cylindrical base, analog rotary timer knob, natural stackable bamboo wood steamers.
+**Tone**: Space management logic, pure creamy white background with minimalist aesthetic.
+**Visuals**: Product shown from a side profile to emphasize its compact cylindrical footprint on a kitchen counter.
+**Text**: Text "收纳友好" stacked above "COMPACT DESIGN" in bold sans-serif.
+**UI**: Linear style icons showing dimension arrows around the product.
+--no collage, grid, split screen, multiple angles, deformation
+
+|||
+
+9:16 vertical mobile poster, single focused shot. High-definition macro photography.
+**Product**: Strictly restore uploaded product features: Matte white cylindrical base, analog rotary timer knob, natural stackable bamboo wood steamers.
+**Tone**: Safety/Trust logic, bright and clean lighting.
+**Visuals**: Close-up of the natural bamboo grain and the interior stainless steel plate, clean and hygienic texture.
+**Text**: Text "原木安全" stacked above "NATURAL SAFETY" in bold sans-serif.
+**UI**: A small shield icon inside a pill label container.
+--no collage, grid, split screen, multiple angles, deformation
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Technical visualization.
+**Product**: Strictly restore uploaded product features: Matte white cylindrical base, analog rotary timer knob, natural stackable bamboo wood steamers.
+**Tone**: Performance logic, 3D render style with Sage green light paths.
+**Visuals**: Semi-transparent view showing 360-degree steam circulation arrows rising from the base through the bamboo layers.
+**Text**: Text "立体蒸汽" stacked above "3D STEAM CYCLE" in bold sans-serif.
+**UI**: Technical data callouts with thin lines and small text.
+--no collage, grid, split screen, multiple angles, deformation
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Soft morning side light.
+**Product**: Strictly restore uploaded product features: Matte white cylindrical base, analog rotary timer knob, natural stackable bamboo wood steamers.
+**Tone**: Detail/Quality logic, close-up focus.
+**Visuals**: Extreme close-up of the analog rotary knob with tactile markings and the smooth matte finish of the base.
+**Text**: Text "精湛细节" stacked above "REFINED DETAILS" in bold sans-serif.
+**UI**: Floating super-ellipse card with a soft drop shadow.
+--no collage, grid, split screen, multiple angles, deformation
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Minimalist studio lighting.
+**Product**: Strictly restore uploaded product features: Matte white cylindrical base, analog rotary timer knob, natural stackable bamboo wood steamers.
+**Tone**: Specifications logic, clean white background.
+**Visuals**: Product centered with clean thin-line dimension markers (height/width) in Sage Green.
+**Text**: Text "规格参数" stacked above "SPECIFICATIONS" in bold sans-serif.
+**UI**: Structured data list inside a large super-ellipse container with low opacity.
+--no collage, grid, split screen, multiple angles, deformation
+
+========================================
+
+优化后的提示词:
+9:16 vertical mobile poster, single focused shot. Soft morning side light with matte textures.
+**Product**: Strictly restore uploaded product features: Matte white cylindrical base, analog rotary timer knob, natural stackable bamboo wood steamers. (Ignore reference product shape).
+**Tone**: Hero shot, Sage green and creamy white brand palette, warm and healing atmosphere.
+**Visuals**: Product placed on a light-colored wooden dining table, surrounded by a glass of milk and green plants, soft shadows.
+**Text**: Text "元气早餐" stacked vertically above "MORNING ENERGY" in bold sans-serif, Sage Green.
+**UI**: Floating white super-ellipse card with micro-shadow and NO.01 pill label.
+**Quality**: 8k, commercial photography, octane render.
+--no collage, grid, split screen, multiple angles, watermark, low quality, deformation, wrong product shape
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Soft morning side light with matte textures.
+**Product**: Strictly restore uploaded product features: Matte white cylindrical base, analog rotary timer knob, natural stackable bamboo wood steamers. (Keep identical to Screen 1).
+**Tone**: Pain point/Efficiency logic, warm beige background, slightly blurred morning kitchen scene.
+**Visuals**: Close-up of steam rising from the bamboo layers, glowing indicator light on the base, steaming buns visible inside.
+**Text**: Text "15分钟" stacked vertically above "EFFICIENT STEAM" in bold sans-serif, Sage Green.
+**UI**: Glassmorphism card showing a "Time Saved" icon in a pill shape.
+**Quality**: 8k, commercial photography, realistic steam.
+--no collage, grid, split screen, multiple angles, deformation
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Soft morning side light with matte textures.
+**Product**: Strictly restore uploaded product features: Matte white cylindrical base, analog rotary timer knob, natural stackable bamboo wood steamers.
+**Tone**: Flexibility logic, top-down 45-degree angle, Sage green accents.
+**Visuals**: Multiple bamboo layers stacked differently, showing eggs in one layer and corn/sweet potatoes in another, organized layout.
+**Text**: Text "百变组合" stacked above "FLEXIBLE LAYERS" in bold sans-serif.
+**UI**: Three small super-ellipse cards at the bottom showing different food icons.
+--no collage, grid, split screen, multiple angles, deformation
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Soft morning side light with matte textures.
+**Product**: Strictly restore uploaded product features: Matte white cylindrical base, analog rotary timer knob, natural stackable bamboo wood steamers.
+**Tone**: Space management logic, pure creamy white background with minimalist aesthetic.
+**Visuals**: Product shown from a side profile to emphasize its compact cylindrical footprint on a kitchen counter.
+**Text**: Text "收纳友好" stacked above "COMPACT DESIGN" in bold sans-serif.
+**UI**: Linear style icons showing dimension arrows around the product.
+--no collage, grid, split screen, multiple angles, deformation
+
+|||
+
+9:16 vertical mobile poster, single focused shot. High-definition macro photography.
+**Product**: Strictly restore uploaded product features: Matte white cylindrical base, analog rotary timer knob, natural stackable bamboo wood steamers.
+**Tone**: Safety/Trust logic, bright and clean lighting.
+**Visuals**: Close-up of the natural bamboo grain and the interior stainless steel plate, clean and hygienic texture.
+**Text**: Text "原木安全" stacked above "NATURAL SAFETY" in bold sans-serif.
+**UI**: A small shield icon inside a pill label container.
+--no collage, grid, split screen, multiple angles, deformation
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Technical visualization.
+**Product**: Strictly restore uploaded product features: Matte white cylindrical base, analog rotary timer knob, natural stackable bamboo wood steamers.
+**Tone**: Performance logic, 3D render style with Sage green light paths.
+**Visuals**: Semi-transparent view showing 360-degree steam circulation arrows rising from the base through the bamboo layers.
+**Text**: Text "立体蒸汽" stacked above "3D STEAM CYCLE" in bold sans-serif.
+**UI**: Technical data callouts with thin lines and small text.
+--no collage, grid, split screen, multiple angles, deformation
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Soft morning side light.
+**Product**: Strictly restore uploaded product features: Matte white cylindrical base, analog rotary timer knob, natural stackable bamboo wood steamers.
+**Tone**: Detail/Quality logic, close-up focus.
+**Visuals**: Extreme close-up of the analog rotary knob with tactile markings and the smooth matte finish of the base.
+**Text**: Text "精湛细节" stacked above "REFINED DETAILS" in bold sans-serif.
+**UI**: Floating super-ellipse card with a soft drop shadow.
+--no collage, grid, split screen, multiple angles, deformation
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Minimalist studio lighting.
+**Product**: Strictly restore uploaded product features: Matte white cylindrical base, analog rotary timer knob, natural stackable bamboo wood steamers.
+**Tone**: Specifications logic, clean white background.
+**Visuals**: Product centered with clean thin-line dimension markers (height/width) in Sage Green.
+**Text**: Text "规格参数" stacked above "SPECIFICATIONS" in bold sans-serif.
+**UI**: Structured data list inside a large super-ellipse container with low opacity.
+--no collage, grid, split screen, multiple angles, deformation
+
+========================================
+
+模型: nano-banana-2-4k
+比例: 9:16
+时间: 2026-01-13_18-03-06

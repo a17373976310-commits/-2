@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-01-12_10-15-59",
+  "model": "nano-banana-2",
+  "ratio": "3:4",
+  "nodeType": "IMAGE_GEN",
+  "hasOriginalImage": false,
+  "hasGeneratedImage": true,
+  "originalPrompt": "一个女孩",
+  "optimizedPrompt": ""
+}

@@ -1,0 +1,25 @@
+原始提示词:
+```json
+{
+  "nano_banana_en": "[Visual Description]\nHigh-end fashion photography of a graceful European model with elegant features, wearing the exact [Subject Lock] jewelry set: a silver crystal crown with intricate scrollwork, a V-shaped statement necklace with a pear-cut faceted drop, and matching chandelier earrings. The jewelry must maintain its precise 3D geometry and brilliant light refraction from the reference image. The model is in a professional portrait pose, with soft-glam makeup and styled hair that complements the tiara. \n[Background]: Minimalist solid beige studio background, clean and premium.\n[Lighting]: High-key commercial studio lighting with specific spot highlights on the crystals to create a 'starburst' sparkle effect.\n\n[Text & UI Layout]\n***Layout Style: Luxury Editorial (奢华杂志排版).\nText Rendering Instructions:\n1. **Main Title**: 内容: \"PURE RADIANCE\". Position: [Top Center]. Style: [Elegant thin Serif, tracking spaced out]. Color: [Deep Bronze].\n2. **Sub Title**: 内容: \"永恒璀璨，于此刻绽放\". Style: [Vertical layout on the right, minimalist Sans-serif].\n3. **Branding**: 内容: \"LUXURY COLLECTION\". Style: [Small subtle text at bottom center].",
+  "seadream_cn": "[Visual Description]\n一张顶级珠宝时尚大片。一位气质高贵的欧洲模特完美佩戴参考图中的【银色水钻珠宝三件套】：包括那顶具有复杂卷草纹饰的皇冠、V字形大坠口项链以及配套的耳坠。必须严格复刻珠宝的物理结构和切面质感，确保每一颗水钻的火彩与原图一致。模特呈现专业的半身人像姿态，神情优雅。背景为纯净的商业米色墙面，具有高级的细腻肌理感。光影采用影棚柔光箱配合局部硬光，捕捉珠宝转动时的璀璨瞬间。\n\n[Text & UI Layout]\n***Layout Style: Minimalist Boutique (极简精品风).\nText Rendering Instructions:\n1. **主标题**: 内容: \"纯粹闪耀\". Position: [中上部留白处]. Style: [高级感纤细衬线体]. \n2. **副标题**: 内容: \"Elegance in Every Detail\". Style: [英文斜体，位于中文下方].\n3. **营销短句**: 内容: \"专业级工艺，定义奢华\". Style: [左下角极简线性排版].",
+  "layout_logic": "采用‘黄金分割’构图，将模特焦点与珠宝光影置于中心，利用米色背景带来的大面积留白进行呼吸感排版。文字使用‘跨层级对比’，即极大的标题文字与极小的辅助信息形成视觉冲击力，强化高端奢侈品定位。"
+}
+```
+
+========================================
+
+优化后的提示词:
+```json
+{
+  "nano_banana_en": "[Visual Description]\nHigh-end fashion photography of a graceful European model with elegant features, wearing the exact [Subject Lock] jewelry set: a silver crystal crown with intricate scrollwork, a V-shaped statement necklace with a pear-cut faceted drop, and matching chandelier earrings. The jewelry must maintain its precise 3D geometry and brilliant light refraction from the reference image. The model is in a professional portrait pose, with soft-glam makeup and styled hair that complements the tiara. \n[Background]: Minimalist solid beige studio background, clean and premium.\n[Lighting]: High-key commercial studio lighting with specific spot highlights on the crystals to create a 'starburst' sparkle effect.\n\n[Text & UI Layout]\n***Layout Style: Luxury Editorial (奢华杂志排版).\nText Rendering Instructions:\n1. **Main Title**: 内容: \"PURE RADIANCE\". Position: [Top Center]. Style: [Elegant thin Serif, tracking spaced out]. Color: [Deep Bronze].\n2. **Sub Title**: 内容: \"永恒璀璨，于此刻绽放\". Style: [Vertical layout on the right, minimalist Sans-serif].\n3. **Branding**: 内容: \"LUXURY COLLECTION\". Style: [Small subtle text at bottom center].",
+  "seadream_cn": "[Visual Description]\n一张顶级珠宝时尚大片。一位气质高贵的欧洲模特完美佩戴参考图中的【银色水钻珠宝三件套】：包括那顶具有复杂卷草纹饰的皇冠、V字形大坠口项链以及配套的耳坠。必须严格复刻珠宝的物理结构和切面质感，确保每一颗水钻的火彩与原图一致。模特呈现专业的半身人像姿态，神情优雅。背景为纯净的商业米色墙面，具有高级的细腻肌理感。光影采用影棚柔光箱配合局部硬光，捕捉珠宝转动时的璀璨瞬间。\n\n[Text & UI Layout]\n***Layout Style: Minimalist Boutique (极简精品风).\nText Rendering Instructions:\n1. **主标题**: 内容: \"纯粹闪耀\". Position: [中上部留白处]. Style: [高级感纤细衬线体]. \n2. **副标题**: 内容: \"Elegance in Every Detail\". Style: [英文斜体，位于中文下方].\n3. **营销短句**: 内容: \"专业级工艺，定义奢华\". Style: [左下角极简线性排版].",
+  "layout_logic": "采用‘黄金分割’构图，将模特焦点与珠宝光影置于中心，利用米色背景带来的大面积留白进行呼吸感排版。文字使用‘跨层级对比’，即极大的标题文字与极小的辅助信息形成视觉冲击力，强化高端奢侈品定位。"
+}
+```
+
+========================================
+
+模型: nano-banana-2-2k
+比例: 3:4
+时间: 2026-01-10_09-52-17

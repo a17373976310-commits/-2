@@ -1,0 +1,25 @@
+原始提示词:
+```json
+{
+  "nano_banana_en": "[Visual Description]\nA 4-panel commercial sequence for a bridal jewelry brand. The original silver diamond jewelry is replaced by the gold and red ruby set from the second reference image. \n1. Panel 1: Focus on the crown being placed on the model's bun; the crown is now gold with large teardrop red rubies and alternating red/clear crystals. \n2. Panel 2: Close-up of model putting on a matching gold drop earring with a central red ruby. \n3. Panel 3: Close-up of the V-shaped gold necklace on the neckline, featuring a large red teardrop pendant and the specific alternating red and white crystal pattern along the collar. \n4. Panel 4: Final portrait of the smiling model wearing the full gold and red jewelry set. \nLighting is warm and cinematic, reflecting off the gold metal and red facets.\n\n[Text & UI Layout]\n***Layout Style**: Original 4-Panel Collage (保留原图四宫格布局).\nText Rendering Instructions:\n1. Keep the original header text 'Complete Your Royal Look' in its elegant serif font.\n2. Keep the bottom labels '1. The Crown', '2. The Earrings', '3. The Necklace', '4. Perfection' and the grey arrows.\n3. Product Lock: Strictly replicate the gold base and the specific 'Red-Clear-Red' crystal spacing from the reference product image into all four panels.",
+  "seadream_cn": "[Visual Description]\n这是一组四宫格电商视觉图，任务是将图一中所有的银色钻饰精确替换为图二中的金红珠宝套装。\n1. 第一帧：手部正将皇冠戴在模特发髻上，皇冠材质改为金色，镶嵌巨大的水滴形红宝石。\n2. 第二帧：侧脸近景，模特正在佩戴金色的红宝石耳坠，细节需体现图二中的红白碎钻间隔。\n3. 第三帧：颈部特写，展示金色V型项链，主石为红宝石，链身严格遵循图二红钻与透明钻交替的排布规律。\n4. 第四帧：正面半身像，展示模特全套佩戴后的效果。背景保持原有的朦胧光斑，色调转为温暖的金红色系以匹配首饰。\n\n[Text & UI Layout]\n***Layout Style**: 保持原图四宫格排版 (Original 4-panel sequence).\n文字渲染指令：\n1. 顶部标题保留: 'Complete Your Royal Look'。\n2. 底部步骤说明保留: '1. The Crown', '2. The Earrings', '3. The Necklace', '4. Perfection' 以及灰色箭头引导。\n3. 细节锁定：确保红宝石的饱和度和金属的黄金质感在四个画面中高度统一，完美贴合原图模特的身体结构与光影。",
+  "layout_logic": "采用‘精准像素替换’逻辑。保持原有的四段式构图（发型-耳饰-项链-全貌），仅针对饰品区域进行局部重绘，确保金色的金属反光与原图的暖色调背景自然融合，红宝石的折射光需与环境光方向一致。"
+}
+```
+
+========================================
+
+优化后的提示词:
+```json
+{
+  "nano_banana_en": "[Visual Description]\nA 4-panel commercial sequence for a bridal jewelry brand. The original silver diamond jewelry is replaced by the gold and red ruby set from the second reference image. \n1. Panel 1: Focus on the crown being placed on the model's bun; the crown is now gold with large teardrop red rubies and alternating red/clear crystals. \n2. Panel 2: Close-up of model putting on a matching gold drop earring with a central red ruby. \n3. Panel 3: Close-up of the V-shaped gold necklace on the neckline, featuring a large red teardrop pendant and the specific alternating red and white crystal pattern along the collar. \n4. Panel 4: Final portrait of the smiling model wearing the full gold and red jewelry set. \nLighting is warm and cinematic, reflecting off the gold metal and red facets.\n\n[Text & UI Layout]\n***Layout Style**: Original 4-Panel Collage (保留原图四宫格布局).\nText Rendering Instructions:\n1. Keep the original header text 'Complete Your Royal Look' in its elegant serif font.\n2. Keep the bottom labels '1. The Crown', '2. The Earrings', '3. The Necklace', '4. Perfection' and the grey arrows.\n3. Product Lock: Strictly replicate the gold base and the specific 'Red-Clear-Red' crystal spacing from the reference product image into all four panels.",
+  "seadream_cn": "[Visual Description]\n这是一组四宫格电商视觉图，任务是将图一中所有的银色钻饰精确替换为图二中的金红珠宝套装。\n1. 第一帧：手部正将皇冠戴在模特发髻上，皇冠材质改为金色，镶嵌巨大的水滴形红宝石。\n2. 第二帧：侧脸近景，模特正在佩戴金色的红宝石耳坠，细节需体现图二中的红白碎钻间隔。\n3. 第三帧：颈部特写，展示金色V型项链，主石为红宝石，链身严格遵循图二红钻与透明钻交替的排布规律。\n4. 第四帧：正面半身像，展示模特全套佩戴后的效果。背景保持原有的朦胧光斑，色调转为温暖的金红色系以匹配首饰。\n\n[Text & UI Layout]\n***Layout Style**: 保持原图四宫格排版 (Original 4-panel sequence).\n文字渲染指令：\n1. 顶部标题保留: 'Complete Your Royal Look'。\n2. 底部步骤说明保留: '1. The Crown', '2. The Earrings', '3. The Necklace', '4. Perfection' 以及灰色箭头引导。\n3. 细节锁定：确保红宝石的饱和度和金属的黄金质感在四个画面中高度统一，完美贴合原图模特的身体结构与光影。",
+  "layout_logic": "采用‘精准像素替换’逻辑。保持原有的四段式构图（发型-耳饰-项链-全貌），仅针对饰品区域进行局部重绘，确保金色的金属反光与原图的暖色调背景自然融合，红宝石的折射光需与环境光方向一致。"
+}
+```
+
+========================================
+
+模型: nano-banana-2-4k
+比例: 4:3
+时间: 2026-01-10_08-13-34

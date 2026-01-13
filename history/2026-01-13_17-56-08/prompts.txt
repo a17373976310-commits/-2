@@ -1,0 +1,167 @@
+原始提示词:
+9:16 vertical mobile poster, single focused shot. Soft Morning Light, Sage Green and Creamy White palette, Matte Texture.
+**Tone**: Screen 01 Hero - Emotional Lifestyle. Cozy kitchen with a wooden dining table, morning sunlight through a window.
+**Product**: Strictly restore uploaded product features: Matte sage green electric steamer with two-tier bamboo-style steaming racks on a white base with a single mechanical timer knob.
+**Visuals**: The steamer is placed on a wooden table, surrounded by a plate of fresh fruit and a glass of milk. Soft steam rises from the top. Photorealistic, soft shadows. **Soft Natural Window Light, Steam Atmosphere, Photorealistic**.
+**Text**: Text "元气早餐" **in Massive Bold Font** stacked vertically above "MORNING ENERGY" **in Tiny Thin Font with Wide Spacing**, Dark Sage Green Text Color.
+**UI**: Floating super-ellipse card with four circular icons at the bottom.
+**Quality**: 8k, commercial photography, **Soft Natural Window Light, Steam Atmosphere, Photorealistic**.
+--no collage, grid, split screen, multiple angles, watermark, low quality
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Soft Morning Light, Creamy White background.
+**Tone**: Screen 02 Pain Point - Efficiency. Blurred morning bathroom routine in the background, sharp product focus in foreground.
+**Product**: Strictly restore uploaded product features: Matte sage green electric steamer with white base and mechanical knob, active with an indicator light.
+**Visuals**: Close-up of the steamer emitting gentle steam. In front of it, a plate of steaming hot buns (Baozi). **Soft Natural Window Light, Steam Atmosphere, Photorealistic**.
+**Text**: Text "15分钟定时" **in Massive Bold Font** stacked above "QUICK START MORNING" **in Tiny Thin Font with Wide Spacing**.
+**UI**: Pill-shaped label "NO.01" in Sage Green.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. High-angle flat lay view.
+**Tone**: Screen 03 Core Value - Versatility. Minimalist beige background.
+**Product**: Strictly restore uploaded product features: Matte sage green electric steamer showing various combinations (single tier vs double tier).
+**Visuals**: Flat lay composition showing different ingredients inside the racks: eggs, corn, sweet potatoes, and milk cartons. **Soft Natural Window Light, Photorealistic**.
+**Text**: Text "单双层任意变" **in Massive Bold Font** stacked above "FLEXIBLE CAPACITY" **in Tiny Thin Font**.
+**UI**: Three small super-ellipse cards showing configuration diagrams.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Soft Matte Texture.
+**Tone**: Screen 04 Design Aesthetics - Space Management. Pure white/beige studio background.
+**Product**: Strictly restore uploaded product features: Matte sage green electric steamer, top-down view highlighting its compact square-round (super-ellipse) footprint.
+**Visuals**: The product is placed alone in a corner of a clean countertop, emphasizing its small size. **Soft Natural Window Light, Photorealistic**.
+**Text**: Text "A4纸般大小" **in Massive Bold Font** stacked above "SPACE SAVING DESIGN" **in Tiny Thin Font**.
+**UI**: Fine line icons showing "Compact Size" metric.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Macro photography.
+**Tone**: Screen 05 Trust - Material Safety. Clinical yet warm lighting.
+**Product**: Strictly restore uploaded product features: Exploded view of the 304 stainless steel steaming tray of the Sage Green steamer.
+**Visuals**: Focus on the metallic texture of the tray, reflecting soft light. A blurred image of a certificate in the background. **Soft Natural Window Light, Photorealistic**.
+**Text**: Text "优选不锈钢" **in Massive Bold Font** stacked above "FOOD GRADE SAFETY" **in Tiny Thin Font**.
+**UI**: Glassmorphism card overlay with a "Safety Verified" seal.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. 3D Visualization Style.
+**Tone**: Screen 06 Performance - Tech Cycle. Darker background to highlight light effects.
+**Product**: Strictly restore uploaded product features: The Sage Green steamer base with an internal 3D heat-map overlay.
+**Visuals**: Transparent 3D effect showing 360° steam circulation arrows inside the steamer. **Soft Natural Window Light, Steam Atmosphere, Photorealistic**.
+**Text**: Text "360°循环加热" **in Massive Bold Font** stacked above "POWERFUL STEAM CYCLE" **in Tiny Thin Font**.
+**UI**: Technical data graphics with thin lines and sage green accents.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Macro details.
+**Tone**: Screen 07 Quality - Close-up Details.
+**Product**: Strictly restore uploaded product features: Close-up on the anti-scald handle and the non-stick coating of the heating plate.
+**Visuals**: Extremely detailed texture of the matte plastic handle and the smooth base surface. **Soft Natural Window Light, Photorealistic**.
+**Text**: Text "匠心细节" **in Massive Bold Font** stacked above "EXQUISITE CRAFTSMANSHIP" **in Tiny Thin Font**.
+**UI**: Super-ellipse floating labels pointing to specific features.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Minimalist Grid.
+**Tone**: Screen 08 Specifications - Rational Data.
+**Product**: Strictly restore uploaded product features: Clean line-art drawing of the Sage Green steamer with dimensions.
+**Visuals**: Minimalist composition. One side shows the actual product, the other side shows a schematic drawing with measurements. **Soft Natural Window Light, Photorealistic**.
+**Text**: Text "产品参数" **in Massive Bold Font** stacked above "SPECIFICATIONS" **in Tiny Thin Font**.
+**UI**: Structured data table using Sage Green lines and clean Sans-serif typography.
+--no collage, grid, split screen, multiple angles
+
+========================================
+
+优化后的提示词:
+9:16 vertical mobile poster, single focused shot. Soft Morning Light, Sage Green and Creamy White palette, Matte Texture.
+**Tone**: Screen 01 Hero - Emotional Lifestyle. Cozy kitchen with a wooden dining table, morning sunlight through a window.
+**Product**: Strictly restore uploaded product features: Matte sage green electric steamer with two-tier bamboo-style steaming racks on a white base with a single mechanical timer knob.
+**Visuals**: The steamer is placed on a wooden table, surrounded by a plate of fresh fruit and a glass of milk. Soft steam rises from the top. Photorealistic, soft shadows. **Soft Natural Window Light, Steam Atmosphere, Photorealistic**.
+**Text**: Text "元气早餐" **in Massive Bold Font** stacked vertically above "MORNING ENERGY" **in Tiny Thin Font with Wide Spacing**, Dark Sage Green Text Color.
+**UI**: Floating super-ellipse card with four circular icons at the bottom.
+**Quality**: 8k, commercial photography, **Soft Natural Window Light, Steam Atmosphere, Photorealistic**.
+--no collage, grid, split screen, multiple angles, watermark, low quality
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Soft Morning Light, Creamy White background.
+**Tone**: Screen 02 Pain Point - Efficiency. Blurred morning bathroom routine in the background, sharp product focus in foreground.
+**Product**: Strictly restore uploaded product features: Matte sage green electric steamer with white base and mechanical knob, active with an indicator light.
+**Visuals**: Close-up of the steamer emitting gentle steam. In front of it, a plate of steaming hot buns (Baozi). **Soft Natural Window Light, Steam Atmosphere, Photorealistic**.
+**Text**: Text "15分钟定时" **in Massive Bold Font** stacked above "QUICK START MORNING" **in Tiny Thin Font with Wide Spacing**.
+**UI**: Pill-shaped label "NO.01" in Sage Green.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. High-angle flat lay view.
+**Tone**: Screen 03 Core Value - Versatility. Minimalist beige background.
+**Product**: Strictly restore uploaded product features: Matte sage green electric steamer showing various combinations (single tier vs double tier).
+**Visuals**: Flat lay composition showing different ingredients inside the racks: eggs, corn, sweet potatoes, and milk cartons. **Soft Natural Window Light, Photorealistic**.
+**Text**: Text "单双层任意变" **in Massive Bold Font** stacked above "FLEXIBLE CAPACITY" **in Tiny Thin Font**.
+**UI**: Three small super-ellipse cards showing configuration diagrams.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Soft Matte Texture.
+**Tone**: Screen 04 Design Aesthetics - Space Management. Pure white/beige studio background.
+**Product**: Strictly restore uploaded product features: Matte sage green electric steamer, top-down view highlighting its compact square-round (super-ellipse) footprint.
+**Visuals**: The product is placed alone in a corner of a clean countertop, emphasizing its small size. **Soft Natural Window Light, Photorealistic**.
+**Text**: Text "A4纸般大小" **in Massive Bold Font** stacked above "SPACE SAVING DESIGN" **in Tiny Thin Font**.
+**UI**: Fine line icons showing "Compact Size" metric.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Macro photography.
+**Tone**: Screen 05 Trust - Material Safety. Clinical yet warm lighting.
+**Product**: Strictly restore uploaded product features: Exploded view of the 304 stainless steel steaming tray of the Sage Green steamer.
+**Visuals**: Focus on the metallic texture of the tray, reflecting soft light. A blurred image of a certificate in the background. **Soft Natural Window Light, Photorealistic**.
+**Text**: Text "优选不锈钢" **in Massive Bold Font** stacked above "FOOD GRADE SAFETY" **in Tiny Thin Font**.
+**UI**: Glassmorphism card overlay with a "Safety Verified" seal.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. 3D Visualization Style.
+**Tone**: Screen 06 Performance - Tech Cycle. Darker background to highlight light effects.
+**Product**: Strictly restore uploaded product features: The Sage Green steamer base with an internal 3D heat-map overlay.
+**Visuals**: Transparent 3D effect showing 360° steam circulation arrows inside the steamer. **Soft Natural Window Light, Steam Atmosphere, Photorealistic**.
+**Text**: Text "360°循环加热" **in Massive Bold Font** stacked above "POWERFUL STEAM CYCLE" **in Tiny Thin Font**.
+**UI**: Technical data graphics with thin lines and sage green accents.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Macro details.
+**Tone**: Screen 07 Quality - Close-up Details.
+**Product**: Strictly restore uploaded product features: Close-up on the anti-scald handle and the non-stick coating of the heating plate.
+**Visuals**: Extremely detailed texture of the matte plastic handle and the smooth base surface. **Soft Natural Window Light, Photorealistic**.
+**Text**: Text "匠心细节" **in Massive Bold Font** stacked above "EXQUISITE CRAFTSMANSHIP" **in Tiny Thin Font**.
+**UI**: Super-ellipse floating labels pointing to specific features.
+--no collage, grid, split screen, multiple angles
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Minimalist Grid.
+**Tone**: Screen 08 Specifications - Rational Data.
+**Product**: Strictly restore uploaded product features: Clean line-art drawing of the Sage Green steamer with dimensions.
+**Visuals**: Minimalist composition. One side shows the actual product, the other side shows a schematic drawing with measurements. **Soft Natural Window Light, Photorealistic**.
+**Text**: Text "产品参数" **in Massive Bold Font** stacked above "SPECIFICATIONS" **in Tiny Thin Font**.
+**UI**: Structured data table using Sage Green lines and clean Sans-serif typography.
+--no collage, grid, split screen, multiple angles
+
+========================================
+
+模型: nano-banana-2-4k
+比例: 9:16
+时间: 2026-01-13_17-56-08

@@ -1,0 +1,25 @@
+原始提示词:
+```json
+{
+  "nano_banana_en": "[Visual Description]\n\"Commercial product photography. Object replacement task: Replace the silver diamond jewelry set in the first image with the gold and emerald jewelry set from the second image. The new set includes a regal gold tiara with teardrop emeralds, a matching V-shaped emerald necklace, and teardrop earrings. The arrangement must follow the original composition: the tiara stands in the background, the necklace is draped in the center, and the earring is placed in the foreground on the smooth beige/tan surface. Maintain the exact lighting setup from the reference: sharp yet soft-edged studio lighting from the top-left, casting realistic diagonal shadows to the right. The textures must reflect high-polished gold and the deep, crystalline facets of green emeralds.\"\n\n[Text & UI Layout]\n\"***Layout Style**: Pure Product Presentation (纯净产品展示).\nText Rendering Instructions:\n1. No text or graphic overlays are required for this modification task. Focus purely on the photorealistic integration of the new product into the existing environment and lighting.\"",
+  "seadream_cn": "[Visual Description]\n\"高端商业珠宝摄影。精准替换任务：将图一中的银色钻石首饰套装替换为图二中的金镶祖母绿首饰套装。新套装包含一顶镶嵌水滴形祖母绿的金色王冠、一条配套的V型祖母绿项链以及水滴耳环。摆放方式需严格参照原图构图：王冠立于后方，项链环绕于中部，耳环置于前方，整体位于米色哑光平面上。光影需完美复刻原图：采用左上方影棚硬光带柔化边缘，在右侧投射出清晰的斜向阴影。强调黄金的抛光金属感与祖母绿宝石的深邃火彩与通透质感。\"\n\n[Text & UI Layout]\n\"***Layout Style**: 纯视觉展示布局.\n文案要求：\n1. 此任务为图片修改替换，无需添加额外文字或UI元素。重点在于确保新物体的透视、光影与背景环境实现像素级的自然融合。\"",
+  "layout_logic": "采用‘原位替换’策略，保持原图的三角形视觉重心分布。关键在于捕捉图二祖母绿宝石的深色调与图一浅色背景的对比，并利用一致性的向右下方投影来消除合成感。"
+}
+```
+
+========================================
+
+优化后的提示词:
+```json
+{
+  "nano_banana_en": "[Visual Description]\n\"Commercial product photography. Object replacement task: Replace the silver diamond jewelry set in the first image with the gold and emerald jewelry set from the second image. The new set includes a regal gold tiara with teardrop emeralds, a matching V-shaped emerald necklace, and teardrop earrings. The arrangement must follow the original composition: the tiara stands in the background, the necklace is draped in the center, and the earring is placed in the foreground on the smooth beige/tan surface. Maintain the exact lighting setup from the reference: sharp yet soft-edged studio lighting from the top-left, casting realistic diagonal shadows to the right. The textures must reflect high-polished gold and the deep, crystalline facets of green emeralds.\"\n\n[Text & UI Layout]\n\"***Layout Style**: Pure Product Presentation (纯净产品展示).\nText Rendering Instructions:\n1. No text or graphic overlays are required for this modification task. Focus purely on the photorealistic integration of the new product into the existing environment and lighting.\"",
+  "seadream_cn": "[Visual Description]\n\"高端商业珠宝摄影。精准替换任务：将图一中的银色钻石首饰套装替换为图二中的金镶祖母绿首饰套装。新套装包含一顶镶嵌水滴形祖母绿的金色王冠、一条配套的V型祖母绿项链以及水滴耳环。摆放方式需严格参照原图构图：王冠立于后方，项链环绕于中部，耳环置于前方，整体位于米色哑光平面上。光影需完美复刻原图：采用左上方影棚硬光带柔化边缘，在右侧投射出清晰的斜向阴影。强调黄金的抛光金属感与祖母绿宝石的深邃火彩与通透质感。\"\n\n[Text & UI Layout]\n\"***Layout Style**: 纯视觉展示布局.\n文案要求：\n1. 此任务为图片修改替换，无需添加额外文字或UI元素。重点在于确保新物体的透视、光影与背景环境实现像素级的自然融合。\"",
+  "layout_logic": "采用‘原位替换’策略，保持原图的三角形视觉重心分布。关键在于捕捉图二祖母绿宝石的深色调与图一浅色背景的对比，并利用一致性的向右下方投影来消除合成感。"
+}
+```
+
+========================================
+
+模型: nano-banana-2-2k
+比例: 4:3
+时间: 2026-01-10_10-51-02

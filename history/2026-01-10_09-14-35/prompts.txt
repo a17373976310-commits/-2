@@ -1,0 +1,25 @@
+原始提示词:
+```json
+{
+  "nano_banana_en": "[Visual Description]\n\"Image Modification Task: Lighting and Shadow Integration. \nKeep the original pixels of the jewelry set (tiara, earrings, and necklace) perfectly intact. \nAdd realistic 'Contact Shadows' and 'Ambient Occlusion' where the gold metal and gemstones meet the grey velvet display bust. \nSpecifically, render a soft drop shadow for the tiara resting on the top of the bust and subtle depth shadows behind the hanging earrings and necklace. \nThe light source should be consistent with the background scene (soft, top-front indoor lighting), ensuring the jewelry no longer looks 'floated' but naturally grounded on the stand.\"\n\n[Text & UI Layout]\n\"***Layout Style**: Precise Shadow Rendering.\n1. Target Area: Intersection of product and display stand.\n2. Effect: Soft-edged shadows, matching the diffuse lighting of the room.\n3. Goal: Enhanced 3D depth and realism without altering the product's geometry or color.\"",
+  "seadream_cn": "[Visual Description]\n\"图片修改任务：光影融合与阴影增强。\n严格锁定图中首饰套装（皇冠、耳环、项链）的所有像素，确保形状、颜色和材质不发生任何改变。\n在首饰与灰色丝绒展示架的衔接处添加自然的‘接触阴影’（Contact Shadows）与‘环境光遮蔽’（AO）。\n重点在皇冠底部增加符合物理逻辑的投影，并为悬挂的项链和耳环在背板上增加微弱的景深阴影。\n光影方向须与背景中人物所处的室内软光环境保持高度一致，消除首饰的‘漂浮感’，使其真实地‘坐’在展示架上。\"\n\n[Text & UI Layout]\n\"***Layout Style**: 像素级光影修正。\n1. 修改区域：首饰与模型接触位。\n2. 视觉效果：增加软阴影，提升3D立体感。\n3. 核心约束：严禁改动首饰主体，保持宝石火彩与金属质感一致。\"",
+  "layout_logic": "本次修改属于后期光影合成增强。建议重点处理皇冠与丝绒架顶部的接触面，以及项链下坠处的遮挡阴影，这是消除‘粘贴感’的关键。保持背景虚化程度不变，仅对主体边缘进行光影重塑。"
+}
+```
+
+========================================
+
+优化后的提示词:
+```json
+{
+  "nano_banana_en": "[Visual Description]\n\"Image Modification Task: Lighting and Shadow Integration. \nKeep the original pixels of the jewelry set (tiara, earrings, and necklace) perfectly intact. \nAdd realistic 'Contact Shadows' and 'Ambient Occlusion' where the gold metal and gemstones meet the grey velvet display bust. \nSpecifically, render a soft drop shadow for the tiara resting on the top of the bust and subtle depth shadows behind the hanging earrings and necklace. \nThe light source should be consistent with the background scene (soft, top-front indoor lighting), ensuring the jewelry no longer looks 'floated' but naturally grounded on the stand.\"\n\n[Text & UI Layout]\n\"***Layout Style**: Precise Shadow Rendering.\n1. Target Area: Intersection of product and display stand.\n2. Effect: Soft-edged shadows, matching the diffuse lighting of the room.\n3. Goal: Enhanced 3D depth and realism without altering the product's geometry or color.\"",
+  "seadream_cn": "[Visual Description]\n\"图片修改任务：光影融合与阴影增强。\n严格锁定图中首饰套装（皇冠、耳环、项链）的所有像素，确保形状、颜色和材质不发生任何改变。\n在首饰与灰色丝绒展示架的衔接处添加自然的‘接触阴影’（Contact Shadows）与‘环境光遮蔽’（AO）。\n重点在皇冠底部增加符合物理逻辑的投影，并为悬挂的项链和耳环在背板上增加微弱的景深阴影。\n光影方向须与背景中人物所处的室内软光环境保持高度一致，消除首饰的‘漂浮感’，使其真实地‘坐’在展示架上。\"\n\n[Text & UI Layout]\n\"***Layout Style**: 像素级光影修正。\n1. 修改区域：首饰与模型接触位。\n2. 视觉效果：增加软阴影，提升3D立体感。\n3. 核心约束：严禁改动首饰主体，保持宝石火彩与金属质感一致。\"",
+  "layout_logic": "本次修改属于后期光影合成增强。建议重点处理皇冠与丝绒架顶部的接触面，以及项链下坠处的遮挡阴影，这是消除‘粘贴感’的关键。保持背景虚化程度不变，仅对主体边缘进行光影重塑。"
+}
+```
+
+========================================
+
+模型: nano-banana-2-2k
+比例: 1:1
+时间: 2026-01-10_09-14-35

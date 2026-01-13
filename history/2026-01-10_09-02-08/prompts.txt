@@ -1,0 +1,25 @@
+原始提示词:
+```json
+{
+  "nano_banana_en": "[Visual Description]\n\"An advanced image modification task. Replace the silver and clear diamond jewelry set in the foreground of Image 1 with the gold and red ruby jewelry set from Image 2. \n[Subject Lock]: The new jewelry set consists of a polished yellow gold tiara, teardrop earrings, and a V-shaped necklace, all featuring prominent faceted red rubies and small pavé white crystals. \n[Placement]: The red ruby tiara must sit exactly on the top of the grey velvet bust, the earrings must align with the previous ones, and the necklace must follow the curvature of the mannequin's neck. \n[Lighting]: Adjust the reflections on the gold and red gemstones to match the soft, warm ambient studio lighting of the original scene. \n[Background]: Keep the man and the surprised woman in the background, as well as the grey velvet texture of the mannequin, completely unchanged.\"\n\n[Text & UI Layout]\n\"***Layout Style**: Object Replacement (无痕替换). \nNo text or UI elements are required for this modification. Focus purely on the seamless integration of the red jewelry set onto the existing grey mannequin.\"",
+  "seadream_cn": "[Visual Description]\n\"高级图片修改任务：将图1前景模特架上的银色透明首饰套装，精准替换为图2中的金底红宝石首饰套装。\n[主体锁定]：替换件为精细的黄金花纹王冠、水滴形耳环及V型项链，主石为明艳的切割红宝石，辅以白色碎钻。\n[位置要求]：红宝石王冠需完美贴合灰色丝绒首饰架顶部，项链需顺应架子的弧度自然垂挂，保持原有比例。\n[光影处理]：重绘金饰与红宝石的材质反射，使其与背景中温馨的居家光影和柔和色调完美融合。\n[背景保持]：严禁改动背景中惊喜表情的女性、男性及室内环境，保留灰色丝绒模特架的原始质感。\"\n\n[Text & UI Layout]\n\"***Layout Style**: 精准素材替换 (Object Replacement).\n保持原图构图，无需添加任何文案或UI组件，确保新首饰的金属光泽与宝石净度达到实拍级视觉效果。\"",
+  "layout_logic": "此任务属于精准物体替换。核心逻辑在于提取图二首饰的‘材质指纹’（黄金+红宝石），并将其重映射到图一的几何坐标中。需注意红宝石在暖色调背景下的环境光吸收与反射，确保替换后的首饰不产生‘漂浮感’，保持原有的三角形稳固构图。"
+}
+```
+
+========================================
+
+优化后的提示词:
+```json
+{
+  "nano_banana_en": "[Visual Description]\n\"An advanced image modification task. Replace the silver and clear diamond jewelry set in the foreground of Image 1 with the gold and red ruby jewelry set from Image 2. \n[Subject Lock]: The new jewelry set consists of a polished yellow gold tiara, teardrop earrings, and a V-shaped necklace, all featuring prominent faceted red rubies and small pavé white crystals. \n[Placement]: The red ruby tiara must sit exactly on the top of the grey velvet bust, the earrings must align with the previous ones, and the necklace must follow the curvature of the mannequin's neck. \n[Lighting]: Adjust the reflections on the gold and red gemstones to match the soft, warm ambient studio lighting of the original scene. \n[Background]: Keep the man and the surprised woman in the background, as well as the grey velvet texture of the mannequin, completely unchanged.\"\n\n[Text & UI Layout]\n\"***Layout Style**: Object Replacement (无痕替换). \nNo text or UI elements are required for this modification. Focus purely on the seamless integration of the red jewelry set onto the existing grey mannequin.\"",
+  "seadream_cn": "[Visual Description]\n\"高级图片修改任务：将图1前景模特架上的银色透明首饰套装，精准替换为图2中的金底红宝石首饰套装。\n[主体锁定]：替换件为精细的黄金花纹王冠、水滴形耳环及V型项链，主石为明艳的切割红宝石，辅以白色碎钻。\n[位置要求]：红宝石王冠需完美贴合灰色丝绒首饰架顶部，项链需顺应架子的弧度自然垂挂，保持原有比例。\n[光影处理]：重绘金饰与红宝石的材质反射，使其与背景中温馨的居家光影和柔和色调完美融合。\n[背景保持]：严禁改动背景中惊喜表情的女性、男性及室内环境，保留灰色丝绒模特架的原始质感。\"\n\n[Text & UI Layout]\n\"***Layout Style**: 精准素材替换 (Object Replacement).\n保持原图构图，无需添加任何文案或UI组件，确保新首饰的金属光泽与宝石净度达到实拍级视觉效果。\"",
+  "layout_logic": "此任务属于精准物体替换。核心逻辑在于提取图二首饰的‘材质指纹’（黄金+红宝石），并将其重映射到图一的几何坐标中。需注意红宝石在暖色调背景下的环境光吸收与反射，确保替换后的首饰不产生‘漂浮感’，保持原有的三角形稳固构图。"
+}
+```
+
+========================================
+
+模型: nano-banana-2-2k
+比例: 1:1
+时间: 2026-01-10_09-02-08

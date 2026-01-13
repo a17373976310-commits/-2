@@ -4,7 +4,10 @@ import { NodeType, PluginMetadata, PluginCategory } from './types';
 export const SUGGESTED_MODELS: Record<PluginCategory, { id: string, label: string }[]> = {
   [PluginCategory.VISUAL]: [
     { id: 'nano-banana-2', label: 'Nano Banana v2' },
-    { id: 'nano-banana-2-4k', label: 'Nano Banana 4K' }
+    { id: 'nano-banana-2-2k', label: 'Nano Banana 2K' },
+    { id: 'nano-banana-2-4k', label: 'Nano Banana 4K' },
+    { id: 'doubao-seedream-4-5-251128', label: '豆包Seedream 4.5' },
+    { id: 'gpt-image-1.5', label: 'GPT Image 1.5' }
   ],
   [PluginCategory.VIDEO]: [
     { id: 'luma-dream-machine', label: 'Luma' },
@@ -46,16 +49,6 @@ export const PLUGINS: PluginMetadata[] = [
     color: 'bg-sky-500'
   },
   {
-    type: NodeType.CAMERA_3D,
-    category: PluginCategory.VISUAL,
-    title: '3D Camera Control',
-    titleZh: '3D 视角控制',
-    description: 'Control camera angle for multi-view generation.',
-    descriptionZh: '控制相机视角，生成多角度视图提示词。',
-    icon: '📐',
-    color: 'bg-violet-500'
-  },
-  {
     type: NodeType.BATCH_IMAGE_GEN,
     category: PluginCategory.VISUAL,
     title: 'Batch Image Gen',
@@ -75,7 +68,6 @@ export const PLUGINS: PluginMetadata[] = [
     icon: '🧩',
     color: 'bg-gradient-to-br from-pink-500 to-orange-500'
   },
-
   // --- 视频生成 (Video Studio) ---
   {
     type: NodeType.VIDEO_GEN,
@@ -89,6 +81,26 @@ export const PLUGINS: PluginMetadata[] = [
   },
 
   // --- 逻辑与搜索 (Logic & Intel) ---
+  {
+    type: NodeType.IMAGE_OUTPAINT,
+    category: PluginCategory.LOGIC,
+    title: 'Smart Outpaint',
+    titleZh: '智能扩图',
+    description: 'Expand images with AI-generated content.',
+    descriptionZh: '智能扩展图像边界，AI 自动补全周围内容。',
+    icon: '🔲',
+    color: 'bg-gradient-to-br from-teal-500 to-cyan-600'
+  },
+  {
+    type: NodeType.CAMERA_3D,
+    category: PluginCategory.LOGIC,
+    title: '3D Camera Control',
+    titleZh: '3D 视角控制',
+    description: 'Control camera angle for multi-view generation.',
+    descriptionZh: '控制相机视角，生成多角度视图提示词。',
+    icon: '📐',
+    color: 'bg-violet-500'
+  },
   {
     type: NodeType.TEXT_PRO,
     category: PluginCategory.LOGIC,
@@ -129,6 +141,17 @@ export const PLUGINS: PluginMetadata[] = [
     icon: '🎯',
     color: 'bg-gradient-to-br from-cyan-500 to-blue-600'
   },
+  {
+    type: NodeType.AI_CHAT,
+    category: PluginCategory.LOGIC,
+    title: 'AI Assistant',
+    titleZh: 'AI 智能助手',
+    description: 'Real-time conversation with file support.',
+    descriptionZh: '实时对话助手，支持文件上传与深度问答。',
+    icon: '💬',
+    color: 'bg-gradient-to-br from-emerald-500 to-teal-600'
+  },
+
 
   // --- 感知与对话 (Interaction) ---
   {

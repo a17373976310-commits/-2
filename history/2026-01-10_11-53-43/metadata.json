@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-01-10_11-53-43",
+  "model": "nano-banana-2-2k",
+  "ratio": "4:3",
+  "nodeType": "IMAGE_GEN",
+  "hasOriginalImage": false,
+  "hasGeneratedImage": true,
+  "originalPrompt": "```json\n{\n  \"nano_banana_en\": \"[Visual Description]\\n\\\"A high-end fashion half-body portrait of an elegant female model. She is wearing the EXACT silver crystal crown from the reference image, featuring its distinctive multi-peak Baroque structure and large teardrop-shaped central gems. A sheer, long white bridal veil is attached behind the crown, flowing gracefully. She is dressed in a premium white lace wedding dress. The lighting is cinematic studio lighting, creating sharp reflections and brilliant sparkles on the crown's rhinestones to match the original product's luster.\\\"\\n\\n[Product DNA Lock]\\n- Subject: Specific silver bridal tiara with intricate filigree and clear crystals.\\n- Integration: Crown must be precisely scaled and placed on the model's head with realistic contact shadows.\\n- Background: Soft-focus minimalist interior with warm bokeh, highlighting the model and the jewelry.\\n\\n[Text & UI Layout]\\n***Layout Style: Editorial Portrait (时尚肖像排版).\\n(No text requested by user, keeping it clean for visual impact).\\\"\",\n  \"seadream_cn\": \"[画面描述]\\n“一张高质量的半身人像摄影，一位气质高雅的模特正佩戴着参考图中的银色水钻皇冠。皇冠的物理细节需严格还原：复杂的花纹结构、错落有致的尖顶、以及中心硕大的泪滴形主钻。模特脑后垂挂着轻盈的白色薄纱头纱，身穿一件带有精致蕾丝纹理的婚纱。光影采用商业人像布光，精准捕捉皇冠水钻的折射光芒，使其熠熠生辉。”\\n\\n[产品锁定指令]\\n- 核心：严格锁定参考图中皇冠的像素指纹，确保造型、材质、水钻排列不走样。\\n- 背景：随机优雅背景（建议为柔焦的室内或简约纯色），确保主体突出。\\n- 构图：半身人像，视角与皇冠的佩戴角度自然衔接。\\n\\n[排版与布局]\\n***布局风格：无文案纯净版，聚焦产品实穿效果。”\",\n  \"layout_logic\": \"本次任务属于【产品穿戴合成】。建议在生成时，重点通过Prompt锁定皇冠的材质属性（Polished Silver, Clear Crystals），并利用‘Contact Shadow’指令确保皇冠与模特头发的衔接处自然无痕。背景采用大光圈虚化效果，以增强产品的视觉权重。\"\n}\n```",
+  "optimizedPrompt": ""
+}

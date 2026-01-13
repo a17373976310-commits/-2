@@ -1,0 +1,141 @@
+原始提示词:
+9:16 vertical mobile poster, single focused shot. Soft Natural Window Light, Matte Texture, Creamy Aesthetic.
+**Product**: Strictly restore uploaded product features: [Cylindrical matte white electric base, natural wood-grain textured stacking steamer baskets, single white analog timer dial on the front], maintain consistent appearance across all shots. (Ignore reference product shape).
+**Tone**: Minimalist high-end kitchen background, extreme shallow depth of field, warm morning light hitting the matte surface.
+**Visuals**: The product stands center, Kinfolk Magazine Style, Commercial Product Photography, Masterpiece Composition.
+**Layout**: **"Magazine Cover Layout"** - Product centered, massive text floating at top with ample negative space.
+**Text**: Text "『锁鲜』有方" in **Massive Bold Font** stacked vertically above "FRESH LOCKING TECHNOLOGY" in **Tiny Thin Font with Wide Spacing**. Color: #B9A081.
+**UI**: White rounded floating card at the bottom containing 6 minimalist linear icons.
+**Quality**: 8k, **Commercial Advertisement**, Soft Natural Window Light.
+--no collage, grid, split screen, multiple angles, watermark, low quality, deformation
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Soft Natural Window Light, Matte Texture.
+**Product**: Strictly restore uploaded product features: [Cylindrical matte white electric base, natural wood-grain textured stacking steamer baskets, single white analog timer dial on the front].
+**Tone**: Sensory induction close-up. High-definition steam rising from the wood-grain baskets, backlit to emphasize moisture.
+**Visuals**: Macro photography of the steam texture and wood grain. Soft rim lighting.
+**Layout**: **Use a Clean Floating Card** at the bottom to hold text.
+**Text**: Text "速蒸锁鲜" in **Bold Font** stacked above "RAPID STEAM FEATURE" in **Thin Font**. Color: #ED7B4C.
+**UI**: Rounded-corner floating translucent card.
+--no collage, grid, split screen, multiple angles, deformation
+
+|||
+
+9:16 vertical mobile poster, single focused shot. 
+**Product**: Strictly restore uploaded product features: [Cylindrical matte white electric base, natural wood-grain textured stacking steamer baskets, single white analog timer dial on the front].
+**Tone**: Rational technical display within a soft aesthetic. Arch mask framing.
+**Visuals**: Product working inside a large **Arch Mask (super-ellipse)**. Clean cream background (#F1ECE6).
+**Layout**: **Arch Mask Composition** - Top area is empty for text, product is inside the arch.
+**Text**: Text "聚能大蒸汽" in **Massive Bold Font** above "50% FASTER HEATING" in **Tiny Thin Font**.
+**UI**: Capsule-shaped labels in soft coral and muted purple colors floating around the arch.
+**Quality**: 8k, Octane Render, Soft Natural Window Light.
+--no collage, grid, split screen, multiple angles, deformation
+
+|||
+
+9:16 vertical mobile poster, single focused shot.
+**Product**: Strictly restore uploaded product features: [Cylindrical matte white electric base, natural wood-grain textured stacking steamer baskets, single white analog timer dial on the front].
+**Tone**: Comparison of fresh food. Vibrant colors of steamed vegetables and buns.
+**Visuals**: Extreme close-up of the food inside the wood-textured basket. Beads of water on fresh greens.
+**Layout**: Two distinct visual zones separated by a clean white line. 
+**Text**: Text "原汁原味" in **Bold Font** above "MOISTURE LOCK" in **Thin Font**.
+**UI**: Small timestamp pill labels: "07:00" and "15:00" in Earth Brown (#B9A081).
+--no collage, grid, split screen, multiple angles, deformation
+
+|||
+
+9:16 vertical mobile poster, single focused shot.
+**Product**: Strictly restore uploaded product features: [Cylindrical matte white electric base, natural wood-grain textured stacking steamer baskets, single white analog timer dial on the front].
+**Tone**: **Kinfolk Magazine Style**, Solo lifestyle scene.
+**Visuals**: **Flatlay (Top-down view)**. Product on a clean wooden desk next to a book and a cup of coffee. Soft shadows.
+**Layout**: **Text inside a clean white area** at the top left.
+**Text**: Text "一人食光" in **Bold Font** above "URBAN SOLO DINING" in **Thin Font**.
+**UI**: Rounded number "05" icon in the corner.
+--no collage, grid, split screen, multiple angles, deformation
+
+|||
+
+9:16 vertical mobile poster, single focused shot.
+**Product**: Strictly restore uploaded product features: [Cylindrical matte white electric base, natural wood-grain textured stacking steamer baskets, single white analog timer dial on the front].
+**Tone**: Massive capacity demonstration. Abundance and quality.
+**Visuals**: Double-layered baskets stacked high, filled with seafood, fish, and buns. Symmetrical composition.
+**Layout**: **Magazine Layout** with a large Arch Mask at the bottom half.
+**Text**: Text "12L双层容量" in **Massive Bold Font** above "FAMILY SIZE CAPACITY" in **Thin Font with Wide Spacing**.
+**UI**: Semi-circular decorative lines echoing the rounded base.
+--no collage, grid, split screen, multiple angles, deformation
+
+========================================
+
+优化后的提示词:
+9:16 vertical mobile poster, single focused shot. Soft Natural Window Light, Matte Texture, Creamy Aesthetic.
+**Product**: Strictly restore uploaded product features: [Cylindrical matte white electric base, natural wood-grain textured stacking steamer baskets, single white analog timer dial on the front], maintain consistent appearance across all shots. (Ignore reference product shape).
+**Tone**: Minimalist high-end kitchen background, extreme shallow depth of field, warm morning light hitting the matte surface.
+**Visuals**: The product stands center, Kinfolk Magazine Style, Commercial Product Photography, Masterpiece Composition.
+**Layout**: **"Magazine Cover Layout"** - Product centered, massive text floating at top with ample negative space.
+**Text**: Text "『锁鲜』有方" in **Massive Bold Font** stacked vertically above "FRESH LOCKING TECHNOLOGY" in **Tiny Thin Font with Wide Spacing**. Color: #B9A081.
+**UI**: White rounded floating card at the bottom containing 6 minimalist linear icons.
+**Quality**: 8k, **Commercial Advertisement**, Soft Natural Window Light.
+--no collage, grid, split screen, multiple angles, watermark, low quality, deformation
+
+|||
+
+9:16 vertical mobile poster, single focused shot. Soft Natural Window Light, Matte Texture.
+**Product**: Strictly restore uploaded product features: [Cylindrical matte white electric base, natural wood-grain textured stacking steamer baskets, single white analog timer dial on the front].
+**Tone**: Sensory induction close-up. High-definition steam rising from the wood-grain baskets, backlit to emphasize moisture.
+**Visuals**: Macro photography of the steam texture and wood grain. Soft rim lighting.
+**Layout**: **Use a Clean Floating Card** at the bottom to hold text.
+**Text**: Text "速蒸锁鲜" in **Bold Font** stacked above "RAPID STEAM FEATURE" in **Thin Font**. Color: #ED7B4C.
+**UI**: Rounded-corner floating translucent card.
+--no collage, grid, split screen, multiple angles, deformation
+
+|||
+
+9:16 vertical mobile poster, single focused shot. 
+**Product**: Strictly restore uploaded product features: [Cylindrical matte white electric base, natural wood-grain textured stacking steamer baskets, single white analog timer dial on the front].
+**Tone**: Rational technical display within a soft aesthetic. Arch mask framing.
+**Visuals**: Product working inside a large **Arch Mask (super-ellipse)**. Clean cream background (#F1ECE6).
+**Layout**: **Arch Mask Composition** - Top area is empty for text, product is inside the arch.
+**Text**: Text "聚能大蒸汽" in **Massive Bold Font** above "50% FASTER HEATING" in **Tiny Thin Font**.
+**UI**: Capsule-shaped labels in soft coral and muted purple colors floating around the arch.
+**Quality**: 8k, Octane Render, Soft Natural Window Light.
+--no collage, grid, split screen, multiple angles, deformation
+
+|||
+
+9:16 vertical mobile poster, single focused shot.
+**Product**: Strictly restore uploaded product features: [Cylindrical matte white electric base, natural wood-grain textured stacking steamer baskets, single white analog timer dial on the front].
+**Tone**: Comparison of fresh food. Vibrant colors of steamed vegetables and buns.
+**Visuals**: Extreme close-up of the food inside the wood-textured basket. Beads of water on fresh greens.
+**Layout**: Two distinct visual zones separated by a clean white line. 
+**Text**: Text "原汁原味" in **Bold Font** above "MOISTURE LOCK" in **Thin Font**.
+**UI**: Small timestamp pill labels: "07:00" and "15:00" in Earth Brown (#B9A081).
+--no collage, grid, split screen, multiple angles, deformation
+
+|||
+
+9:16 vertical mobile poster, single focused shot.
+**Product**: Strictly restore uploaded product features: [Cylindrical matte white electric base, natural wood-grain textured stacking steamer baskets, single white analog timer dial on the front].
+**Tone**: **Kinfolk Magazine Style**, Solo lifestyle scene.
+**Visuals**: **Flatlay (Top-down view)**. Product on a clean wooden desk next to a book and a cup of coffee. Soft shadows.
+**Layout**: **Text inside a clean white area** at the top left.
+**Text**: Text "一人食光" in **Bold Font** above "URBAN SOLO DINING" in **Thin Font**.
+**UI**: Rounded number "05" icon in the corner.
+--no collage, grid, split screen, multiple angles, deformation
+
+|||
+
+9:16 vertical mobile poster, single focused shot.
+**Product**: Strictly restore uploaded product features: [Cylindrical matte white electric base, natural wood-grain textured stacking steamer baskets, single white analog timer dial on the front].
+**Tone**: Massive capacity demonstration. Abundance and quality.
+**Visuals**: Double-layered baskets stacked high, filled with seafood, fish, and buns. Symmetrical composition.
+**Layout**: **Magazine Layout** with a large Arch Mask at the bottom half.
+**Text**: Text "12L双层容量" in **Massive Bold Font** above "FAMILY SIZE CAPACITY" in **Thin Font with Wide Spacing**.
+**UI**: Semi-circular decorative lines echoing the rounded base.
+--no collage, grid, split screen, multiple angles, deformation
+
+========================================
+
+模型: nano-banana-2-4k
+比例: 9:16
+时间: 2026-01-13_18-09-19

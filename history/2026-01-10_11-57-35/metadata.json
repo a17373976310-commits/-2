@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-01-10_11-57-35",
+  "model": "nano-banana-2-2k",
+  "ratio": "4:3",
+  "nodeType": "IMAGE_GEN",
+  "hasOriginalImage": false,
+  "hasGeneratedImage": true,
+  "originalPrompt": "```json\n{\n  \"nano_banana_en\": \"[Visual Description]\\n\\\"A high-end fashion half-body portrait of an elegant female model. She is strictly wearing the jewelry set from the reference image: the intricate marquise-cut crystal tiara, the V-shaped statement necklace with the prominent pear-shaped teardrop pendant, and the matching chandelier earrings. The model is wearing a luxurious off-shoulder silk evening dress in a neutral tone (champagne or midnight blue). The setting is a sophisticated, softly blurred architectural background with warm ambient light. Lighting is 'Glamour Studio Lighting', creating sharp reflections on the crystals and a soft glow on the model's skin. The product DNA—the specific scrollwork and teardrop focal point—must be perfectly preserved.\\\"\\n\\n[Text & UI Layout]\\n\\\"***Layout Style**: Luxury Editorial (奢侈品杂志排版).\\nText Rendering Instructions:\\n1. **Main Title**: 内容: \\\"PURE ELEGANCE\\\". Position: [Top Center]. Style: [Elegant Serif, Spaced Out]. Color: [Silver/White].\\n2. **Sub Title**: 内容: \\\"璀璨华章 永恒之美\\\". Style: [Clean Sans-serif, Vertical on the right].\\n3. **Brand**: 内容: \\\"NANOBANANA JEWELRY\\\". Style: [Small minimalist font at bottom center].\\\"\",\n  \"seadream_cn\": \"[Visual Description]\\n\\\"一位气质高贵的模特半身人像摄影。模特精准佩戴参考图中的水晶首饰全套：包括那顶精细的马眼形切割水晶皇冠、带有梨形水滴吊坠的V型项链以及配套的耳坠。模特身着一件优雅的露肩绸缎礼服，裙子质感细腻。背景为虚化的欧式古典建筑室内或高级摄影棚背景。光效采用典型的‘珠宝人像光’，确保每一颗水晶的切割面都闪耀夺目，同时模特的皮肤呈现细腻的绸缎感。首饰的物理结构、水滴形状和银色色泽必须与原图高度一致。\\\"\\n\\n[Text & UI Layout]\\n\\\"***Layout Style**: Fashion Poster (时尚海报布局).\\nText Rendering Instructions:\\n1. **主标题**: 内容: \\\"璀璨之约\\\". Position: [画面侧边负空间]. Style: [艺术衬线体，带轻微投影].\\n2. **副标题**: 内容: \\\"THE ROYAL CRYSTAL COLLECTION\\\". Style: [全大写现代无衬线体].\\n3. **说明文案**: 内容: \\\"匠心打磨每一颗璀璨，只为衬托你的光芒。\\\". Style: [纤细的中文字体，位于底部].\\\"\",\n  \"layout_logic\": \"整体采用人像摄影的经典构图，首饰作为视觉中心。文字排版避开模特面部和首饰主体，利用背景的留白区域进行平衡。建议画面比例为3:4或9:16以增强视觉冲击力。\"\n}\n```",
+  "optimizedPrompt": ""
+}

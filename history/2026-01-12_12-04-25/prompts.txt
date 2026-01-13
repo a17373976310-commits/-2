@@ -1,0 +1,21 @@
+原始提示词:
+{
+  "action": "generate_image",
+  "prompt": "Professional industrial design studio render of a black metal rack frame standing upright. The structure features matte black powder-coated metal tubing with a satin finish, X-shaped cross-bracing on the sides, and a black wire mesh shelf at the bottom. Detail focus on the joinery and caster wheels. Lighting is a shadowless softbox setup to evenly illuminate the dark material without losing detail, featuring subtle rim lighting to define the edges. Background is absolutely pure white (#FFFFFF) with no floor shadows. 85mm lens, 4K resolution, Octane Render style, hyper-realistic, pristine condition.",
+  "aspect_ratio": "3:4"
+}
+
+========================================
+
+优化后的提示词:
+{
+  "action": "generate_image",
+  "prompt": "Professional industrial design studio render of a black metal rack frame standing upright. The structure features matte black powder-coated metal tubing with a satin finish, X-shaped cross-bracing on the sides, and a black wire mesh shelf at the bottom. Detail focus on the joinery and caster wheels. Lighting is a shadowless softbox setup to evenly illuminate the dark material without losing detail, featuring subtle rim lighting to define the edges. Background is absolutely pure white (#FFFFFF) with no floor shadows. 85mm lens, 4K resolution, Octane Render style, hyper-realistic, pristine condition.",
+  "aspect_ratio": "3:4"
+}
+
+========================================
+
+模型: nano-banana-2-4k
+比例: 3:4
+时间: 2026-01-12_12-04-25

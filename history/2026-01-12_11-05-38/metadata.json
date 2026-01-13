@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-01-12_11-05-38",
+  "model": "nano-banana-2",
+  "ratio": "3:4",
+  "nodeType": "IMAGE_GEN",
+  "hasOriginalImage": false,
+  "hasGeneratedImage": true,
+  "originalPrompt": "```json\n{\n  \"nano_banana_en\": \"[Visual Description]\\nA precise outpainting task to convert the current 1:1 image to a 3:4 vertical aspect ratio. \\n[Subject Lock]: Strictly lock the central pixels of the dual-head electric shaver and the surrounding blue electrical discharge effects. \\n[Background Extrapolation]: Extend the background vertically (upward and downward) using the existing high-tech dark blue aesthetic. Maintain the soft light gradients and the metallic texture of the base. \\n[Lighting]: Ensure consistency of the cool blue studio lighting across the newly generated areas. No new objects or artifacts should be added.\\n\\n[Text & UI Layout]\\n***Layout Style**: Precise Text Preservation.\\nText Rendering Instructions:\\n1. Maintain all existing text content (\\\"精钢双环 瞬息净剃\\\", \\\"德国工艺 · 自动研磨不卡须\\\", \\\"原厂升级\\\", \\\"全身水洗\\\") in their current positions relative to the product.\\n2. In the 3:4 frame, center the product and text cluster vertically to ensure a balanced commercial composition.\",\n  \"seadream_cn\": \"[画面描述]\\n这是一个精确的扩图任务，将现有的 1:1 图片修改为 3:4 纵向比例。\\n[主体锁定]：严格锁定中心区域的双环剃须刀头以及周围的蓝色电光特效。背景部分通过纹理外推向上下延伸，保持深蓝色高科技背景、金属拉丝底座感以及柔和的光影过渡。\\n[光影一致性]：确保新增区域的冷色调商业摄影光效与原图完全一致，严禁在画面中生成任何无关的新物体或幻觉元素。\\n\\n[文案与排版逻辑]\\n***排版风格**：文字锁定与垂直居中。\\n排版指令：\\n1. 完整保留原图所有文案内容（“精钢双环 瞬息净剃”、“德国工艺”、“原厂升级”、“全身水洗”）。\\n2. 在 3:4 的构图中，保持产品与文案的相对位置不变，并整体在垂直方向上进行居中优化，确保电商视觉平衡感。\",\n  \"layout_logic\": \"1. 采用“纹理外推”技术，利用 3:4 多出的垂直空间增加背景的深邃感。 2. 保持产品主体处于视觉中心（Golden Ratio），上下延伸出的留白区域可增强光影的呼吸感。 3. 锁定文案图层，确保文字清晰度与原图一致，不发生形变。\"\n}\n```",
+  "optimizedPrompt": ""
+}

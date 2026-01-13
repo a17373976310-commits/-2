@@ -1,0 +1,25 @@
+原始提示词:
+```json
+{
+  "nano_banana_en": "[Visual Description]\n\"A high-end bridal fashion portrait. A stunning model is elegantly wearing the exact royal gold tiara, necklace, and earrings from the reference image, featuring prominent cobalt blue teardrop-shaped sapphires and clear crystals. A delicate, translucent white lace wedding veil is attached behind the crown, cascading gracefully over her hair and shoulders. The lighting is professional studio softbox lighting, creating sharp glints on the gems and a soft glow on the model's skin. The composition is a medium close-up shot.\"\n\n[Text & UI Layout]\n\"***Layout Style**: Pure Visual (无文案纯净版).\nInstructions: Focus entirely on the realistic integration of the jewelry DNA onto the model. No text overlays. Maintain 100% fidelity of the blue sapphire arrangement and the gold filigree pattern from the original product.\"",
+  "seadream_cn": "[Visual Description]\n\"一张高级婚纱珠宝时尚大片。一位气质冷艳的模特完美佩戴着参考图中的金色蓝宝石皇冠套装（包含皇冠、项链、耳环），皇冠上的深蓝色水滴形主石与碎钻闪耀夺目。皇冠后方佩戴着一层轻盈剔透的白色长款蕾丝头纱，头纱自然垂坠，富有层次感。画面采用经典的人像布光，精准捕捉珠宝的金属质感与宝石的火彩。模特妆容优雅，神态端庄。\"\n\n[Text & UI Layout]\n\"***Layout Style**: 场景融合排版.\n排版指令：画面不添加任何额外文案，保持极致的纯净感，视觉中心锁定在模特佩戴的皇冠与珠宝细节上。确保皇冠的几何结构和宝石颜色与原图完全一致。\"",
+  "layout_logic": "采用中景人像构图（Medium Close-up），将皇冠置于画面的视觉黄金分割点上方。通过浅景深效果虚化背景，并利用头纱的半透明质感增加画面的纵深感与唯美氛围，确保珠宝套装在模特身上呈现出自然的透视关系与受光面。"
+}
+```
+
+========================================
+
+优化后的提示词:
+```json
+{
+  "nano_banana_en": "[Visual Description]\n\"A high-end bridal fashion portrait. A stunning model is elegantly wearing the exact royal gold tiara, necklace, and earrings from the reference image, featuring prominent cobalt blue teardrop-shaped sapphires and clear crystals. A delicate, translucent white lace wedding veil is attached behind the crown, cascading gracefully over her hair and shoulders. The lighting is professional studio softbox lighting, creating sharp glints on the gems and a soft glow on the model's skin. The composition is a medium close-up shot.\"\n\n[Text & UI Layout]\n\"***Layout Style**: Pure Visual (无文案纯净版).\nInstructions: Focus entirely on the realistic integration of the jewelry DNA onto the model. No text overlays. Maintain 100% fidelity of the blue sapphire arrangement and the gold filigree pattern from the original product.\"",
+  "seadream_cn": "[Visual Description]\n\"一张高级婚纱珠宝时尚大片。一位气质冷艳的模特完美佩戴着参考图中的金色蓝宝石皇冠套装（包含皇冠、项链、耳环），皇冠上的深蓝色水滴形主石与碎钻闪耀夺目。皇冠后方佩戴着一层轻盈剔透的白色长款蕾丝头纱，头纱自然垂坠，富有层次感。画面采用经典的人像布光，精准捕捉珠宝的金属质感与宝石的火彩。模特妆容优雅，神态端庄。\"\n\n[Text & UI Layout]\n\"***Layout Style**: 场景融合排版.\n排版指令：画面不添加任何额外文案，保持极致的纯净感，视觉中心锁定在模特佩戴的皇冠与珠宝细节上。确保皇冠的几何结构和宝石颜色与原图完全一致。\"",
+  "layout_logic": "采用中景人像构图（Medium Close-up），将皇冠置于画面的视觉黄金分割点上方。通过浅景深效果虚化背景，并利用头纱的半透明质感增加画面的纵深感与唯美氛围，确保珠宝套装在模特身上呈现出自然的透视关系与受光面。"
+}
+```
+
+========================================
+
+模型: nano-banana-2-2k
+比例: 1:1
+时间: 2026-01-10_11-45-20

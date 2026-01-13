@@ -17,6 +17,9 @@ import socketserver
 HISTORY_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "history")
 # 模板保存目录
 TEMPLATES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
+# 工作流保存目录
+WORKFLOWS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "workflows")
+WORKFLOWS_FILE = os.path.join(WORKFLOWS_DIR, "workflows.json")
 
 class HistoryHandler(BaseHTTPRequestHandler):
     
@@ -37,6 +40,8 @@ class HistoryHandler(BaseHTTPRequestHandler):
             self._handle_template_save()
         elif self.path == "/api/templates/delete":
             self._handle_template_delete()
+        elif self.path == "/api/workflows/save":
+            self._handle_workflow_save()
         else:
             self._send_error(404, "Not Found")
     
@@ -45,6 +50,8 @@ class HistoryHandler(BaseHTTPRequestHandler):
             self._handle_list()
         elif self.path == "/api/templates/list":
             self._handle_template_list()
+        elif self.path == "/api/workflows/list":
+            self._handle_workflow_list()
         elif self.path.startswith("/api/history/files/"):
             self._handle_serve_file()
         else:
@@ -186,6 +193,36 @@ class HistoryHandler(BaseHTTPRequestHandler):
         except Exception as e:
             self._send_error(500, str(e))
 
+    def _handle_workflow_list(self):
+        """获取所有保存的工作流"""
+        try:
+            if os.path.exists(WORKFLOWS_FILE):
+                with open(WORKFLOWS_FILE, "r", encoding="utf-8") as f:
+                    workflows = json.load(f)
+            else:
+                workflows = []
+            self._send_json({"workflows": workflows})
+        except Exception as e:
+            self._send_error(500, str(e))
+    
+    def _handle_workflow_save(self):
+        """保存工作流列表"""
+        try:
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length)
+            data = json.loads(post_data.decode('utf-8'))
+            
+            workflows = data.get("workflows", [])
+            
+            os.makedirs(WORKFLOWS_DIR, exist_ok=True)
+            with open(WORKFLOWS_FILE, "w", encoding="utf-8") as f:
+                json.dump(workflows, f, ensure_ascii=False, indent=2)
+            
+            self._send_json({"success": True, "count": len(workflows)})
+            print(f"✓ 工作流已保存: 共 {len(workflows)} 个")
+        except Exception as e:
+            self._send_error(500, str(e))
+
     def _handle_serve_file(self):
         try:
             # 路径格式: /api/history/files/{folder}/{filename}
@@ -247,6 +284,7 @@ class ThreadingHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
 def main():
     os.makedirs(HISTORY_DIR, exist_ok=True)
     os.makedirs(TEMPLATES_DIR, exist_ok=True)
+    os.makedirs(WORKFLOWS_DIR, exist_ok=True)
     
     server = ThreadingHTTPServer(("localhost", 5001), HistoryHandler)
     print("=" * 50)

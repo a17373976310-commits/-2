@@ -1,0 +1,25 @@
+原始提示词:
+```json
+{
+  "nano_banana_en": "[Visual Description]\n\"A high-end bridal portrait of an elegant model. Subject Lock: The model is wearing the exact silver crystal tiara from the reference image, featuring its distinctive multi-pointed peaks, intricate lace-like filigree, and prominent teardrop-shaped central crystals. A sheer, ethereal white tulle veil is attached to the back of the tiara, cascading gracefully behind the model. The model has a sophisticated updo hairstyle to showcase the jewelry.\"\n\n[Technical Instructions]\n\"Lighting: Commercial jewelry lighting (bright, sharp reflections to emphasize the diamond fire). Camera: Macro portrait lens, shallow depth of field. Maintain 100% fidelity of the tiara's geometry and metallic texture. Background: Soft, neutral-toned blurred studio setting.\"",
+  "seadream_cn": "[画面描述]\n\"高级婚纱珠宝人像摄影。一位气质高雅的模特正佩戴着参考图中的那款璀璨银色皇冠。核心特征锁定：皇冠的镂空尖顶设计、水滴形和马眼形切割的大颗主钻布局必须保持像素级还原。模特脑后系着轻盈通透的白色长款薄纱头纱，营造出神圣唯美的婚礼氛围。\"\n\n[光影与构图]\n\"构图：特写模特上半身，皇冠位于视觉焦点。光影：采用商业珠宝布光，在皇冠表面产生晶莹的火彩反射。背景：极简柔焦灰色背景，突出模特的肤质与珠宝的精致感。\"",
+  "layout_logic": "此修改任务属于‘场景迁移’，核心逻辑在于锁定皇冠的3D DNA（形状、材质、宝石排列），并将其自然地‘穿戴’在模特头部。构图建议采用垂直中心对称，利用头纱的垂直线条感引导视觉关注皇冠主体。"
+}
+```
+
+========================================
+
+优化后的提示词:
+```json
+{
+  "nano_banana_en": "[Visual Description]\n\"A high-end bridal portrait of an elegant model. Subject Lock: The model is wearing the exact silver crystal tiara from the reference image, featuring its distinctive multi-pointed peaks, intricate lace-like filigree, and prominent teardrop-shaped central crystals. A sheer, ethereal white tulle veil is attached to the back of the tiara, cascading gracefully behind the model. The model has a sophisticated updo hairstyle to showcase the jewelry.\"\n\n[Technical Instructions]\n\"Lighting: Commercial jewelry lighting (bright, sharp reflections to emphasize the diamond fire). Camera: Macro portrait lens, shallow depth of field. Maintain 100% fidelity of the tiara's geometry and metallic texture. Background: Soft, neutral-toned blurred studio setting.\"",
+  "seadream_cn": "[画面描述]\n\"高级婚纱珠宝人像摄影。一位气质高雅的模特正佩戴着参考图中的那款璀璨银色皇冠。核心特征锁定：皇冠的镂空尖顶设计、水滴形和马眼形切割的大颗主钻布局必须保持像素级还原。模特脑后系着轻盈通透的白色长款薄纱头纱，营造出神圣唯美的婚礼氛围。\"\n\n[光影与构图]\n\"构图：特写模特上半身，皇冠位于视觉焦点。光影：采用商业珠宝布光，在皇冠表面产生晶莹的火彩反射。背景：极简柔焦灰色背景，突出模特的肤质与珠宝的精致感。\"",
+  "layout_logic": "此修改任务属于‘场景迁移’，核心逻辑在于锁定皇冠的3D DNA（形状、材质、宝石排列），并将其自然地‘穿戴’在模特头部。构图建议采用垂直中心对称，利用头纱的垂直线条感引导视觉关注皇冠主体。"
+}
+```
+
+========================================
+
+模型: nano-banana-2-2k
+比例: 4:3
+时间: 2026-01-10_11-48-09

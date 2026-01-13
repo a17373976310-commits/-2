@@ -9,10 +9,11 @@ interface IntentParserUIProps {
     onUpdate: (id: string, data: any) => void;
     apiConfig: ApiConfig;
     isPaused?: boolean;
+    globalCategoryModel?: string;
 }
 
 export const IntentParserUI: React.FC<IntentParserUIProps> = ({
-    node, onUpdate, apiConfig, isPaused
+    node, onUpdate, apiConfig, isPaused, globalCategoryModel
 }) => {
     const [loading, setLoading] = useState(false);
     const [input, setInput] = useState(node.data.input || '');
@@ -45,7 +46,13 @@ export const IntentParserUI: React.FC<IntentParserUIProps> = ({
         用户输入：${input}
       `;
 
-            const response = await apiService.chatPro(prompt, 'gemini-3-flash-preview', provider);
+            const response = await apiService.chatPro(
+                prompt,
+                globalCategoryModel || 'gemini-3-flash-preview',
+                provider,
+                [],
+                node.data.promptEngineering
+            );
 
             // Try to parse JSON from response
             let parsedIntents = [];
