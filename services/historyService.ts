@@ -167,6 +167,32 @@ class HistoryService {
     }
 
     /**
+     * 清理工作流数据中的大型 base64 图片，避免 localStorage 爆掉
+     */
+    private cleanWorkflowForStorage(workflow: any): any {
+        if (!workflow || !workflow.nodes) return workflow;
+
+        return {
+            ...workflow,
+            nodes: workflow.nodes.map((node: any) => ({
+                ...node,
+                data: {
+                    ...node.data,
+                    // 清除所有可能的 base64 图片字段
+                    result: undefined,
+                    referenceImage: undefined,
+                    backgroundImage: undefined,
+                    generatedImages: undefined,
+                    sourceImages: undefined,
+                    slicedImages: undefined,
+                    svgPreview: undefined,
+                    imageUrl: undefined,
+                }
+            }))
+        };
+    }
+
+    /**
      * 保存工作流
      */
     async saveWorkflows(workflows: any[]): Promise<{ success: boolean; error?: string }> {
@@ -180,12 +206,25 @@ class HistoryService {
                 const error = await response.json();
                 return { success: false, error: error.error || "保存失败" };
             }
-            // Also save to localStorage as backup
-            localStorage.setItem('gemini_workflows', JSON.stringify(workflows));
+            // 保存轻量版本到 localStorage 作为备份（只保留最近2个，去除图片数据）
+            const lightWorkflows = workflows.slice(0, 2).map(w => this.cleanWorkflowForStorage(w));
+            try {
+                localStorage.setItem('gemini_workflows', JSON.stringify(lightWorkflows));
+            } catch (e) {
+                // 如果还是太大，清空 localStorage
+                console.warn('localStorage 存储失败，清空缓存');
+                localStorage.removeItem('gemini_workflows');
+            }
             return { success: true };
         } catch (error: any) {
-            // Fallback to localStorage if server is not available
-            localStorage.setItem('gemini_workflows', JSON.stringify(workflows));
+            // Fallback to localStorage if server is not available（同样使用轻量版本）
+            const lightWorkflows = workflows.slice(0, 2).map(w => this.cleanWorkflowForStorage(w));
+            try {
+                localStorage.setItem('gemini_workflows', JSON.stringify(lightWorkflows));
+            } catch (e) {
+                console.warn('localStorage 存储失败，清空缓存');
+                localStorage.removeItem('gemini_workflows');
+            }
             return { success: true };
         }
     }

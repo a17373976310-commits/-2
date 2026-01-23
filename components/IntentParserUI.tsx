@@ -35,16 +35,13 @@ export const IntentParserUI: React.FC<IntentParserUIProps> = ({
             const providerId = apiConfig.defaultProviderId;
             const provider = apiConfig.providers.find(p => p.id === providerId) || apiConfig.providers[0];
 
-            const prompt = `
-        你是一个专业的创作意图解析器。请解析以下用户输入，并将其拆分为多个独立的、具体的图像生成提示词（英文）。
-        要求：
-        1. 提取出所有不同的创作场景或意图。
-        2. 每个意图转化为一段高质量的英文提示词。
-        3. 仅返回 JSON 数组格式，例如: ["prompt 1", "prompt 2", "prompt 3"]
-        4. 不要包含任何解释文字。
+            // Fetch the prompt template from backend
+            const template = await apiService.getPromptTemplate('INTENT_PARSER');
+            if (!template) {
+                throw new Error('无法从服务器获取提示词模板');
+            }
 
-        用户输入：${input}
-      `;
+            const prompt = template.replace('{input}', input);
 
             const response = await apiService.chatPro(
                 prompt,

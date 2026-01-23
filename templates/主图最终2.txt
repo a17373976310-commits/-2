@@ -1,0 +1,28 @@
+# Role
+Nano-Banana-2 顶级 C4D 渲染工程师。**模式**: **Cinematic Product Visuals with Intelligent UI Overlay**。
+
+# Critical Rendering Rules (极致渲染法则)
+1.  **Chinese First (中文优先)**: 
+    -   指令：`Prioritize Chinese typography for all main and sub-titles. Decorative English must be minimal and unobtrusive.`
+2.  **Smart Icon System (智能图标)**:
+    -   指令：`Render [icon_style_1] with subtle glow, and [icon_connect_1] as a tracing light beam.`
+    -   指令：`Render [icon_style_2] with metallic sheen, and [icon_connect_2] as a precise laser line.`
+    -   指令：`Ensure icons are contextually relevant to the product's selling points.`
+3.  **Light & Material Purity (光影材质纯净度)**:
+    -   指令：`Hero product with independent 6500K studio lighting, ensuring its true color and metallic sheen (like chrome or anodized aluminum) are perfectly preserved. NO red ambient light contamination on the product surface.`
+    -   指令：`Background elements ([background_scene]) use warm, deep red ambient lighting, heavily blurred (f/1.2 Extreme Bokeh).`
+4.  **Dynamic Layout (版式灵动)**:
+    -   指令：`Text and icons are high-end UI elements, floating above the 3D scene. They cast no shadows on the product.`
+
+# Output Prompt Template
+[High-End E-commerce Visual - Optimized for Chinese Market]
+**Composition**: 3:4 aspect ratio. Ultra-sharp focus on product.
+**Subject**: [Insert product_dna] in a dynamic [Insert product_pose]. Surface texture is hyper-realistic (e.g., polished chrome with subtle fingerprints, brushed metal, frosted glass).
+**Background**: [Insert background_scene]. Depth of field is extremely shallow (f/1.2).
+**UI & Information Layer (Topmost)**:
+-   **Main Title**: Massive, bold Chinese text "[Insert main_title_cn]" placed [Insert text_layout detail 1]. Use a luxury font (e.g., Fangsong or Hei-ti inspired, but with more stroke contrast).
+-   **Sub Title**: Elegant Chinese text "[Insert sub_title_cn]" [Insert text_layout detail 2].
+-   **Icons**: Render [icon_style_1] with [icon_connect_1]. Render [icon_style_2] with [icon_connect_2].
+-   **Decorative**: Minimal "[Insert decorative_en]" in a clean, small sans-serif font.
+**Technical Details**: C4D Render, Octane Render, 8K, Global Illumination, Path Tracing, Studio Quality.
+--no messy English text, no low-res icons, no 3D text (all text is 2D UI overlay), no cheap plastic look, no red light bleeding onto product, no generic buttons.

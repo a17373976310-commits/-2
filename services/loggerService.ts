@@ -8,7 +8,7 @@ class LoggerService {
   private listeners: Set<LogListener> = new Set();
   private history: LogEntry[] = [];
 
-  private constructor() {}
+  private constructor() { }
 
   static getInstance() {
     if (!LoggerService.instance) {
@@ -36,7 +36,7 @@ class LoggerService {
     this.history.push(entry);
     if (this.history.length > 200) this.history.shift(); // 保持最近200条
     this.listeners.forEach(l => l(entry));
-    
+
     // 同时打印到浏览器控制台以便调试
     const styles = {
       info: 'color: #3b82f6',
@@ -55,6 +55,10 @@ class LoggerService {
   clear() {
     this.history = [];
     // 强制触发一次空更新（可选）
+  }
+
+  getHistory(): LogEntry[] {
+    return [...this.history];
   }
 }
 

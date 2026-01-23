@@ -60,7 +60,7 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({ onClose, onImageClic
                                 暂无历史记录
                             </div>
                         ) : (
-                            records.map((record) => (
+                            records.slice(0, 4).map((record) => (
                                 <div
                                     key={record.folderName}
                                     onClick={() => setSelectedRecord(record)}

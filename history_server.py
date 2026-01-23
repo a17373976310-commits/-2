@@ -12,6 +12,8 @@ from datetime import datetime
 from urllib.parse import parse_qs
 import mimetypes
 import socketserver
+import urllib.request
+import ssl
 
 # 历史记录保存目录
 HISTORY_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "history")
@@ -52,6 +54,8 @@ class HistoryHandler(BaseHTTPRequestHandler):
             self._handle_template_list()
         elif self.path == "/api/workflows/list":
             self._handle_workflow_list()
+        elif self.path.startswith("/api/prompts/get"):
+            self._handle_prompt_get()
         elif self.path.startswith("/api/history/files/"):
             self._handle_serve_file()
         else:
@@ -70,11 +74,11 @@ class HistoryHandler(BaseHTTPRequestHandler):
             
             # 保存原始图片
             if data.get("originalImage"):
-                self._save_base64_image(data["originalImage"], os.path.join(record_dir, "original_image.png"))
+                self._save_image(data["originalImage"], os.path.join(record_dir, "original_image.png"))
             
             # 保存生成图片
             if data.get("generatedImage"):
-                self._save_base64_image(data["generatedImage"], os.path.join(record_dir, "generated_image.png"))
+                self._save_image(data["generatedImage"], os.path.join(record_dir, "generated_image.png"))
             
             # 保存提示词
             prompts_content = f"""原始提示词:
@@ -223,6 +227,24 @@ class HistoryHandler(BaseHTTPRequestHandler):
         except Exception as e:
             self._send_error(500, str(e))
 
+    def _handle_prompt_get(self):
+        """获取提示词模板"""
+        try:
+            from prompts import PROMPTS
+            query = parse_qs(self.path.split('?')[1]) if '?' in self.path else {}
+            name = query.get('name', [None])[0]
+            
+            if not name:
+                self._send_json({"prompts": PROMPTS})
+            elif name in PROMPTS:
+                self._send_json({"prompt": PROMPTS[name]})
+            else:
+                self._send_error(404, f"Prompt template '{name}' not found")
+        except ImportError:
+            self._send_error(500, "prompts.py not found on server")
+        except Exception as e:
+            self._send_error(500, str(e))
+
     def _handle_serve_file(self):
         try:
             # 路径格式: /api/history/files/{folder}/{filename}
@@ -250,13 +272,33 @@ class HistoryHandler(BaseHTTPRequestHandler):
         except Exception as e:
             self._send_error(500, str(e))
     
-    def _save_base64_image(self, base64_data: str, file_path: str):
-        # 移除 data:image/xxx;base64, 前缀
-        if "," in base64_data:
-            base64_data = base64_data.split(",")[1]
-        image_data = base64.b64decode(base64_data)
-        with open(file_path, "wb") as f:
-            f.write(image_data)
+    def _save_image(self, data_or_url: str, file_path: str):
+        if data_or_url.startswith(("http://", "https://")):
+            # 下载 URL 图片
+            print(f"  ⬇️ 正在下载图片: {data_or_url}")
+            try:
+                # 忽略 SSL 证书错误 (针对某些代理)
+                ctx = ssl.create_default_context()
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
+                
+                with urllib.request.urlopen(data_or_url, context=ctx, timeout=30) as response:
+                    image_data = response.read()
+                    with open(file_path, "wb") as f:
+                        f.write(image_data)
+                print(f"  ✓ 下载完成: {file_path}")
+            except Exception as e:
+                print(f"  ✗ 下载失败: {str(e)}")
+                # 如果下载失败，保存 URL 文本作为备忘
+                with open(file_path + ".url.txt", "w") as f:
+                    f.write(data_or_url)
+        else:
+            # 处理 base64
+            if "," in data_or_url:
+                data_or_url = data_or_url.split(",")[1]
+            image_data = base64.b64decode(data_or_url)
+            with open(file_path, "wb") as f:
+                f.write(image_data)
     
     def _send_json(self, data):
         response = json.dumps(data, ensure_ascii=False)

@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# History images
+history/
+
+# Workflow data (too large for GitHub)
+workflows/workflows.json
+

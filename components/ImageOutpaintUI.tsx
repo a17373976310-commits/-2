@@ -26,13 +26,24 @@ export const ImageOutpaintUI: React.FC<ImageOutpaintUIProps> = ({ node, onUpdate
 
     // Internal state from node data or defaults
     const {
-        x = 0.5, // normalized 0-1
-        y = 0.5,
+        x: initialX = 0.5,
+        y: initialY = 0.5,
         ratio = '1:1',
-        scale = 0.8, // how much of the canvas the image fills initially
+        scale: initialScale = 0.8,
         resolution = '2k',
         isLocked = false
     } = node.data.outpaint || {};
+
+    const [localX, setLocalX] = useState(initialX);
+    const [localY, setLocalY] = useState(initialY);
+    const [localScale, setLocalScale] = useState(initialScale);
+
+    // Sync local state when node data changes (e.g. from other nodes)
+    useEffect(() => {
+        setLocalX(initialX);
+        setLocalY(initialY);
+        setLocalScale(initialScale);
+    }, [initialX, initialY, initialScale]);
 
     const currentRatio = useMemo(() => RATIOS.find(r => r.label === ratio)?.value || 1, [ratio]);
 
@@ -72,18 +83,15 @@ export const ImageOutpaintUI: React.FC<ImageOutpaintUIProps> = ({ node, onUpdate
         }
     }, [imageUrl]);
 
-    const updatePos = (newX: number, newY: number) => {
-        onUpdate(node.id, {
-            ...node.data,
-            outpaint: { ...node.data.outpaint, x: newX, y: newY, ratio, scale, resolution, isLocked, imageRatio }
-        });
-    };
-
     const handleWheel = (e: React.WheelEvent) => {
         if (!isFullscreen) return;
         e.preventDefault();
         const delta = e.deltaY > 0 ? -0.05 : 0.05;
-        const nextScale = Math.max(0.1, Math.min(2.0, scale + delta));
+        const nextScale = Math.max(0.1, Math.min(2.0, localScale + delta));
+        setLocalScale(nextScale);
+
+        // For wheel, we can debounce or just update after a short delay
+        // But for now, let's just update global state to keep it simple but less frequent than mousemove
         onUpdate(node.id, {
             ...node.data,
             outpaint: { ...node.data.outpaint, scale: nextScale, imageRatio }
@@ -96,20 +104,28 @@ export const ImageOutpaintUI: React.FC<ImageOutpaintUIProps> = ({ node, onUpdate
 
         const startX = e.clientX;
         const startY = e.clientY;
-        const initialX = x;
-        const initialY = y;
+        const startPosX = localX;
+        const startPosY = localY;
+
+        let lastX = startPosX;
+        let lastY = startPosY;
 
         const onMouseMove = (moveEvent: MouseEvent) => {
             const dx = (moveEvent.clientX - startX) / rect.width;
             const dy = (moveEvent.clientY - startY) / rect.height;
 
-            const nextX = Math.max(-0.2, Math.min(1.2, initialX + dx));
-            const nextY = Math.max(-0.2, Math.min(1.2, initialY + dy));
+            lastX = Math.max(-0.2, Math.min(1.2, startPosX + dx));
+            lastY = Math.max(-0.2, Math.min(1.2, startPosY + dy));
 
-            updatePos(nextX, nextY);
+            setLocalX(lastX);
+            setLocalY(lastY);
         };
 
         const onMouseUp = () => {
+            onUpdate(node.id, {
+                ...node.data,
+                outpaint: { ...node.data.outpaint, x: lastX, y: lastY, ratio, scale: localScale, resolution, isLocked, imageRatio }
+            });
             window.removeEventListener('mousemove', onMouseMove);
             window.removeEventListener('mouseup', onMouseUp);
         };
@@ -119,28 +135,28 @@ export const ImageOutpaintUI: React.FC<ImageOutpaintUIProps> = ({ node, onUpdate
     };
 
     const align = (dir: 'left' | 'right' | 'top' | 'bottom' | 'center') => {
-        let nextX = x;
-        let nextY = y;
+        let nextX = localX;
+        let nextY = localY;
 
         // Calculate the image's height fraction relative to the canvas height
-        // Image width (as fraction of canvas width) = scale
-        // Image height (as fraction of canvas height) = scale * effectiveRatioValue / imageRatio
-        const imageHeightFraction = scale * effectiveRatioValue / imageRatio;
+        // Image width (as fraction of canvas width) = localScale
+        // Image height (as fraction of canvas height) = localScale * effectiveRatioValue / imageRatio
+        const imageHeightFraction = localScale * effectiveRatioValue / imageRatio;
 
         // For "snap to edge":
-        // Left: image center X = scale / 2 (so left edge is at 0)
-        // Right: image center X = 1 - scale / 2 (so right edge is at 1)
+        // Left: image center X = localScale / 2 (so left edge is at 0)
+        // Right: image center X = 1 - localScale / 2 (so right edge is at 1)
         // Top: image center Y = imageHeightFraction / 2
         // Bottom: image center Y = 1 - imageHeightFraction / 2
-        if (dir === 'left') nextX = scale / 2;
-        if (dir === 'right') nextX = 1 - scale / 2;
+        if (dir === 'left') nextX = localScale / 2;
+        if (dir === 'right') nextX = 1 - localScale / 2;
         if (dir === 'top') nextY = imageHeightFraction / 2;
         if (dir === 'bottom') nextY = 1 - imageHeightFraction / 2;
         if (dir === 'center') { nextX = 0.5; nextY = 0.5; }
 
         onUpdate(node.id, {
             ...node.data,
-            outpaint: { ...node.data.outpaint, x: nextX, y: nextY, ratio, scale, resolution, isLocked, imageRatio }
+            outpaint: { ...node.data.outpaint, x: nextX, y: nextY, ratio, scale: localScale, resolution, isLocked, imageRatio }
         });
     };
 
@@ -168,9 +184,9 @@ export const ImageOutpaintUI: React.FC<ImageOutpaintUIProps> = ({ node, onUpdate
                 <div
                     className="absolute transition-transform duration-75 ease-out"
                     style={{
-                        left: `${x * 100}%`,
-                        top: `${y * 100}%`,
-                        width: `${scale * 100}%`,
+                        left: `${localX * 100}%`,
+                        top: `${localY * 100}%`,
+                        width: `${localScale * 100}%`,
                         height: 'auto',
                         transform: 'translate(-50%, -50%)',
                         boxShadow: '0 0 40px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.1)'
@@ -199,7 +215,7 @@ export const ImageOutpaintUI: React.FC<ImageOutpaintUIProps> = ({ node, onUpdate
                 {RATIOS.map(r => (
                     <button
                         key={r.label}
-                        onClick={() => onUpdate(node.id, { ...node.data, outpaint: { ...node.data.outpaint, ratio: r.label, x, y, scale, resolution, isLocked, imageRatio } })}
+                        onClick={() => onUpdate(node.id, { ...node.data, outpaint: { ...node.data.outpaint, ratio: r.label, x: localX, y: localY, scale: localScale, resolution, isLocked, imageRatio } })}
                         className={`px-2 py-1 rounded-md text-[9px] font-bold transition-all border ${ratio === r.label
                             ? 'bg-blue-500 border-blue-400 text-white shadow-lg shadow-blue-500/20'
                             : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-500'
@@ -244,7 +260,7 @@ export const ImageOutpaintUI: React.FC<ImageOutpaintUIProps> = ({ node, onUpdate
                     placeholder="例如：延伸的沙滩，更多的办公用品..."
                     className="w-full bg-slate-900 border border-slate-700/50 rounded-xl px-3 py-2 text-[10px] text-slate-300 focus:outline-none focus:ring-1 focus:ring-blue-500/50"
                     value={node.data.outpaint?.prompt || ''}
-                    onChange={(e) => onUpdate(node.id, { ...node.data, outpaint: { ...node.data.outpaint, prompt: e.target.value, resolution, isLocked, imageRatio } })}
+                    onChange={(e) => onUpdate(node.id, { ...node.data, outpaint: { ...node.data.outpaint, prompt: e.target.value, x: localX, y: localY, scale: localScale, resolution, isLocked, imageRatio } })}
                 />
             </div>
 
@@ -315,9 +331,9 @@ export const ImageOutpaintUI: React.FC<ImageOutpaintUIProps> = ({ node, onUpdate
                                         <div
                                             className="absolute transition-transform duration-75 ease-out"
                                             style={{
-                                                left: `${x * 100}%`,
-                                                top: `${y * 100}%`,
-                                                width: `${scale * 100}%`,
+                                                left: `${localX * 100}%`,
+                                                top: `${localY * 100}%`,
+                                                width: `${localScale * 100}%`,
                                                 height: 'auto',
                                                 transform: 'translate(-50%, -50%)',
                                                 boxShadow: '0 0 60px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.1)'
@@ -355,7 +371,7 @@ export const ImageOutpaintUI: React.FC<ImageOutpaintUIProps> = ({ node, onUpdate
                                             <button
                                                 key={r.label}
                                                 disabled={isLocked}
-                                                onClick={() => onUpdate(node.id, { ...node.data, outpaint: { ...node.data.outpaint, ratio: r.label, x, y, scale, resolution, isLocked, imageRatio } })}
+                                                onClick={() => onUpdate(node.id, { ...node.data, outpaint: { ...node.data.outpaint, ratio: r.label, x: localX, y: localY, scale: localScale, resolution, isLocked, imageRatio } })}
                                                 className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all ${ratio === r.label && !isLocked
                                                     ? 'bg-blue-500 border-blue-400 text-white'
                                                     : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-500'
@@ -397,7 +413,7 @@ export const ImageOutpaintUI: React.FC<ImageOutpaintUIProps> = ({ node, onUpdate
                                         placeholder="例如：延伸的沙滩，更多的办公用品..."
                                         className="w-full bg-slate-800 border border-slate-700 rounded-2xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none"
                                         value={node.data.outpaint?.prompt || ''}
-                                        onChange={(e) => onUpdate(node.id, { ...node.data, outpaint: { ...node.data.outpaint, prompt: e.target.value, resolution, isLocked, imageRatio } })}
+                                        onChange={(e) => onUpdate(node.id, { ...node.data, outpaint: { ...node.data.outpaint, prompt: e.target.value, x: localX, y: localY, scale: localScale, resolution, isLocked, imageRatio } })}
                                     />
                                 </div>
 

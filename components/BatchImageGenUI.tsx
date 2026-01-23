@@ -20,6 +20,7 @@ export const BatchImageGenUI: React.FC<BatchImageGenUIProps> = ({
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState('');
     const [currentPrompt, setCurrentPrompt] = useState('');
+    const [isUploadAreaHovered, setIsUploadAreaHovered] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const prompts = node.data.prompts || [];
@@ -156,7 +157,24 @@ export const BatchImageGenUI: React.FC<BatchImageGenUIProps> = ({
                 <label className="text-slate-500 text-[8px] uppercase font-black tracking-widest px-1">参考图片</label>
                 <div
                     onClick={() => fileInputRef.current?.click()}
-                    className="border-2 border-dashed border-slate-800 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer hover:border-blue-500/50 transition-all bg-slate-900/30"
+                    onMouseEnter={() => setIsUploadAreaHovered(true)}
+                    onMouseLeave={() => setIsUploadAreaHovered(false)}
+                    onDragOver={(e) => {
+                        e.preventDefault();
+                        setIsUploadAreaHovered(true);
+                    }}
+                    onDrop={(e) => {
+                        e.preventDefault();
+                        setIsUploadAreaHovered(false);
+                        const imageUrl = e.dataTransfer.getData('text/plain');
+                        if (imageUrl && imageUrl.startsWith('data:image')) {
+                            const currentImages = node.data.images || [];
+                            onUpdate(node.id, { ...node.data, images: [...currentImages, imageUrl] });
+                            logger.success('图片已添加');
+                        }
+                    }}
+                    className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer transition-all min-h-[80px] ${isUploadAreaHovered ? 'border-emerald-500/50 bg-emerald-500/5 ring-2 ring-emerald-500/20' : 'border-slate-800 bg-slate-900/30 hover:border-blue-500/50'}
+                    `}
                 >
                     {images.length > 0 ? (
                         <div className="flex gap-2 overflow-x-auto w-full no-scrollbar">

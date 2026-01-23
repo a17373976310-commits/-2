@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { AppNode, NodeType, PluginMetadata, PluginCategory, Workflow } from './types';
+import { AppNode, NodeType, PluginMetadata, PluginCategory, Workflow, LogEntry } from './types';
 import { PluginLibrary } from './components/PluginLibrary';
 import { NodeUI } from './components/NodeUI';
 import { LiveAudioUI } from './components/LiveAudioUI';
@@ -13,6 +13,7 @@ import { ApiConfig } from './types';
 import { HistoryPanel } from './components/HistoryPanel';
 import { ImageLightbox } from './components/ImageLightbox';
 import { ConnectionLines } from './components/ConnectionLines';
+import { AIChatSidebar } from './components/AIChatSidebar';
 
 const App: React.FC = () => {
   const INITIAL_TRANSFORM = { x: window.innerWidth / 4, y: window.innerHeight / 4, scale: 0.8 };
@@ -38,6 +39,17 @@ const App: React.FC = () => {
   const [showHistory, setShowHistory] = useState(false);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [isPaused, setIsPaused] = useState(false);
+  const [showAIChat, setShowAIChat] = useState(false);
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [logs, setLogs] = useState<LogEntry[]>([]);
+
+  // Subscribe to logs for AI Chat
+  useEffect(() => {
+    const unsubscribe = logger.subscribe((entry) => {
+      setLogs(prev => [...prev.slice(-50), entry]); // Keep last 50 logs
+    });
+    return unsubscribe;
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('apiConfig', JSON.stringify(apiConfig));
@@ -251,8 +263,8 @@ const App: React.FC = () => {
             logger.warn(isPaused ? '已恢复所有任务' : '已暂停所有任务');
           }}
           className={`backdrop-blur-2xl px-4 py-3 rounded-2xl border shadow-2xl flex items-center gap-3 transition-all group ${isPaused
-              ? 'bg-amber-500/20 border-amber-500/50 hover:bg-amber-500/30'
-              : 'bg-slate-900/40 border-white/10 hover:border-white/20 hover:bg-slate-800/60'
+            ? 'bg-amber-500/20 border-amber-500/50 hover:bg-amber-500/30'
+            : 'bg-slate-900/40 border-white/10 hover:border-white/20 hover:bg-slate-800/60'
             }`}
         >
           <div className={`w-8 h-8 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform ${isPaused ? 'bg-amber-500/20 text-amber-400' : 'bg-slate-500/10 text-slate-400'
@@ -319,6 +331,42 @@ const App: React.FC = () => {
       />
 
       <LogPanel />
+
+      {/* AI Chat Toggle Button */}
+      <button
+        onClick={() => setShowAIChat(true)}
+        className="fixed left-6 bottom-24 z-50 backdrop-blur-2xl px-4 py-3 rounded-2xl border shadow-2xl flex items-center gap-3 transition-all group bg-slate-900/60 border-white/10 hover:border-blue-500/50 hover:bg-slate-800/80"
+        title="打开 AI 助手"
+      >
+        <div className="w-8 h-8 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+          </svg>
+        </div>
+        <div className="flex flex-col items-start">
+          <span className="text-white/80 font-black text-[9px] uppercase tracking-widest">AI 助手</span>
+          <span className="text-slate-500 text-[8px] font-mono font-bold uppercase">Chat</span>
+        </div>
+      </button>
+
+      {/* AI Chat Sidebar */}
+      <AIChatSidebar
+        isOpen={showAIChat}
+        onClose={() => setShowAIChat(false)}
+        theme="dark"
+        apiConfig={apiConfig}
+        globalApiKey={apiConfig.providers[0]?.apiKey || ''}
+        nodes={nodes}
+        selectedNodeId={selectedNodeId}
+        onAddNode={(type: string) => {
+          const plugin = PLUGINS.find(p => p.type === type);
+          if (plugin) addNode(plugin);
+        }}
+        onUpdateNode={(id: string, data: any) => {
+          updateNode(id, data);
+        }}
+        logs={logs}
+      />
 
       {contextMenu?.visible && (
         <div

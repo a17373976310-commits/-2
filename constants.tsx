@@ -14,6 +14,10 @@ export const SUGGESTED_MODELS: Record<PluginCategory, { id: string, label: strin
     { id: 'runway-gen-3', label: 'Runway' }
   ],
   [PluginCategory.LOGIC]: [
+    { id: 'gpt-4o', label: 'GPT-4o' },
+    { id: 'gpt-4o-mini', label: 'GPT-4o Mini' },
+    { id: 'o1-preview', label: 'OpenAI o1' },
+    { id: 'o3-mini', label: 'OpenAI o3-mini' },
     { id: 'gpt-5.2', label: 'GPT-5.2' },
     { id: 'gpt-5.2-pro', label: 'GPT-5.2 Pro' },
     { id: 'gemini-3-pro-preview-thinking-*', label: 'Gemini 3 Thinking' },
@@ -67,6 +71,16 @@ export const PLUGINS: PluginMetadata[] = [
     descriptionZh: '将多张图片拼合成网格大图。',
     icon: '🧩',
     color: 'bg-gradient-to-br from-pink-500 to-orange-500'
+  },
+  {
+    type: NodeType.MULTI_IMAGE_GEN,
+    category: PluginCategory.VISUAL,
+    title: 'Multi-Image Gen',
+    titleZh: '多图参考生成',
+    description: 'Generate images with up to 14 ordered reference images.',
+    descriptionZh: '支持最多14张有序参考图的图像生成。',
+    icon: '🎭',
+    color: 'bg-gradient-to-br from-violet-500 to-fuchsia-600'
   },
   // --- 视频生成 (Video Studio) ---
   {
@@ -183,6 +197,26 @@ export const PLUGINS: PluginMetadata[] = [
     descriptionZh: '将文字转换为自然语音。',
     icon: '🔊',
     color: 'bg-pink-500'
+  },
+  {
+    type: NodeType.SVG_TEXT_OVERLAY,
+    category: PluginCategory.VISUAL,
+    title: 'SVG Text Overlay',
+    titleZh: 'SVG 文字叠加',
+    description: 'Overlay crisp vector text on images using AI layout analysis.',
+    descriptionZh: '使用 AI 分析排版，在图片上叠加清晰的矢量文字。',
+    icon: '✍️',
+    color: 'bg-gradient-to-br from-cyan-500 to-blue-600'
+  },
+  {
+    type: NodeType.IMAGE_SLICER,
+    category: PluginCategory.LOGIC,
+    title: 'AI Image Slicer',
+    titleZh: 'AI 智能切割',
+    description: 'AI analyzes image layout and returns precise cut coordinates.',
+    descriptionZh: 'AI 分析图片布局，返回精确切割坐标，智能切片导出。',
+    icon: '🔪',
+    color: 'bg-gradient-to-br from-amber-500 to-orange-600'
   }
 ];
 

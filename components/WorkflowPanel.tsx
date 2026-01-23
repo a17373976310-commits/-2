@@ -158,7 +158,10 @@ export const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
       </button>
 
       {isOpen && (
-        <div className="absolute top-16 right-0 w-80 bg-slate-900/95 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-[0_30px_60px_rgba(0,0,0,0.6)] overflow-hidden animate-in zoom-in-95 fade-in duration-200 ring-1 ring-white/10">
+        <div
+          onWheel={(e) => e.stopPropagation()}
+          className="absolute top-16 right-0 w-80 bg-slate-900/95 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-[0_30px_60px_rgba(0,0,0,0.6)] overflow-hidden animate-in zoom-in-95 fade-in duration-200 ring-1 ring-white/10"
+        >
           <div className="p-6 border-b border-white/5 bg-white/5">
             <h3 className="text-white text-[11px] font-black uppercase tracking-widest mb-4 flex items-center gap-2">
               <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></span>

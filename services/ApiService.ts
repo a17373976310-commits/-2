@@ -1,5 +1,6 @@
 
 import { ApiProvider, ApiFormat } from "../types";
+import { logger } from "./loggerService";
 
 export class ApiService {
   private static instance: ApiService;
@@ -23,7 +24,34 @@ export class ApiService {
     return new Blob([ab], { type: mime });
   }
 
-  private async request(provider: ApiProvider, path: string, body: any, timeoutMs: number = 60000) {
+  /**
+   * 压缩图片以减少上传体积
+   */
+  private async compressImage(base64: string, maxWidth = 1024, quality = 0.8): Promise<string> {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth) {
+          height = (height * maxWidth) / width;
+          width = maxWidth;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = () => resolve(base64); // 失败则返回原图
+      img.src = base64;
+    });
+  }
+
+  private async request(provider: ApiProvider, path: string, body: any, timeoutMs: number = 120000) {
     if (!provider || !provider.apiKey || !provider.baseUrl) {
       throw new Error("API 提供商未配置或信息不完整");
     }
@@ -36,6 +64,13 @@ export class ApiService {
       const headers: Record<string, string> = {
         "Authorization": `Bearer ${provider.apiKey}`
       };
+
+      // Logging for debugging
+      if (body?.model) {
+        logger.info(`API 请求: [${body.model}] -> ${url}`, 'ApiService');
+      } else {
+        logger.info(`API 请求: ${url}`, 'ApiService');
+      }
 
       // If body is FormData, don't set Content-Type (browser will set it with boundary)
       if (!(body instanceof FormData)) {
@@ -83,16 +118,65 @@ export class ApiService {
     }
   }
 
-  async generateImage(prompt: string, config: { ratio: string, model?: string }, provider?: ApiProvider, base64Image?: string) {
+  async getPromptTemplate(name: string): Promise<string> {
+    try {
+      const response = await fetch(`http://localhost:5001/api/prompts/get?name=${name}`);
+      if (!response.ok) throw new Error(`Failed to fetch prompt template: ${response.statusText}`);
+      const data = await response.json();
+      return data.prompt || '';
+    } catch (error) {
+      console.error('Error fetching prompt template:', error);
+      return '';
+    }
+  }
+
+  async generateImage(prompt: string, config: { ratio: string, model?: string }, provider?: ApiProvider, base64Images?: string | string[], labels?: string[]) {
     if (!provider) throw new Error("未指定 API 提供商");
 
     if (provider.format === 'openai') {
       const isNanoBanana = (config.model || '').includes('nano-banana');
       const isDoubaoSeedream = (config.model || '').includes('doubao-seedream');
 
+      // Enhance prompt with labels if available
+      let enhancedPrompt = prompt;
+      if (labels && labels.length > 0 && Array.isArray(base64Images)) {
+        // Build a stronger prompt that emphasizes subject preservation
+        const labelDescriptions = labels
+          .map((label, i) => {
+            if (i === 0) {
+              // First image is always the PRIMARY SUBJECT - must be preserved exactly
+              return `【主体参考 (PRIMARY SUBJECT)】: ${label || '产品主体'} - 必须严格保持此图的主体外形、轮廓、比例、颜色不变。`;
+            } else {
+              // Other images are ELEMENT/TEXTURE references only
+              return `【参考元素 (ELEMENT REF)】: ${label || '风格元素'} - 仅提取其中的图案/纹理/元素，应用到主体上。`;
+            }
+          })
+          .join("\n");
+
+        enhancedPrompt = `你是一个精确的图像编辑助手。
+你的任务是：保持主体（图1）完全一致，仅根据指令修改背景、文案或添加装饰元素。
+
+【核心规则 - 必须遵守】
+1. **主体锁定**：图1是唯一的主体。你必须100%保留其外形、轮廓、颜色、比例、角度。严禁生成新的主体。
+2. **背景隔离**：**完全忽略图1中的背景、文案和光影环境**。仅提取其中的物理产品主体，并将其完美融入到新的作图指令所描述的环境中。
+3. **细节继承**：严格继承图1中的所有物理细节、纹理、Logo和材质，不得有任何简化或形变。
+4. **元素融合**：其他图片仅作为纹理、Logo或装饰参考，请将其自然融合到图1的主体表面。
+5. **视觉统一**：确保最终输出的图像在光影和材质上与作图指令描述的环境保持协调。
+
+【参考图说明】
+${labelDescriptions}
+
+【作图指令】
+${prompt}
+
+【重要提醒】
+请确保输出图像中的主体（图1）与原图在物理特征上完全一致，不要产生任何形变或细节丢失，同时确保背景完全按照作图指令生成。`;
+        console.log(`[ApiService] Enhanced prompt for subject preservation: ${enhancedPrompt.substring(0, 300)}...`);
+      }
+
       const body: any = {
         model: config.model || provider.imageModels?.[0] || "nano-banana-2",
-        prompt: prompt,
+        prompt: enhancedPrompt,
         n: 1,
         response_format: "b64_json"
       };
@@ -109,10 +193,97 @@ export class ApiService {
         body.size = this.mapRatioToSize(config.ratio);
       }
 
-      if (base64Image) {
-        body.image = base64Image;
+      // Handle single image or array of images
+      if (base64Images) {
+        const imageList = Array.isArray(base64Images) ? base64Images : [base64Images];
+        if (imageList.length > 0) {
+          if (isNanoBanana && imageList.length >= 1) {
+            // Use /v1/images/edits endpoint with FormData as per official bltcy.ai documentation
+            // This is the recommended format for multi-image editing
+            const formData = new FormData();
+            formData.append('model', config.model || 'nano-banana-2');
+            formData.append('prompt', enhancedPrompt);
+            formData.append('response_format', 'b64_json');
+            formData.append('aspect_ratio', config.ratio);
+
+            // Append each image as a separate 'image' field (official format)
+            imageList.forEach((img, index) => {
+              const blob = this.base64ToBlob(img, img.includes('png') ? 'image/png' : 'image/jpeg');
+              formData.append('image', blob, `image${index + 1}.png`);
+            });
+
+            console.log(`[ApiService] Using /v1/images/edits with FormData, ${imageList.length} images`);
+
+            // Call the /images/edits endpoint instead of /images/generations
+            const data = await this.request(provider, '/images/edits', formData, 600000);
+
+            console.log("Image Edits API Response Keys:", Object.keys(data));
+            const imageItem = data.data?.[0];
+            if (!imageItem) {
+              console.error("Full API Response:", data);
+              throw new Error("API 未返回图像数据");
+            }
+
+            let result = "";
+            if (imageItem.b64_json) {
+              const b64 = imageItem.b64_json.trim();
+              result = b64.startsWith('data:image') ? b64 : `data:image/png;base64,${b64}`;
+            } else if (imageItem.url) {
+              result = imageItem.url;
+            }
+
+            if (!result) {
+              console.error("Invalid Image Item:", imageItem);
+              throw new Error("API 未返回有效的图像数据 (b64_json 或 url)");
+            }
+
+            console.log("Final Image Result (first 100 chars):", result.substring(0, 100));
+            return result;
+          } else {
+            // Fallback/Standard handling for other models
+            // Build contents array in Gemini-native format: [{ text }, { inlineData }, { inlineData }, ...]
+            const contents: any[] = [
+              { text: enhancedPrompt }
+            ];
+
+            imageList.forEach((img) => {
+              const base64Data = img.includes(',') ? img.split(',')[1] : img;
+              const mimeType = img.includes('png') ? 'image/png' : 'image/jpeg';
+
+              contents.push({
+                inlineData: {
+                  mimeType: mimeType,
+                  data: base64Data
+                }
+              });
+            });
+
+            body.contents = contents;
+            body.prompt = enhancedPrompt;
+            body.images = imageList;
+            body.image = imageList[0];
+            body.input_fidelity = 'high';
+            body.action = imageList.length > 1 ? 'generate' : 'edit';
+
+            if (imageList.length > 1) {
+              body.image_references = imageList.map((img, i) => ({
+                image: img,
+                weight: 1.0,
+                type: i === 0 ? 'subject' : 'style'
+              }));
+              body.image_weights = imageList.map(() => 1.0);
+              body.subject_reference = imageList;
+            } else {
+              body.image_reference_type = 'subject';
+              body.image_weight = 1.0;
+            }
+          }
+
+          console.log(`Sending ${imageList.length} reference images with ${isNanoBanana ? 'edits FormData' : 'contents'} format (${Math.round(JSON.stringify(imageList).length / 1024)} KB)`);
+        }
       }
 
+      console.log("API Request Body (excluding large images):", { ...body, images: body.images?.length, image: body.image ? 'present' : 'absent', contents: body.contents?.length });
       const data = await this.request(provider, '/images/generations', body, 600000); // 10 minutes timeout for image generation
 
       console.log("Image API Response Keys:", Object.keys(data));
@@ -172,18 +343,29 @@ export class ApiService {
       '3:4': '768x1024',
       '4:3': '1024x768',
       '9:16': '1024x1792',
-      '16:9': '1792x1024'
+      '16:9': '1792x1024',
+      '2:3': '832x1248',
+      '3:2': '1248x832',
+      '4:5': '896x1120',
+      '5:4': '1120x896',
+      '21:9': '1792x768'
     };
     return map[ratio] || '1024x1024';
   }
 
   private mapRatioToWidth(ratio: string): number {
-    const map: Record<string, number> = { '1:1': 1024, '3:4': 768, '4:3': 1024, '9:16': 1024, '16:9': 1536 };
+    const map: Record<string, number> = {
+      '1:1': 1024, '3:4': 768, '4:3': 1024, '9:16': 1024, '16:9': 1536,
+      '2:3': 832, '3:2': 1248, '4:5': 896, '5:4': 1120, '21:9': 1792
+    };
     return map[ratio] || 1024;
   }
 
   private mapRatioToHeight(ratio: string): number {
-    const map: Record<string, number> = { '1:1': 1024, '3:4': 1024, '4:3': 768, '9:16': 1792, '16:9': 864 };
+    const map: Record<string, number> = {
+      '1:1': 1024, '3:4': 1024, '4:3': 768, '9:16': 1792, '16:9': 864,
+      '2:3': 1248, '3:2': 832, '4:5': 1120, '5:4': 896, '21:9': 768
+    };
     return map[ratio] || 1024;
   }
 
@@ -194,12 +376,25 @@ export class ApiService {
       '3:4': '1440x1920',
       '4:3': '1920x1440',
       '9:16': '1080x1920',
-      '16:9': '1920x1080'
+      '16:9': '1920x1080',
+      '2:3': '1280x1920',
+      '3:2': '1920x1280',
+      '4:5': '1536x1920',
+      '5:4': '1920x1536',
+      '21:9': '2560x1080'
     };
     return map[ratio] || '1920x1920';
   }
 
-  async chatPro(prompt: string, model: string, provider?: ApiProvider, base64Images?: string[], systemPrompt?: string) {
+  async chatPro(
+    prompt: string,
+    model: string,
+    provider?: ApiProvider,
+    base64Images?: string[],
+    systemPrompt?: string,
+    history?: { role: 'user' | 'assistant', content: string, images?: string[], imageLabels?: string[] }[],
+    imageLabels?: string[]
+  ) {
     if (!provider) throw new Error("未指定 API 提供商");
 
     const messages: any[] = [];
@@ -207,7 +402,32 @@ export class ApiService {
       messages.push({ role: "system", content: systemPrompt });
     }
 
-    const userContent: any[] = [{ type: "text", text: prompt }];
+    // Add conversation history
+    if (history && history.length > 0) {
+      for (const msg of history) {
+        if (msg.images && msg.images.length > 0) {
+          // Prepend labels to content if available
+          let labelContext = "";
+          if (msg.imageLabels && msg.imageLabels.some(l => l)) {
+            labelContext = "参考图标签：\n" + msg.imageLabels.map((l, i) => `- 图${i + 1}: ${l || '未标注'}`).join('\n') + "\n\n";
+          }
+          const content: any[] = [{ type: "text", text: labelContext + msg.content }];
+          msg.images.forEach(img => {
+            content.push({ type: "image_url", image_url: { url: img } });
+          });
+          messages.push({ role: msg.role, content });
+        } else {
+          messages.push({ role: msg.role, content: msg.content });
+        }
+      }
+    }
+
+    // Add current user message
+    let currentLabelContext = "";
+    if (imageLabels && imageLabels.some(l => l)) {
+      currentLabelContext = "参考图标签：\n" + imageLabels.map((l, i) => `- 图${i + 1}: ${l || '未标注'}`).join('\n') + "\n\n";
+    }
+    const userContent: any[] = [{ type: "text", text: currentLabelContext + prompt }];
     if (base64Images && base64Images.length > 0) {
       base64Images.forEach(img => {
         userContent.push({ type: "image_url", image_url: { url: img } });
@@ -223,7 +443,7 @@ export class ApiService {
     return data.choices[0].message.content;
   }
 
-  async optimizePrompt(prompt: string, model: string, provider?: ApiProvider, base64Images?: string[], systemPrompt?: string) {
+  async optimizePrompt(prompt: string, model: string, provider?: ApiProvider, base64Images?: string[], systemPrompt?: string, imageLabels?: Record<number, string[]>) {
     if (!provider) throw new Error("未指定 API 提供商");
 
     const messages: any[] = [];
@@ -232,10 +452,23 @@ export class ApiService {
     if (systemPrompt) {
       messages.push({ role: "system", content: systemPrompt });
     } else {
-      messages.push({ role: "system", content: "You are a prompt engineering expert. Your task is to refine and expand the user's input into a detailed, high-quality prompt suitable for AI image generation. Focus on lighting, composition, style, and technical details." });
+      const defaultPrompt = await this.getPromptTemplate('DEFAULT_OPTIMIZER');
+      messages.push({ role: "system", content: defaultPrompt || "You are a prompt engineering expert. Your task is to refine and expand the user's input into a detailed, high-quality prompt suitable for AI image generation. Focus on lighting, composition, style, and technical details." });
     }
 
-    const userContent: any[] = [{ type: "text", text: prompt }];
+    // Prepend image label context if provided
+    let enhancedPrompt = prompt;
+    if (imageLabels && Object.keys(imageLabels).length > 0) {
+      const labelDescriptions = Object.entries(imageLabels)
+        .filter(([_, labels]) => labels.length > 0)
+        .map(([idx, labels]) => `- 图片${parseInt(idx) + 1}: [${labels.join(', ')}]`)
+        .join('\n');
+      if (labelDescriptions) {
+        enhancedPrompt = `参考图片说明：\n${labelDescriptions}\n\n${prompt}`;
+      }
+    }
+
+    const userContent: any[] = [{ type: "text", text: enhancedPrompt }];
     if (base64Images && base64Images.length > 0) {
       base64Images.forEach(img => {
         userContent.push({ type: "image_url", image_url: { url: img } });
@@ -469,11 +702,12 @@ export class ApiService {
   async editImage(base64Image: string, prompt: string, provider?: ApiProvider) { throw new Error("当前提供商不支持图像编辑"); }
   async searchGrounding(prompt: string, provider?: ApiProvider, systemPrompt?: string) {
     // For now, we use chatPro with a search-oriented system prompt if none provided
-    const defaultSystem = "You are a search assistant. Use real-time information to answer the user's request accurately.";
+    const defaultSystem = await this.getPromptTemplate('DEFAULT_SEARCH') || "You are a search assistant. Use real-time information to answer the user's request accurately.";
     return this.chatPro(prompt, 'gemini-3-flash-preview', provider, [], systemPrompt || defaultSystem);
   }
-  async analyzeImage(base64Images: string[], prompt: string, provider?: ApiProvider, model?: string) {
-    return this.optimizePrompt(prompt || "Analyze these images in detail.", model || '', provider, base64Images, "You are a visual analysis expert. Describe the provided images accurately and thoroughly.");
+  async analyzeImage(base64Images: string[], prompt: string, provider?: ApiProvider, model?: string, imageLabels?: Record<number, string[]>) {
+    const defaultSystem = await this.getPromptTemplate('DEFAULT_ANALYSIS') || "You are a visual analysis expert. Describe the provided images accurately and thoroughly.";
+    return this.optimizePrompt(prompt || "Analyze these images in detail.", model || '', provider, base64Images, defaultSystem, imageLabels);
   }
 }
 

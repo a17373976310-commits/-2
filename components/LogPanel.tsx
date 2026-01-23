@@ -7,8 +7,9 @@ export const LogPanel: React.FC = () => {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [filter, setFilter] = useState<LogEntry['level'] | 'all'>('all');
-  const [position, setPosition] = useState({ x: 340, y: window.innerHeight - 344 });
+  const [position, setPosition] = useState({ x: window.innerWidth - 424, y: window.innerHeight - 344 });
   const [isDragging, setIsDragging] = useState(false);
+  const hasDragged = useRef(false);
   const dragOffset = useRef({ x: 0, y: 0 });
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -29,6 +30,7 @@ export const LogPanel: React.FC = () => {
     e.stopPropagation(); // 阻止事件冒泡到画布
     if ((e.target as HTMLElement).closest('.drag-handle')) {
       setIsDragging(true);
+      hasDragged.current = false;
       dragOffset.current = {
         x: e.clientX - position.x,
         y: e.clientY - position.y
@@ -39,6 +41,7 @@ export const LogPanel: React.FC = () => {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (isDragging) {
+        hasDragged.current = true;
         setPosition({
           x: e.clientX - dragOffset.current.x,
           y: e.clientY - dragOffset.current.y
@@ -74,10 +77,21 @@ export const LogPanel: React.FC = () => {
   // 迷你触发器
   if (!isOpen) {
     return (
-      <div className="fixed bottom-6 left-[340px] z-[100] animate-in fade-in slide-in-from-left-4 duration-500">
+      <div
+        className={`fixed z-[100] animate-in fade-in slide-in-from-left-4 ${isDragging ? 'duration-0' : 'duration-500'}`}
+        style={{
+          left: position.x,
+          top: position.y
+        }}
+        onMouseDown={handleMouseDown}
+      >
         <button
-          onClick={() => setIsOpen(true)}
-          className="group flex items-center gap-3 bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 px-4 py-2.5 rounded-2xl hover:border-blue-500/50 hover:bg-slate-800/80 transition-all shadow-2xl"
+          onClick={() => {
+            if (!hasDragged.current) {
+              setIsOpen(true);
+            }
+          }}
+          className="group flex items-center gap-3 bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 px-4 py-2.5 rounded-2xl hover:border-blue-500/50 hover:bg-slate-800/80 transition-all shadow-2xl drag-handle cursor-move"
         >
           <div className="relative">
             <div className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]"></div>

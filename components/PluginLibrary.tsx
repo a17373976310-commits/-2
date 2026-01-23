@@ -16,6 +16,7 @@ export const PluginLibrary: React.FC<PluginLibraryProps> = ({
   setCategoryModels,
   onOpenSettings
 }) => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<PluginCategory[]>([
     PluginCategory.VISUAL,
     PluginCategory.VIDEO,
@@ -39,6 +40,23 @@ export const PluginLibrary: React.FC<PluginLibraryProps> = ({
     return acc;
   }, {} as Record<PluginCategory, PluginMetadata[]>);
 
+  // Collapsed state - just show a toggle button
+  if (isCollapsed) {
+    return (
+      <button
+        onClick={() => setIsCollapsed(false)}
+        onWheel={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
+        className="fixed left-6 top-6 w-14 h-14 bg-[#0f172a]/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl z-50 flex items-center justify-center text-slate-400 hover:text-blue-400 hover:border-blue-500/30 transition-all group"
+        title="展开组件库"
+      >
+        <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    );
+  }
+
   return (
     <div
       onWheel={(e) => e.stopPropagation()} // 核心修复：阻止缩放联动
@@ -46,9 +64,20 @@ export const PluginLibrary: React.FC<PluginLibraryProps> = ({
       className="fixed left-6 top-6 bottom-6 w-80 bg-[#0f172a]/95 backdrop-blur-2xl border border-white/5 rounded-[32px] shadow-[0_40px_80px_rgba(0,0,0,0.8)] flex flex-col z-50 overflow-hidden pointer-events-auto ring-1 ring-white/10"
     >
       <div className="p-8 bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/5">
-        <h2 className="text-white text-2xl font-black tracking-tighter flex items-center gap-3">
-          核心组件库 <span className="bg-blue-600 text-[10px] px-2 py-0.5 rounded-full shadow-lg shadow-blue-500/20">v2.8</span>
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-white text-2xl font-black tracking-tighter flex items-center gap-3">
+            核心组件库 <span className="bg-blue-600 text-[10px] px-2 py-0.5 rounded-full shadow-lg shadow-blue-500/20">v2.8</span>
+          </h2>
+          <button
+            onClick={() => setIsCollapsed(true)}
+            className="p-2 rounded-xl hover:bg-white/5 text-slate-500 hover:text-blue-400 transition-all"
+            title="收起组件库"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path>
+            </svg>
+          </button>
+        </div>
         <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mt-2 opacity-60 italic">AI 工作流编排引擎</p>
       </div>
 

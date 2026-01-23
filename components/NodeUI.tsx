@@ -11,6 +11,12 @@ import { CollageWorkshopUI } from './CollageWorkshopUI';
 import { IntentParserUI } from './IntentParserUI';
 import { AIChatUI } from './AIChatUI';
 import { ImageOutpaintUI } from './ImageOutpaintUI';
+import { MultiImageGenUI } from './MultiImageGenUI';
+import { SVGTextOverlayUI } from './SVGTextOverlayUI';
+import { ImageSlicerUI } from './ImageSlicerUI';
+
+// Image labels - simple text tags for each image to help AI understand context
+// Stored as node.data.imageLabels: Record<number, string[]>
 
 interface NodeUIProps {
   node: AppNode;
@@ -28,13 +34,17 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
   const [status, setStatus] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [templates, setTemplates] = useState<{ name: string; content: string }[]>([]);
-  const [hoveredImage, setHoveredImage] = useState<string | null>(null); // For copy shortcut
-  const [isUploadAreaHovered, setIsUploadAreaHovered] = useState(false); // For paste shortcut
-  const [isResizing, setIsResizing] = useState(false); // For node resize
+  const [hoveredImage, setHoveredImage] = useState<string | null>(null);
+  const [isUploadAreaHovered, setIsUploadAreaHovered] = useState(false);
+  const [isResizing, setIsResizing] = useState(false);
+  const [tempWidth, setTempWidth] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Image label input state
+  const [labelInputs, setLabelInputs] = useState<Record<number, string>>({});
+
   // Node dimensions
-  const nodeWidth = node.data.width || 320; // Default w-80 = 320px
+  const nodeWidth = tempWidth || node.data.width || 320; // Use tempWidth if resizing
   const minWidth = 280;
   const maxWidth = 600;
 
@@ -45,15 +55,18 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
     setIsResizing(true);
     const startX = e.clientX;
     const startWidth = nodeWidth;
+    let currentWidth = startWidth;
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
       const delta = moveEvent.clientX - startX;
-      const newWidth = Math.max(minWidth, Math.min(maxWidth, startWidth + delta));
-      onUpdate(node.id, { ...node.data, width: newWidth });
+      currentWidth = Math.max(minWidth, Math.min(maxWidth, startWidth + delta));
+      setTempWidth(currentWidth);
     };
 
     const handleMouseUp = () => {
       setIsResizing(false);
+      onUpdate(node.id, { ...node.data, width: currentWidth });
+      setTempWidth(null);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
@@ -131,6 +144,41 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [hoveredImage, isUploadAreaHovered]);
 
+  // Get image labels from node data
+  const imageLabels: Record<number, string[]> = node.data.imageLabels || {};
+
+  // Image label handlers
+  const addLabel = (imgIndex: number, label: string) => {
+    if (!label.trim()) return;
+    const currentLabels = imageLabels[imgIndex] || [];
+    if (currentLabels.includes(label.trim())) return; // Avoid duplicates
+    const updatedLabels = {
+      ...imageLabels,
+      [imgIndex]: [...currentLabels, label.trim()]
+    };
+    onUpdate(node.id, { ...node.data, imageLabels: updatedLabels });
+    setLabelInputs(prev => ({ ...prev, [imgIndex]: '' }));
+    logger.success(`标签已添加: "${label.trim()}"`);
+  };
+
+  const removeLabel = (imgIndex: number, labelIndex: number) => {
+    const currentLabels = imageLabels[imgIndex] || [];
+    const updatedLabels = {
+      ...imageLabels,
+      [imgIndex]: currentLabels.filter((_, i) => i !== labelIndex)
+    };
+    onUpdate(node.id, { ...node.data, imageLabels: updatedLabels });
+  };
+
+  // Generate label context for AI (used in API calls)
+  const generateLabelContext = (): string => {
+    const entries = Object.entries(imageLabels).filter(([_, labels]) => labels.length > 0);
+    if (entries.length === 0) return '';
+    const lines = entries.map(([idx, labels]) => `- 图片${parseInt(idx) + 1}: [${labels.join(', ')}]`);
+    return `用户提供的参考图片说明：\n${lines.join('\n')}\n\n`;
+  };
+
+
   const handleSaveTemplate = async () => {
     if (!node.data.promptEngineering) return;
     const name = prompt("请输入模板名称:", "新模板");
@@ -161,16 +209,40 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
   }, [allNodes, node.data.sourceNodeId]);
 
   // Recursive helper to find images up the chain
-  const findInheritedImages = (nodeId: string | undefined): string[] => {
-    if (!nodeId) return [];
+  const findInheritedImages = (nodeId: string | undefined, visited = new Set<string>()): string[] => {
+    if (!nodeId || visited.has(nodeId)) return [];
+    visited.add(nodeId);
     const n = allNodes.find(item => item.id === nodeId);
     if (!n) return [];
 
     const local = n.data.images || (n.data.image ? [n.data.image] : []);
     if (local.length > 0) return local;
 
-    return findInheritedImages(n.data.sourceNodeId);
+    return findInheritedImages(n.data.sourceNodeId, visited);
   };
+
+  // Recursive helper to find image labels up the chain (follows same path as images)
+  const findInheritedLabels = (nodeId: string | undefined, visited = new Set<string>()): Record<number, string[]> => {
+    if (!nodeId || visited.has(nodeId)) return {};
+    visited.add(nodeId);
+    const n = allNodes.find(item => item.id === nodeId);
+    if (!n) return {};
+
+    const localImages = n.data.images || (n.data.image ? [n.data.image] : []);
+    // If this node has local images, return its labels (if any)
+    if (localImages.length > 0) {
+      return n.data.imageLabels || {};
+    }
+
+    // Otherwise, keep searching up the chain
+    return findInheritedLabels(n.data.sourceNodeId, visited);
+  };
+
+  // Check if we have local images (not inherited)
+  const hasLocalImages = useMemo(() => {
+    const localImages = node.data.images || (node.data.image ? [node.data.image] : []);
+    return localImages.length > 0;
+  }, [node.data.images, node.data.image]);
 
   const inheritedImages = useMemo(() => {
     const localImages = node.data.images || (node.data.image ? [node.data.image] : []);
@@ -178,15 +250,30 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
     return findInheritedImages(node.data.sourceNodeId);
   }, [node.data.images, node.data.image, node.data.sourceNodeId, allNodes]);
 
+  // Get inherited labels (only when images are also inherited)
+  const inheritedLabels = useMemo(() => {
+    if (hasLocalImages) return {}; // Use local only, don't inherit
+    return findInheritedLabels(node.data.sourceNodeId);
+  }, [hasLocalImages, node.data.sourceNodeId, allNodes]);
+
+  // Effective labels: use local if available, otherwise use inherited
+  const effectiveLabels: Record<number, string[]> = useMemo(() => {
+    if (hasLocalImages) {
+      return imageLabels; // Local images = use local labels only
+    }
+    return inheritedLabels; // Inherited images = use inherited labels
+  }, [hasLocalImages, imageLabels, inheritedLabels]);
+
   // Recursive helper to find outpaint ratio up the chain
-  const findInheritedRatio = (nodeId: string | undefined): { ratio: string; sourceTitle: string } | null => {
-    if (!nodeId) return null;
+  const findInheritedRatio = (nodeId: string | undefined, visited = new Set<string>()): { ratio: string; sourceTitle: string } | null => {
+    if (!nodeId || visited.has(nodeId)) return null;
+    visited.add(nodeId);
     const n = allNodes.find(item => item.id === nodeId);
     if (!n) return null;
     if (n.type === NodeType.IMAGE_OUTPAINT) {
       return { ratio: n.data.outpaint?.ratio || '1:1', sourceTitle: n.titleZh };
     }
-    return findInheritedRatio(n.data.sourceNodeId);
+    return findInheritedRatio(n.data.sourceNodeId, visited);
   };
 
   const inheritanceInfo = useMemo(() => {
@@ -202,14 +289,15 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
   }, [inheritanceInfo, node.data.ratio]);
 
   // Recursive helper to find outpaint config up the chain
-  const findInheritedOutpaintConfig = (nodeId: string | undefined): any | null => {
-    if (!nodeId) return null;
+  const findInheritedOutpaintConfig = (nodeId: string | undefined, visited = new Set<string>()): any | null => {
+    if (!nodeId || visited.has(nodeId)) return null;
+    visited.add(nodeId);
     const n = allNodes.find(item => item.id === nodeId);
     if (!n) return null;
     if (n.type === NodeType.IMAGE_OUTPAINT) {
       return n.data.outpaint;
     }
-    return findInheritedOutpaintConfig(n.data.sourceNodeId);
+    return findInheritedOutpaintConfig(n.data.sourceNodeId, visited);
   };
 
   const inheritedOutpaintConfig = useMemo(() => {
@@ -234,8 +322,20 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
     let finalPrompt = originalPrompt;
     if (sourceNode) {
       if (sourceNode.data.result) {
-        finalPrompt = typeof sourceNode.data.result === 'object' ? sourceNode.data.result.text : sourceNode.data.result;
-        logger.info(`从 [${sourceNode.titleZh}] 接入数据`, node.id, node.titleZh);
+        const sourceResult = sourceNode.data.result;
+        // Check if result is an image (base64 string starting with data:image)
+        // If so, don't add it to the prompt - it should only be used as a reference image
+        const isImageResult = typeof sourceResult === 'string' && sourceResult.startsWith('data:image');
+
+        if (isImageResult) {
+          // Result is an image - don't add to prompt, just log
+          logger.info(`从 [${sourceNode.titleZh}] 继承图片结果`, node.id, node.titleZh);
+        } else {
+          // Result is text - add to prompt
+          const sourceText = typeof sourceResult === 'object' ? sourceResult.text : sourceResult;
+          finalPrompt = originalPrompt ? `${sourceText}\n\n${originalPrompt}` : sourceText;
+          logger.info(`从 [${sourceNode.titleZh}] 接入数据`, node.id, node.titleZh);
+        }
       } else {
         logger.warn(`来源节点 [${sourceNode.titleZh}] 暂无结果。`, node.id, node.titleZh);
       }
@@ -280,7 +380,15 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
               activeModel
             );
           } else {
-            result = await apiService.generateImage(finalPrompt, { ratio: activeRatio, model: activeModel }, provider, inheritedImages[0]);
+            // Pass all inherited images and their labels for better context
+            const labelsArray = inheritedImages.map((_, i) => effectiveLabels[i]?.join(', ') || '');
+            result = await apiService.generateImage(
+              finalPrompt,
+              { ratio: activeRatio, model: activeModel },
+              provider,
+              inheritedImages,
+              labelsArray
+            );
           }
           break;
         case NodeType.VIDEO_GEN:
@@ -306,7 +414,8 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
             inheritedImages,
             finalPrompt || "这张图片里有什么？",
             provider,
-            activeModel
+            activeModel,
+            effectiveLabels
           );
           break;
         case NodeType.TEXT_PRO:
@@ -320,7 +429,8 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
             activeModel || '',
             provider,
             inheritedImages,
-            node.data.promptEngineering
+            node.data.promptEngineering,
+            effectiveLabels
           );
           break;
         case NodeType.IMAGE_OUTPAINT:
@@ -331,14 +441,17 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
           const basePrompt = finalPrompt ? `${finalPrompt}, ${localOutpaintPrompt}` : localOutpaintPrompt;
 
           // Step 1: Analyze the original image and optimize the prompt using the template
-          const outpaintSystemPrompt = node.data.promptEngineering ||
-            `You are an expert at describing images for AI outpainting. Analyze the provided image and create a detailed prompt that describes the background, patterns, textures, colors, and style. Focus on elements that should be seamlessly extended. Be specific about:
+          let outpaintSystemPrompt = node.data.promptEngineering;
+          if (!outpaintSystemPrompt) {
+            const template = await apiService.getPromptTemplate('OUTPAINT_OPTIMIZER');
+            outpaintSystemPrompt = template || `You are an expert at describing images for AI outpainting. Analyze the provided image and create a detailed prompt that describes the background, patterns, textures, colors, and style. Focus on elements that should be seamlessly extended. Be specific about:
             1. Color palette and gradients
             2. Repeating patterns and their style (e.g., cartoon stickers, geometric shapes)
             3. Lighting and shadows
             4. Overall mood and aesthetic
             5. Any text or logos that should NOT be extended
             Output ONLY the optimized prompt in English, no explanation.`;
+          }
 
           let optimizedOutpaintPrompt = basePrompt;
           if (inheritedImages.length > 0) {
@@ -353,7 +466,8 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
                 globalCategoryModel || 'gemini-3-flash-preview',
                 provider,
                 inheritedImages,
-                outpaintSystemPrompt
+                outpaintSystemPrompt,
+                effectiveLabels
               );
               logger.success(`扩图提示词优化完成`);
             } catch (err) {
@@ -560,10 +674,10 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
           <div className="space-y-1.5">
             <label className="text-slate-500 text-[8px] uppercase font-black tracking-widest px-1 flex justify-between">
               <span>本地提示词</span>
-              {sourceNode && <span className="text-blue-500 italic opacity-60">已被连线覆盖</span>}
+              {sourceNode && <span className="text-blue-500 italic opacity-60">将与上游结果合并</span>}
             </label>
             <textarea
-              className={`w-full bg-slate-900/50 border border-slate-700/50 rounded-2xl p-4 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500/50 min-h-[80px] transition-all resize-none shadow-inner ${sourceNode ? 'opacity-40 grayscale pointer-events-none' : ''}`}
+              className="w-full bg-slate-900/50 border border-slate-700/50 rounded-2xl p-4 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500/50 min-h-[80px] transition-all resize-none shadow-inner"
               placeholder="输入你的创意指令..."
               value={node.data.prompt || ''}
               onChange={(e) => onUpdate(node.id, { ...node.data, prompt: e.target.value })}
@@ -669,10 +783,55 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
           />
         )}
 
+        {node.type === NodeType.MULTI_IMAGE_GEN && (
+          <MultiImageGenUI
+            node={node}
+            allNodes={allNodes}
+            onUpdate={onUpdate}
+            apiConfig={apiConfig}
+            onImageClick={onImageClick}
+            isPaused={isPaused}
+            globalCategoryModel={globalCategoryModel}
+          />
+        )}
+
+        {node.type === NodeType.SVG_TEXT_OVERLAY && (
+          <SVGTextOverlayUI
+            node={node}
+            allNodes={allNodes}
+            onUpdate={onUpdate}
+            apiConfig={apiConfig}
+            onImageClick={onImageClick}
+            isPaused={isPaused}
+            globalCategoryModel={globalCategoryModel}
+          />
+        )}
+
+        {node.type === NodeType.IMAGE_SLICER && (
+          <ImageSlicerUI
+            node={node}
+            allNodes={allNodes}
+            onUpdate={onUpdate}
+            apiConfig={apiConfig}
+            onImageClick={onImageClick}
+            globalCategoryModel={globalCategoryModel}
+          />
+        )}
+
         {(node.type === NodeType.IMAGE_EDIT || node.type === NodeType.IMAGE_ANALYSIS || node.type === NodeType.PROMPT_OPTIMIZER || node.type === NodeType.IMAGE_GEN || node.type === NodeType.IMAGE_OUTPAINT) && (() => {
           const localImages = node.data.images || (node.data.image ? [node.data.image] : []);
           const hasLocal = localImages.length > 0;
-          const sourceImages = sourceNode ? (sourceNode.data.images || (sourceNode.data.image ? [sourceNode.data.image] : [])) : [];
+          // Check images, image, and result fields from source node (result is where Multi-Image Gen stores output)
+          const getSourceImages = () => {
+            if (!sourceNode) return [];
+            if (sourceNode.data.images?.length > 0) return sourceNode.data.images;
+            if (sourceNode.data.image) return [sourceNode.data.image];
+            if (sourceNode.data.result && typeof sourceNode.data.result === 'string' && sourceNode.data.result.startsWith('data:image')) {
+              return [sourceNode.data.result];
+            }
+            return [];
+          };
+          const sourceImages = getSourceImages();
           const isInherited = !hasLocal && sourceImages.length > 0;
           const displayImages = hasLocal ? localImages : sourceImages;
 
@@ -696,52 +855,104 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
                 onClick={() => fileInputRef.current?.click()}
                 onMouseEnter={() => setIsUploadAreaHovered(true)}
                 onMouseLeave={() => setIsUploadAreaHovered(false)}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setIsUploadAreaHovered(true);
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setIsUploadAreaHovered(false);
+                  const imageUrl = e.dataTransfer.getData('text/plain');
+                  if (imageUrl && imageUrl.startsWith('data:image')) {
+                    const currentImages = node.data.images || (node.data.image ? [node.data.image] : []);
+                    onUpdate(node.id, { ...node.data, images: [...currentImages, imageUrl], image: imageUrl });
+                    logger.success('图片已添加');
+                  }
+                }}
                 className={`group/upload relative border-2 border-dashed rounded-2xl p-2 flex flex-col items-center justify-center cursor-pointer transition-all overflow-hidden min-h-[120px]
                   ${isInherited ? 'border-blue-500/30 bg-blue-500/5' : 'border-slate-700 bg-slate-900/30 hover:border-blue-500/50 hover:bg-blue-500/5'}
                   ${isUploadAreaHovered ? 'ring-2 ring-emerald-500/30' : ''}
                 `}
               >
                 {displayImages.length > 0 ? (
-                  <div className="w-full flex gap-2 overflow-x-auto py-1 no-scrollbar" onClick={(e) => e.stopPropagation()}>
-                    {displayImages.map((img: string, idx: number) => (
-                      <div key={idx} className="relative shrink-0 w-24 h-24 group/img"
-                        onMouseEnter={() => setHoveredImage(img)}
-                        onMouseLeave={() => setHoveredImage(null)}
-                      >
-                        <img
-                          src={img}
-                          alt={`Input ${idx}`}
-                          className={`w-full h-full object-cover rounded-xl cursor-zoom-in hover:opacity-80 transition-opacity ${isInherited ? 'ring-2 ring-blue-500/20' : ''}`}
-                          onClick={() => onImageClick(img)}
-                        />
-                        {/* Copy button */}
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCopyImage(img);
-                          }}
-                          className="absolute top-1 left-1 bg-blue-500 text-white rounded-full p-1 opacity-0 group-hover/img:opacity-100 transition-opacity shadow-lg"
-                          title="复制图片 (Ctrl+C)"
-                        >
-                          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                        </button>
-                        {hasLocal && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              const newImages = node.data.images.filter((_: any, i: number) => i !== idx);
-                              onUpdate(node.id, { ...node.data, images: newImages, image: newImages[0] || null });
-                            }}
-                            className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover/img:opacity-100 transition-opacity shadow-lg"
+                  <div className="w-full space-y-2" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex gap-2 overflow-x-auto py-1 no-scrollbar">
+                      {displayImages.map((img: string, idx: number) => (
+                        <div key={idx} className="relative shrink-0 group/img">
+                          <div className="w-24 h-24 relative"
+                            onMouseEnter={() => setHoveredImage(img)}
+                            onMouseLeave={() => setHoveredImage(null)}
                           >
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12"></path></svg>
-                          </button>
-                        )}
+                            <img
+                              src={img}
+                              alt={`Input ${idx}`}
+                              className={`w-full h-full object-cover rounded-xl cursor-zoom-in hover:opacity-80 transition-opacity ${isInherited ? 'ring-2 ring-blue-500/20' : ''}`}
+                              onClick={() => onImageClick(img)}
+                            />
+                            {/* Copy button */}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleCopyImage(img);
+                              }}
+                              className="absolute top-1 left-1 bg-blue-500 text-white rounded-full p-1 opacity-0 group-hover/img:opacity-100 transition-opacity shadow-lg"
+                              title="复制图片 (Ctrl+C)"
+                            >
+                              <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            </button>
+                            {hasLocal && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  const newImages = node.data.images.filter((_: any, i: number) => i !== idx);
+                                  onUpdate(node.id, { ...node.data, images: newImages, image: newImages[0] || null });
+                                }}
+                                className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover/img:opacity-100 transition-opacity shadow-lg"
+                              >
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+                              </button>
+                            )}
+                            {/* Label count indicator */}
+                            {(effectiveLabels[idx] || []).length > 0 && (
+                              <div className="absolute bottom-1 right-1 z-10 px-1.5 py-0.5 bg-amber-500 text-black text-[7px] font-black rounded-full shadow-lg">
+                                {(effectiveLabels[idx] || []).length} 标签
+                              </div>
+                            )}
+                          </div>
+                          {/* Image labels */}
+                          <div className="mt-1 flex flex-wrap gap-1 max-w-24">
+                            {(effectiveLabels[idx] || []).map((label: string, labelIdx: number) => (
+                              <span key={labelIdx} className="inline-flex items-center gap-0.5 bg-amber-500 text-black text-[7px] px-1.5 py-0.5 rounded-full font-bold shadow-sm">
+                                {label}
+                                {hasLocal && (
+                                  <button
+                                    onClick={() => removeLabel(idx, labelIdx)}
+                                    className="hover:text-white font-black ml-0.5"
+                                  >×</button>
+                                )}
+                              </span>
+                            ))}
+                            {hasLocal && (
+                              <input
+                                type="text"
+                                placeholder="+ 标签"
+                                value={labelInputs[idx] || ''}
+                                onChange={(e) => setLabelInputs(prev => ({ ...prev, [idx]: e.target.value }))}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    addLabel(idx, (e.target as HTMLInputElement).value);
+                                  }
+                                }}
+                                className="bg-slate-800 border border-slate-600 text-[8px] text-slate-300 px-1.5 py-0.5 rounded-full w-14 outline-none focus:border-amber-500 transition-colors"
+                              />
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                      {/* Always show add button, even when inheriting */}
+                      <div className="shrink-0 w-24 h-24 border-2 border-dashed border-slate-700 rounded-xl flex items-center justify-center text-slate-500 hover:border-blue-500/50 hover:text-blue-400 transition-all" onClick={() => fileInputRef.current?.click()}>
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
                       </div>
-                    ))}
-                    {/* Always show add button, even when inheriting */}
-                    <div className="shrink-0 w-24 h-24 border-2 border-dashed border-slate-700 rounded-xl flex items-center justify-center text-slate-500 hover:border-blue-500/50 hover:text-blue-400 transition-all" onClick={() => fileInputRef.current?.click()}>
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
                     </div>
                   </div>
                 ) : (
@@ -806,7 +1017,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
                     复制提示词
                   </button>
                 </div>
-              ) : (node.type === NodeType.IMAGE_GEN || node.type === NodeType.IMAGE_EDIT) && typeof node.data.result === 'string' ? (
+              ) : (node.type === NodeType.IMAGE_GEN || node.type === NodeType.IMAGE_EDIT || node.type === NodeType.MULTI_IMAGE_GEN) && typeof node.data.result === 'string' ? (
                 <img
                   src={node.data.result}
                   className="w-full h-auto cursor-zoom-in hover:opacity-90 transition-opacity"
@@ -842,6 +1053,8 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
           <path d="M22 22H20V20H22V22ZM22 18H20V16H22V18ZM18 22H16V20H18V22ZM22 14H20V12H22V14ZM18 18H16V16H18V18ZM14 22H12V20H14V22ZM18 14H16V12H18V14ZM14 18H12V16H14V18ZM10 22H8V20H10V22Z" />
         </svg>
       </div>
+
+      {/* Labels are now inline under each image - no modal needed */}
     </div>
   );
 };

@@ -11,6 +11,9 @@
   "dependencies": {
     "@google/genai": "^1.35.0",
     "@types/three": "^0.182.0",
+    "jszip": "^3.10.1",
+    "lucide-react": "^0.562.0",
+    "marked": "^17.0.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "three": "^0.182.0"
