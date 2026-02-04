@@ -217,6 +217,16 @@ export const PLUGINS: PluginMetadata[] = [
     descriptionZh: 'AI 分析图片布局，返回精确切割坐标，智能切片导出。',
     icon: '🔪',
     color: 'bg-gradient-to-br from-amber-500 to-orange-600'
+  },
+  {
+    type: NodeType.TEXT_FAST,
+    category: PluginCategory.LOGIC,
+    title: 'Fast Text',
+    titleZh: '快速文本',
+    description: 'High-speed text generation and reasoning.',
+    descriptionZh: '高速文本生成与逻辑推理。',
+    icon: '⚡',
+    color: 'bg-gradient-to-br from-yellow-400 to-orange-500'
   }
 ];
 

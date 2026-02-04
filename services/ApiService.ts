@@ -4,6 +4,7 @@ import { logger } from "./loggerService";
 
 export class ApiService {
   private static instance: ApiService;
+  private imageCache = new Map<string, string>();
 
   private constructor() { }
 
@@ -14,23 +15,65 @@ export class ApiService {
     return ApiService.instance;
   }
 
-  private base64ToBlob(base64: string, mime: string) {
-    const byteString = atob(base64.split(',')[1]);
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
+  private async imageToBlob(imageData: string, defaultMime = 'image/png'): Promise<Blob> {
+    if (imageData.startsWith('http')) {
+      try {
+        const response = await fetch(imageData);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return await response.blob();
+      } catch (e) {
+        console.error("Failed to fetch image from URL:", imageData, e);
+        throw new Error("无法从链接获取参考图片。请尝试重新上传或检查链接。");
+      }
     }
-    return new Blob([ab], { type: mime });
+
+    // Use fetch to decode data URLs - much more robust than atob
+    const dataUrl = imageData.startsWith('data:') ? imageData : `data:${defaultMime};base64,${imageData}`;
+    try {
+      const response = await fetch(dataUrl);
+      if (!response.ok) throw new Error("Fetch failed on data URL");
+      return await response.blob();
+    } catch (e) {
+      // Fallback to manual decoding if fetch on data URL fails (unlikely in modern browsers)
+      try {
+        const base64Data = imageData.includes(',') ? imageData.split(',')[1] : imageData;
+        const byteString = atob(base64Data.trim().replace(/\s/g, ''));
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+          ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ab], { type: defaultMime });
+      } catch (err) {
+        console.error("Image decoding failed:", err);
+        throw new Error("图片数据解析失败。请确保图片格式正确。");
+      }
+    }
   }
 
   /**
    * 压缩图片以减少上传体积
    */
   private async compressImage(base64: string, maxWidth = 1024, quality = 0.8): Promise<string> {
+    // 如果 base64 小于 100KB，直接返回
+    if (base64.length < 100000) return base64;
+
+    // 检查缓存 - 使用更加鲁棒的 Key (前缀+长度+后缀) 以防不同图片的头部信息过于相似
+    const cacheKey = `${base64.length}_${base64.slice(0, 100)}_${base64.slice(-100)}_${maxWidth}_${quality}`;
+    if (this.imageCache.has(cacheKey)) {
+      return this.imageCache.get(cacheKey)!;
+    }
+
     return new Promise((resolve) => {
       const img = new Image();
       img.onload = () => {
+        // 如果图片尺寸已经小于 maxWidth，直接返回原图
+        if (img.width <= maxWidth) {
+          this.imageCache.set(cacheKey, base64);
+          resolve(base64);
+          return;
+        }
+
         const canvas = document.createElement('canvas');
         let width = img.width;
         let height = img.height;
@@ -44,14 +87,24 @@ export class ApiService {
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         ctx?.drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL('image/jpeg', quality));
+        const result = canvas.toDataURL('image/jpeg', quality);
+
+        // 存入缓存（限制缓存大小）
+        if (this.imageCache.size > 50) {
+          const firstKey = this.imageCache.keys().next().value;
+          this.imageCache.delete(firstKey);
+        }
+        this.imageCache.set(cacheKey, result);
+
+        resolve(result);
       };
       img.onerror = () => resolve(base64); // 失败则返回原图
       img.src = base64;
     });
   }
 
-  private async request(provider: ApiProvider, path: string, body: any, timeoutMs: number = 120000) {
+  public async request(provider: ApiProvider, path: string, body: any, timeoutOverride?: number) {
+    const timeoutMs = timeoutOverride || 120000;
     if (!provider || !provider.apiKey || !provider.baseUrl) {
       throw new Error("API 提供商未配置或信息不完整");
     }
@@ -118,6 +171,58 @@ export class ApiService {
     }
   }
 
+  /**
+   * 从提供商获取可用的模型列表
+   */
+  async fetchModels(provider: ApiProvider): Promise<string[]> {
+    try {
+      // 这里的路径通常是 /v1/models，但 provider.baseUrl 可能已经包含了 /v1
+      let baseUrl = provider.baseUrl.replace(/\/$/, '');
+      let url = '';
+
+      if (baseUrl.endsWith('/v1')) {
+        url = `${baseUrl}/models`;
+      } else if (baseUrl.includes('/v1/')) {
+        // 尝试提取到 /v1 级别
+        const v1Idx = baseUrl.indexOf('/v1/');
+        url = baseUrl.substring(0, v1Idx + 3) + '/models';
+      } else {
+        url = `${baseUrl}/models`;
+      }
+
+      console.log(`[ApiService] Fetching models from: ${url}`);
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${provider.apiKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`无法获取模型列表: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      // OpenAI 标准格式返回的是 { data: [{ id: "..." }, ...] }
+      if (data && Array.isArray(data.data)) {
+        return data.data.map((m: any) => m.id);
+      }
+
+      // 某些中转可能直接返回数组
+      if (Array.isArray(data)) {
+        return data.map((m: any) => typeof m === 'string' ? m : (m.id || m.name));
+      }
+
+      return [];
+    } catch (error) {
+      console.error("[ApiService] Error fetching models:", error);
+      throw error;
+    }
+  }
+
   async getPromptTemplate(name: string): Promise<string> {
     try {
       const response = await fetch(`http://localhost:5001/api/prompts/get?name=${name}`);
@@ -134,179 +239,127 @@ export class ApiService {
     if (!provider) throw new Error("未指定 API 提供商");
 
     if (provider.format === 'openai') {
-      const isNanoBanana = (config.model || '').includes('nano-banana');
-      const isDoubaoSeedream = (config.model || '').includes('doubao-seedream');
+      const modelName = config.model || '';
+      const isGeminiNativeModel = false;
+      const isGeminiChatImageModel = modelName.includes('gemini-3-pro-visual') || modelName.includes('gemini-3-pro-image-preview');
+      const isGeminiImage = modelName.includes('nano-banana') || modelName.includes('gemini-') || modelName.includes('veo-') || modelName.includes('imagen');
+      const isDoubaoSeedream = modelName.includes('doubao-seedream');
 
-      // Enhance prompt with labels if available
+      // 1. Native Gemini Path (v1beta/generateContent)
+      if (isGeminiNativeModel) {
+        logger.info(`Using Native Gemini v1beta protocol: [${modelName}]`, 'ApiService');
+
+        const nativeParts: any[] = [{ text: prompt }];
+        if (base64Images) {
+          const imageList = Array.isArray(base64Images) ? base64Images : [base64Images];
+          for (const img of imageList) {
+            const compressed = await this.compressImage(img, 1024, 0.7);
+            const base64Data = compressed.includes(',') ? compressed.split(',')[1] : compressed;
+            const mimeType = compressed.includes('png') ? 'image/png' : 'image/jpeg';
+            nativeParts.push({ inlineData: { mimeType, data: base64Data } });
+          }
+        }
+
+        const nativeBody = {
+          contents: [{ parts: nativeParts }],
+          generationConfig: { temperature: 0.4, topP: 1, topK: 32, maxOutputTokens: 2048 }
+        };
+
+        const adjustedProvider = { ...provider };
+        if (adjustedProvider.baseUrl.endsWith('/v1')) {
+          adjustedProvider.baseUrl = adjustedProvider.baseUrl.replace('/v1', '/v1beta');
+        } else if (adjustedProvider.baseUrl.endsWith('/v1/')) {
+          adjustedProvider.baseUrl = adjustedProvider.baseUrl.replace('/v1/', '/v1beta/');
+        }
+
+        const nativeData = await this.request(adjustedProvider, `/models/${modelName}:generateContent`, nativeBody, 600000);
+        const responseParts = nativeData.candidates?.[0]?.content?.parts || [];
+
+        for (const p of responseParts) {
+          if (p.inlineData?.data) {
+            return `data:${p.inlineData.mimeType || 'image/png'};base64,${p.inlineData.data}`;
+          }
+          if (p.text) {
+            const t = p.text.trim();
+            const markdownMatch = t.match(/!\[.*?\]\((.*?)\)/);
+            if (markdownMatch && markdownMatch[1]) return markdownMatch[1];
+            if (t.startsWith('data:image') || t.startsWith('http')) return t;
+            if (t.length > 1000 && !t.includes(' ')) return `data:image/png;base64,${t}`;
+          }
+        }
+        throw new Error("Native Gemini 接口解析画面失败");
+      }
+
+      // 2. Chat-based Path (Gemini Visuals)
+      if (isGeminiChatImageModel) {
+        logger.info(`Using Chat-based image generation: [${modelName}]`, 'ApiService');
+        const chatResult = await this.chatPro(
+          prompt,
+          modelName,
+          provider,
+          Array.isArray(base64Images) ? base64Images : (base64Images ? [base64Images] : []),
+          "You are a professional image generation engine. Analyze the user prompt and reference images to generate a high-quality, aesthetically pleasing visual result. Follow all technical and artistic instructions precisely.",
+          undefined,
+          labels
+        );
+
+        const markdownMatch = chatResult.match(/!\[.*?\]\((.*?)\)/);
+        if (markdownMatch && markdownMatch[1]) return markdownMatch[1];
+        if (chatResult.startsWith('data:image') || chatResult.startsWith('http')) return chatResult;
+        if (chatResult.length > 1000 && !chatResult.includes(' ')) return `data:image/png;base64,${chatResult.trim()}`;
+        if (chatResult.length < 500) throw new Error(`模型返回了非图像内容: ${chatResult}`);
+        return chatResult;
+      }
+
+      // 3. Standard API Path (JSON)
       let enhancedPrompt = prompt;
       if (labels && labels.length > 0 && Array.isArray(base64Images)) {
-        // Build a stronger prompt that emphasizes subject preservation
         const labelDescriptions = labels
-          .map((label, i) => {
-            if (i === 0) {
-              // First image is always the PRIMARY SUBJECT - must be preserved exactly
-              return `【主体参考 (PRIMARY SUBJECT)】: ${label || '产品主体'} - 必须严格保持此图的主体外形、轮廓、比例、颜色不变。`;
-            } else {
-              // Other images are ELEMENT/TEXTURE references only
-              return `【参考元素 (ELEMENT REF)】: ${label || '风格元素'} - 仅提取其中的图案/纹理/元素，应用到主体上。`;
-            }
-          })
+          .map((label, i) => i === 0 ? `【主体参考】: ${label || '产品主体'}` : `【参考元素】: ${label || '风格元素'}`)
           .join("\n");
-
-        enhancedPrompt = `你是一个精确的图像编辑助手。
-你的任务是：保持主体（图1）完全一致，仅根据指令修改背景、文案或添加装饰元素。
-
-【核心规则 - 必须遵守】
-1. **主体锁定**：图1是唯一的主体。你必须100%保留其外形、轮廓、颜色、比例、角度。严禁生成新的主体。
-2. **背景隔离**：**完全忽略图1中的背景、文案和光影环境**。仅提取其中的物理产品主体，并将其完美融入到新的作图指令所描述的环境中。
-3. **细节继承**：严格继承图1中的所有物理细节、纹理、Logo和材质，不得有任何简化或形变。
-4. **元素融合**：其他图片仅作为纹理、Logo或装饰参考，请将其自然融合到图1的主体表面。
-5. **视觉统一**：确保最终输出的图像在光影和材质上与作图指令描述的环境保持协调。
-
-【参考图说明】
-${labelDescriptions}
-
-【作图指令】
-${prompt}
-
-【重要提醒】
-请确保输出图像中的主体（图1）与原图在物理特征上完全一致，不要产生任何形变或细节丢失，同时确保背景完全按照作图指令生成。`;
-        console.log(`[ApiService] Enhanced prompt for subject preservation: ${enhancedPrompt.substring(0, 300)}...`);
+        enhancedPrompt = `你是一个图像生成专家。保持主体形状一致，根据指令修改背景和细节。\n${labelDescriptions}\n\n【作图指令】\n${prompt}`;
       }
 
-      const body: any = {
-        model: config.model || provider.imageModels?.[0] || "nano-banana-2",
+      const standardBody: any = {
+        model: modelName || provider.imageModels?.[0] || "nano-banana-2",
         prompt: enhancedPrompt,
         n: 1,
-        response_format: "b64_json"
+        response_format: "url"
       };
 
-      // Model-specific size handling
       if (isDoubaoSeedream) {
-        // Doubao Seedream requires image_size with minimum 3686400 pixels (1920x1920)
-        body.image_size = this.mapRatioToSeedreamSize(config.ratio);
-      } else if (isNanoBanana) {
-        // Nano Banana (Gemini-based) uses aspect_ratio
-        body.aspect_ratio = config.ratio;
+        standardBody.image_size = this.mapRatioToSeedreamSize(config.ratio);
+      } else if (isGeminiImage) {
+        standardBody.aspect_ratio = config.ratio;
+        if (modelName.includes('2k') || modelName.includes('4k')) {
+          standardBody.image_size = modelName.includes('2k') ? '2K' : '4K';
+        }
       } else {
-        // Standard OpenAI format uses size
-        body.size = this.mapRatioToSize(config.ratio);
+        standardBody.size = this.mapRatioToSize(config.ratio);
       }
 
-      // Handle single image or array of images
       if (base64Images) {
         const imageList = Array.isArray(base64Images) ? base64Images : [base64Images];
         if (imageList.length > 0) {
-          if (isNanoBanana && imageList.length >= 1) {
-            // Use /v1/images/edits endpoint with FormData as per official bltcy.ai documentation
-            // This is the recommended format for multi-image editing
-            const formData = new FormData();
-            formData.append('model', config.model || 'nano-banana-2');
-            formData.append('prompt', enhancedPrompt);
-            formData.append('response_format', 'b64_json');
-            formData.append('aspect_ratio', config.ratio);
-
-            // Append each image as a separate 'image' field (official format)
-            imageList.forEach((img, index) => {
-              const blob = this.base64ToBlob(img, img.includes('png') ? 'image/png' : 'image/jpeg');
-              formData.append('image', blob, `image${index + 1}.png`);
-            });
-
-            console.log(`[ApiService] Using /v1/images/edits with FormData, ${imageList.length} images`);
-
-            // Call the /images/edits endpoint instead of /images/generations
-            const data = await this.request(provider, '/images/edits', formData, 600000);
-
-            console.log("Image Edits API Response Keys:", Object.keys(data));
-            const imageItem = data.data?.[0];
-            if (!imageItem) {
-              console.error("Full API Response:", data);
-              throw new Error("API 未返回图像数据");
-            }
-
-            let result = "";
-            if (imageItem.b64_json) {
-              const b64 = imageItem.b64_json.trim();
-              result = b64.startsWith('data:image') ? b64 : `data:image/png;base64,${b64}`;
-            } else if (imageItem.url) {
-              result = imageItem.url;
-            }
-
-            if (!result) {
-              console.error("Invalid Image Item:", imageItem);
-              throw new Error("API 未返回有效的图像数据 (b64_json 或 url)");
-            }
-
-            console.log("Final Image Result (first 100 chars):", result.substring(0, 100));
-            return result;
-          } else {
-            // Fallback/Standard handling for other models
-            // Build contents array in Gemini-native format: [{ text }, { inlineData }, { inlineData }, ...]
-            const contents: any[] = [
-              { text: enhancedPrompt }
-            ];
-
-            imageList.forEach((img) => {
-              const base64Data = img.includes(',') ? img.split(',')[1] : img;
-              const mimeType = img.includes('png') ? 'image/png' : 'image/jpeg';
-
-              contents.push({
-                inlineData: {
-                  mimeType: mimeType,
-                  data: base64Data
-                }
-              });
-            });
-
-            body.contents = contents;
-            body.prompt = enhancedPrompt;
-            body.images = imageList;
-            body.image = imageList[0];
-            body.input_fidelity = 'high';
-            body.action = imageList.length > 1 ? 'generate' : 'edit';
-
-            if (imageList.length > 1) {
-              body.image_references = imageList.map((img, i) => ({
-                image: img,
-                weight: 1.0,
-                type: i === 0 ? 'subject' : 'style'
-              }));
-              body.image_weights = imageList.map(() => 1.0);
-              body.subject_reference = imageList;
-            } else {
-              body.image_reference_type = 'subject';
-              body.image_weight = 1.0;
-            }
-          }
-
-          console.log(`Sending ${imageList.length} reference images with ${isNanoBanana ? 'edits FormData' : 'contents'} format (${Math.round(JSON.stringify(imageList).length / 1024)} KB)`);
+          standardBody.images = await Promise.all(imageList.map(async img => {
+            const compressed = await this.compressImage(img, 1024, 0.7);
+            return compressed.includes(',') ? compressed.split(',')[1] : compressed;
+          }));
+          standardBody.image = standardBody.images[0];
+          standardBody.image_reference = standardBody.images[0];
         }
       }
 
-      console.log("API Request Body (excluding large images):", { ...body, images: body.images?.length, image: body.image ? 'present' : 'absent', contents: body.contents?.length });
-      const data = await this.request(provider, '/images/generations', body, 600000); // 10 minutes timeout for image generation
+      logger.info(`Sending Standard JSON request for model: ${standardBody.model}`, 'ApiService');
+      const standardData = await this.request(provider, '/images/generations', standardBody, 600000);
+      const imageItem = standardData.data?.[0];
+      if (!imageItem) throw new Error("API 未返回图像数据");
 
-      console.log("Image API Response Keys:", Object.keys(data));
-      const imageItem = data.data?.[0];
-      if (!imageItem) {
-        console.error("Full API Response:", data);
-        throw new Error("API 未返回图像数据");
+      let result = imageItem.url || imageItem.b64_json;
+      if (!result) throw new Error("API 未返回有效的图像数据");
+      if (result.length > 100 && !result.startsWith('http') && !result.startsWith('data:')) {
+        result = `data:image/png;base64,${result}`;
       }
-
-      let result = "";
-      if (imageItem.b64_json) {
-        const b64 = imageItem.b64_json.trim();
-        result = b64.startsWith('data:image') ? b64 : `data:image/png;base64,${b64}`;
-      } else if (imageItem.url) {
-        result = imageItem.url;
-      }
-
-      if (!result) {
-        console.error("Invalid Image Item:", imageItem);
-        throw new Error("API 未返回有效的图像数据 (b64_json 或 url)");
-      }
-
-      console.log("Final Image Result (first 100 chars):", result.substring(0, 100));
       return result;
     } else if (provider.format === 'stability') {
       // Stability AI SDXL / Core API format
@@ -392,8 +445,9 @@ ${prompt}
     provider?: ApiProvider,
     base64Images?: string[],
     systemPrompt?: string,
-    history?: { role: 'user' | 'assistant', content: string, images?: string[], imageLabels?: string[] }[],
-    imageLabels?: string[]
+    history?: { role: string, content: string, images?: string[], imageLabels?: string[] }[],
+    imageLabels?: string[],
+    setThinkingStatus?: (status: string) => void
   ) {
     if (!provider) throw new Error("未指定 API 提供商");
 
@@ -402,17 +456,46 @@ ${prompt}
       messages.push({ role: "system", content: systemPrompt });
     }
 
-    // Add conversation history
+    // 1. Prepare all history images for compression in parallel to speed up preparation
+    // Flatten all images into a single list with metadata so we can parallelize
+    const historyImageTasks: Promise<string>[] = [];
+    const historyImagesByMsg: string[][] = [];
+
     if (history && history.length > 0) {
       for (const msg of history) {
         if (msg.images && msg.images.length > 0) {
+          const taskGroup = msg.images.map(img => this.compressImage(img, 1024, 0.7));
+          historyImageTasks.push(...taskGroup);
+        }
+      }
+    }
+
+    // Prepare current images task
+    const currentImageTasks = (base64Images || []).map(img => this.compressImage(img, 1024, 0.7));
+
+    // Execute ALL compressions in parallel
+    setThinkingStatus?.("🖼️ 正在压缩并同步视觉上下文...");
+    const [allProcessedHistoryImages, processedCurrentImages] = await Promise.all([
+      Promise.all(historyImageTasks),
+      Promise.all(currentImageTasks)
+    ]);
+
+    // 2. Re-distribute the processed history images back to their messages
+    let historyImgIdx = 0;
+    if (history && history.length > 0) {
+      for (const msg of history) {
+        if (msg.images && msg.images.length > 0) {
+          const count = msg.images.length;
+          const msgImages = allProcessedHistoryImages.slice(historyImgIdx, historyImgIdx + count);
+          historyImgIdx += count;
+
           // Prepend labels to content if available
           let labelContext = "";
           if (msg.imageLabels && msg.imageLabels.some(l => l)) {
             labelContext = "参考图标签：\n" + msg.imageLabels.map((l, i) => `- 图${i + 1}: ${l || '未标注'}`).join('\n') + "\n\n";
           }
           const content: any[] = [{ type: "text", text: labelContext + msg.content }];
-          msg.images.forEach(img => {
+          msgImages.forEach(img => {
             content.push({ type: "image_url", image_url: { url: img } });
           });
           messages.push({ role: msg.role, content });
@@ -422,24 +505,33 @@ ${prompt}
       }
     }
 
-    // Add current user message
+    // 3. Add current user message
     let currentLabelContext = "";
     if (imageLabels && imageLabels.some(l => l)) {
       currentLabelContext = "参考图标签：\n" + imageLabels.map((l, i) => `- 图${i + 1}: ${l || '未标注'}`).join('\n') + "\n\n";
     }
     const userContent: any[] = [{ type: "text", text: currentLabelContext + prompt }];
-    if (base64Images && base64Images.length > 0) {
-      base64Images.forEach(img => {
+    if (processedCurrentImages.length > 0) {
+      processedCurrentImages.forEach(img => {
         userContent.push({ type: "image_url", image_url: { url: img } });
       });
     }
 
     messages.push({ role: "user", content: userContent });
 
+    // Determine timeout based on model
+    // Complex designs and reflection loops need more time. default to 300s for flash/pro/thinking models.
+    const lowerModel = (model || '').toLowerCase();
+    const isThinkingModel = lowerModel.includes('thinking') ||
+      lowerModel.includes('pro') ||
+      lowerModel.includes('flash') ||
+      lowerModel.includes('plus');
+    const timeout = isThinkingModel ? 300000 : 120000;
+
     const data = await this.request(provider, '/chat/completions', {
       model: model || provider.models[0],
       messages: messages
-    });
+    }, timeout);
     return data.choices[0].message.content;
   }
 
@@ -468,19 +560,28 @@ ${prompt}
       }
     }
 
+    // Compress images to reduce payload size
+    const processedImages = base64Images && base64Images.length > 0
+      ? await Promise.all(base64Images.map(img => this.compressImage(img, 1024, 0.7)))
+      : [];
+
     const userContent: any[] = [{ type: "text", text: enhancedPrompt }];
-    if (base64Images && base64Images.length > 0) {
-      base64Images.forEach(img => {
+    if (processedImages.length > 0) {
+      processedImages.forEach(img => {
         userContent.push({ type: "image_url", image_url: { url: img } });
       });
     }
 
     messages.push({ role: "user", content: userContent });
 
+    // Extended timeout for prompt optimization, especially for thinking models
+    const isThinkingModel = (model || '').includes('thinking') || (model || '').includes('pro');
+    const timeout = isThinkingModel ? 300000 : 180000;
+
     const data = await this.request(provider, '/chat/completions', {
       model: model || provider.models[0],
       messages: messages
-    });
+    }, timeout);
     return data.choices[0].message.content;
   }
 
@@ -534,8 +635,8 @@ ${prompt}
     const formData = new FormData();
     formData.append('model', model || provider.imageModels?.[0] || "nano-banana-2");
     formData.append('prompt', prompt || "expand the background seamlessly");
-    formData.append('image', this.base64ToBlob(composedData.image, 'image/png'), 'image.png');
-    formData.append('mask', this.base64ToBlob(composedData.mask, 'image/png'), 'mask.png');
+    formData.append('image', await this.imageToBlob(composedData.image, 'image/png'), 'image.png');
+    formData.append('mask', await this.imageToBlob(composedData.mask, 'image/png'), 'mask.png');
     formData.append('n', '1');
     formData.append('response_format', 'b64_json');
 
@@ -549,6 +650,7 @@ ${prompt}
     if (!imageItem) throw new Error("API 未返回图像数据");
 
     const b64 = imageItem.b64_json || imageItem.url;
+    if (!b64) throw new Error("API 未返回有效的图像数据");
     return b64.startsWith('data:image') ? b64 : `data:image/png;base64,${b64}`;
   }
 
@@ -697,9 +799,9 @@ ${prompt}
   }
 
   // 临时保留占位，后续可根据需要实现
-  async generateVideo(prompt: string, provider?: ApiProvider) { throw new Error("当前提供商不支持视频生成"); }
-  async generateTTS(text: string, voice: string, provider?: ApiProvider) { throw new Error("当前提供商不支持 TTS"); }
-  async editImage(base64Image: string, prompt: string, provider?: ApiProvider) { throw new Error("当前提供商不支持图像编辑"); }
+  async generateVideo(prompt: string, provider?: ApiProvider) { return Promise.reject(new Error("视频生成功能尚未实现，请检查 API 提供商配置")); }
+  async generateTTS(text: string, voice: string, provider?: ApiProvider) { return Promise.reject(new Error("TTS 功能尚未实现，请检查 API 提供商配置")); }
+  async editImage(base64Image: string, prompt: string, provider?: ApiProvider) { return Promise.reject(new Error("图像编辑功能尚未实现，请检查 API 提供商配置")); }
   async searchGrounding(prompt: string, provider?: ApiProvider, systemPrompt?: string) {
     // For now, we use chatPro with a search-oriented system prompt if none provided
     const defaultSystem = await this.getPromptTemplate('DEFAULT_SEARCH') || "You are a search assistant. Use real-time information to answer the user's request accurately.";

@@ -282,16 +282,27 @@ class HistoryHandler(BaseHTTPRequestHandler):
                 ctx.check_hostname = False
                 ctx.verify_mode = ssl.CERT_NONE
                 
-                with urllib.request.urlopen(data_or_url, context=ctx, timeout=30) as response:
+                # 添加浏览器请求头，避免 403 Forbidden
+                req = urllib.request.Request(data_or_url, headers={
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                    'Accept': 'image/webp,image/apng,image/*,*/*;q=0.8',
+                    'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+                    'Referer': 'https://webstatic.aiproxy.vip/'
+                })
+                
+                with urllib.request.urlopen(req, context=ctx, timeout=30) as response:
                     image_data = response.read()
                     with open(file_path, "wb") as f:
                         f.write(image_data)
                 print(f"  ✓ 下载完成: {file_path}")
             except Exception as e:
                 print(f"  ✗ 下载失败: {str(e)}")
-                # 如果下载失败，保存 URL 文本作为备忘
-                with open(file_path + ".url.txt", "w") as f:
-                    f.write(data_or_url)
+                # 如果下载失败，保存 URL 文本作为备忘（不抛出异常，让流程继续）
+                try:
+                    with open(file_path + ".url.txt", "w") as f:
+                        f.write(data_or_url)
+                except:
+                    pass  # 静默忽略文件写入错误
         else:
             # 处理 base64
             if "," in data_or_url:

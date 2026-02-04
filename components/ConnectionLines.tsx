@@ -1,39 +1,68 @@
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { AppNode } from '../types';
 
 interface ConnectionLinesProps {
     nodes: AppNode[];
 }
 
-export const ConnectionLines: React.FC<ConnectionLinesProps> = ({ nodes }) => {
-    // 节点估算尺寸 (NodeUI.tsx 中 w-80 = 320px)
-    const NODE_WIDTH = 320;
-    const NODE_HEADER_HEIGHT = 60; // 估算头部高度
+// 默认节点尺寸
+const DEFAULT_NODE_WIDTH = 320;
+const DEFAULT_NODE_HEIGHT = 200; // 默认估算高度
+const HEADER_HEIGHT = 56; // 标题栏高度
 
-    const connections = nodes
-        .filter(node => node.data.sourceNodeId)
-        .map(node => {
-            const sourceNode = nodes.find(n => n.id === node.data.sourceNodeId);
-            if (!sourceNode) return null;
+export const ConnectionLines: React.FC<ConnectionLinesProps> = React.memo(({ nodes }) => {
+    const connections = useMemo(() => {
+        // 获取节点宽度：优先从 node.data.width 读取，否则使用默认值
+        const getNodeWidth = (node: AppNode): number => {
+            const width = node.data?.width;
+            if (typeof width === 'number' && width > 0) {
+                return width;
+            }
+            return DEFAULT_NODE_WIDTH;
+        };
 
-            // 起点：来源节点的右侧中心 (稍微靠下一点，避开标题栏)
-            const startX = sourceNode.position.x + NODE_WIDTH;
-            const startY = sourceNode.position.y + 100; // 约在内容区顶部
+        // 获取节点高度：优先从 node.data.height 读取，否则使用估算值
+        const getNodeHeight = (node: AppNode): number => {
+            const height = node.data?.height;
+            if (typeof height === 'number' && height > 0) {
+                return height;
+            }
+            // 根据宽度估算高度（保持与 NodeUI 相似的比例）
+            const width = getNodeWidth(node);
+            return Math.max(DEFAULT_NODE_HEIGHT, width * 0.6);
+        };
 
-            // 终点：目标节点的左侧中心 (接入数据源下拉框的位置)
-            const endX = node.position.x;
-            const endY = node.position.y + 140; // 约在下拉框位置
+        return nodes
+            .filter(node => node.data.sourceNodeId)
+            .map(node => {
+                const sourceNode = nodes.find(n => n.id === node.data.sourceNodeId);
+                if (!sourceNode) return null;
 
-            return {
-                id: `${sourceNode.id}-${node.id}`,
-                startX,
-                startY,
-                endX,
-                endY
-            };
-        })
-        .filter(Boolean) as { id: string; startX: number; startY: number; endX: number; endY: number }[];
+                const sourceWidth = getNodeWidth(sourceNode);
+                const sourceHeight = getNodeHeight(sourceNode);
+                const targetWidth = getNodeWidth(node);
+                const targetHeight = getNodeHeight(node);
+
+                // 起点：来源节点的右侧中心
+                const startX = sourceNode.position.x + sourceWidth;
+                const startY = sourceNode.position.y + sourceHeight / 2;
+
+                // 终点：目标节点的左侧数据源位置
+                // 数据源下拉框位于标题栏下方，约在整体高度的 25% 处
+                const endX = node.position.x;
+                const endY = node.position.y + HEADER_HEIGHT + 20;
+
+                return {
+                    id: `${sourceNode.id}-${node.id}`,
+                    startX,
+                    startY,
+                    endX,
+                    endY
+                };
+            })
+            .filter(Boolean) as { id: string; startX: number; startY: number; endX: number; endY: number }[];
+    }, [nodes]);
 
     return (
         <svg className="absolute inset-0 pointer-events-none overflow-visible z-0">
@@ -105,4 +134,20 @@ export const ConnectionLines: React.FC<ConnectionLinesProps> = ({ nodes }) => {
       `}</style>
         </svg>
     );
-};
+}, (prev, next) => {
+    // 自定义比较函数：只在节点位置或关键属性变化时重新渲染
+    if (prev.nodes === next.nodes) return true;
+    if (prev.nodes.length !== next.nodes.length) return false;
+
+    return prev.nodes.every((n, i) => {
+        const m = next.nodes[i];
+        return (
+            n.id === m.id &&
+            n.position.x === m.position.x &&
+            n.position.y === m.position.y &&
+            n.data?.sourceNodeId === m.data?.sourceNodeId &&
+            n.data?.width === m.data?.width &&
+            n.data?.height === m.data?.height
+        );
+    });
+});

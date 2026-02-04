@@ -81,7 +81,7 @@ export const SVGTextOverlayUI: React.FC<SVGTextOverlayUIProps> = ({
         const reader = new FileReader();
         reader.onload = (ev) => {
             const base64 = ev.target?.result as string;
-            onUpdate(node.id, { ...node.data, referenceImage: base64 });
+            onUpdate(node.id, { referenceImage: base64 });
         };
         reader.readAsDataURL(file);
     };
@@ -93,7 +93,7 @@ export const SVGTextOverlayUI: React.FC<SVGTextOverlayUIProps> = ({
         const reader = new FileReader();
         reader.onload = (ev) => {
             const base64 = ev.target?.result as string;
-            onUpdate(node.id, { ...node.data, backgroundImage: base64 });
+            onUpdate(node.id, { backgroundImage: base64 });
         };
         reader.readAsDataURL(file);
     };
@@ -165,7 +165,6 @@ export const SVGTextOverlayUI: React.FC<SVGTextOverlayUIProps> = ({
             const svgUrl = URL.createObjectURL(svgBlob);
 
             onUpdate(node.id, {
-                ...node.data,
                 svgCode: finalSvg,
                 svgPreview: svgUrl,
                 result: finalSvg
@@ -234,7 +233,7 @@ export const SVGTextOverlayUI: React.FC<SVGTextOverlayUIProps> = ({
                 </div>
                 <select
                     value={node.data.textSourceNodeId || ''}
-                    onChange={(e) => onUpdate(node.id, { ...node.data, textSourceNodeId: e.target.value || undefined })}
+                    onChange={(e) => onUpdate(node.id, { textSourceNodeId: e.target.value || undefined })}
                     className="w-full bg-slate-800 border border-cyan-700 rounded-lg px-3 py-2 text-sm"
                 >
                     <option value="">无连接 / 自动识别</option>
@@ -258,7 +257,7 @@ export const SVGTextOverlayUI: React.FC<SVGTextOverlayUIProps> = ({
                 </div>
                 <select
                     value={node.data.imageSourceNodeId || ''}
-                    onChange={(e) => onUpdate(node.id, { ...node.data, imageSourceNodeId: e.target.value || undefined })}
+                    onChange={(e) => onUpdate(node.id, { imageSourceNodeId: e.target.value || undefined })}
                     className="w-full bg-slate-800 border border-green-700 rounded-lg px-3 py-2 text-sm"
                 >
                     <option value="">无连接 / 手动上传</option>
@@ -281,7 +280,7 @@ export const SVGTextOverlayUI: React.FC<SVGTextOverlayUIProps> = ({
                     <span className="text-slate-400 text-xs">参考图（有文字）</span>
                     {referenceImage && (
                         <button
-                            onClick={() => onUpdate(node.id, { ...node.data, referenceImage: '' })}
+                            onClick={() => onUpdate(node.id, { referenceImage: '' })}
                             className="text-red-400 text-xs hover:text-red-300"
                         >
                             清除
@@ -319,7 +318,7 @@ export const SVGTextOverlayUI: React.FC<SVGTextOverlayUIProps> = ({
                     <span className="text-slate-400 text-xs">背景图（无文字）</span>
                     {backgroundImage && !inheritedBackgroundImage && (
                         <button
-                            onClick={() => onUpdate(node.id, { ...node.data, backgroundImage: '' })}
+                            onClick={() => onUpdate(node.id, { backgroundImage: '' })}
                             className="text-red-400 text-xs hover:text-red-300"
                         >
                             清除
@@ -358,7 +357,7 @@ export const SVGTextOverlayUI: React.FC<SVGTextOverlayUIProps> = ({
                 </div>
                 <textarea
                     value={textContent}
-                    onChange={(e) => onUpdate(node.id, { ...node.data, textContent: e.target.value })}
+                    onChange={(e) => onUpdate(node.id, { textContent: e.target.value })}
                     placeholder={inheritedTextContent ? '使用上游文案...' : '留空则自动识别参考图文字...'}
                     className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm h-20 resize-none"
                 />

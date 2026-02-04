@@ -36,13 +36,13 @@ export const BatchImageGenUI: React.FC<BatchImageGenUIProps> = ({
     const addPrompt = () => {
         if (!currentPrompt.trim()) return;
         const newPrompts = [...prompts, currentPrompt.trim()];
-        onUpdate(node.id, { ...node.data, prompts: newPrompts });
+        onUpdate(node.id, { prompts: newPrompts });
         setCurrentPrompt('');
     };
 
     const removePrompt = (index: number) => {
         const newPrompts = prompts.filter((_: any, i: number) => i !== index);
-        onUpdate(node.id, { ...node.data, prompts: newPrompts });
+        onUpdate(node.id, { prompts: newPrompts });
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,8 +53,7 @@ export const BatchImageGenUI: React.FC<BatchImageGenUIProps> = ({
             const reader = new FileReader();
             reader.onload = (prev) => {
                 const base64 = prev.target?.result as string;
-                const currentImages = node.data.images || [];
-                onUpdate(node.id, { ...node.data, images: [...currentImages, base64] });
+                onUpdate(node.id, (prev: any) => ({ images: [...(prev.images || []), base64] }));
             };
             reader.readAsDataURL(file);
         });
@@ -91,7 +90,7 @@ export const BatchImageGenUI: React.FC<BatchImageGenUIProps> = ({
             }
         }
 
-        onUpdate(node.id, { ...node.data, results: newResults });
+        onUpdate(node.id, { results: newResults });
         setLoading(false);
         setStatus('');
         logger.success(`批量生成完成，共 ${newResults.length} 张图片`);
@@ -104,7 +103,7 @@ export const BatchImageGenUI: React.FC<BatchImageGenUIProps> = ({
                 <label className="text-slate-500 text-[8px] uppercase font-black tracking-widest px-1">提示词来源</label>
                 <select
                     value={node.data.sourceNodeId || ''}
-                    onChange={(e) => onUpdate(node.id, { ...node.data, sourceNodeId: e.target.value })}
+                    onChange={(e) => onUpdate(node.id, { sourceNodeId: e.target.value })}
                     className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-[10px] text-slate-300 outline-none focus:border-blue-500/50"
                 >
                     <option value="">手动输入</option>
@@ -168,8 +167,7 @@ export const BatchImageGenUI: React.FC<BatchImageGenUIProps> = ({
                         setIsUploadAreaHovered(false);
                         const imageUrl = e.dataTransfer.getData('text/plain');
                         if (imageUrl && imageUrl.startsWith('data:image')) {
-                            const currentImages = node.data.images || [];
-                            onUpdate(node.id, { ...node.data, images: [...currentImages, imageUrl] });
+                            onUpdate(node.id, (prev: any) => ({ images: [...(prev.images || []), imageUrl] }));
                             logger.success('图片已添加');
                         }
                     }}
@@ -195,7 +193,7 @@ export const BatchImageGenUI: React.FC<BatchImageGenUIProps> = ({
                     <label className="text-slate-500 text-[8px] uppercase font-black tracking-widest px-1">画质</label>
                     <select
                         value={quality}
-                        onChange={(e) => onUpdate(node.id, { ...node.data, quality: e.target.value })}
+                        onChange={(e) => onUpdate(node.id, { quality: e.target.value })}
                         className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-[10px] text-slate-300 outline-none focus:border-blue-500/50"
                     >
                         <option value="1k">1K (Standard)</option>
@@ -207,7 +205,7 @@ export const BatchImageGenUI: React.FC<BatchImageGenUIProps> = ({
                     <label className="text-slate-500 text-[8px] uppercase font-black tracking-widest px-1">比例</label>
                     <select
                         value={ratio}
-                        onChange={(e) => onUpdate(node.id, { ...node.data, ratio: e.target.value })}
+                        onChange={(e) => onUpdate(node.id, { ratio: e.target.value })}
                         className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-[10px] text-slate-300 outline-none focus:border-blue-500/50"
                     >
                         {['1:1', '3:4', '4:3', '9:16', '16:9'].map(r => <option key={r} value={r}>{r}</option>)}

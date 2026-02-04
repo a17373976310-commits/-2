@@ -65,10 +65,9 @@ export const ImageOutpaintUI: React.FC<ImageOutpaintUIProps> = ({ node, onUpdate
 
     useEffect(() => {
         if (autoResolution !== resolution) {
-            onUpdate(node.id, {
-                ...node.data,
-                outpaint: { ...node.data.outpaint, resolution: autoResolution }
-            });
+            onUpdate(node.id, (prev: any) => ({
+                outpaint: { ...(prev.outpaint || {}), resolution: autoResolution }
+            }));
         }
     }, [autoResolution, resolution]);
 
@@ -92,10 +91,9 @@ export const ImageOutpaintUI: React.FC<ImageOutpaintUIProps> = ({ node, onUpdate
 
         // For wheel, we can debounce or just update after a short delay
         // But for now, let's just update global state to keep it simple but less frequent than mousemove
-        onUpdate(node.id, {
-            ...node.data,
-            outpaint: { ...node.data.outpaint, scale: nextScale, imageRatio }
-        });
+        onUpdate(node.id, (prev: any) => ({
+            outpaint: { ...(prev.outpaint || {}), scale: nextScale, imageRatio }
+        }));
     };
 
     const handleMouseDown = (e: React.MouseEvent) => {
@@ -122,10 +120,9 @@ export const ImageOutpaintUI: React.FC<ImageOutpaintUIProps> = ({ node, onUpdate
         };
 
         const onMouseUp = () => {
-            onUpdate(node.id, {
-                ...node.data,
-                outpaint: { ...node.data.outpaint, x: lastX, y: lastY, ratio, scale: localScale, resolution, isLocked, imageRatio }
-            });
+            onUpdate(node.id, (prev: any) => ({
+                outpaint: { ...(prev.outpaint || {}), x: lastX, y: lastY, ratio, scale: localScale, resolution, isLocked, imageRatio }
+            }));
             window.removeEventListener('mousemove', onMouseMove);
             window.removeEventListener('mouseup', onMouseUp);
         };
@@ -154,10 +151,9 @@ export const ImageOutpaintUI: React.FC<ImageOutpaintUIProps> = ({ node, onUpdate
         if (dir === 'bottom') nextY = 1 - imageHeightFraction / 2;
         if (dir === 'center') { nextX = 0.5; nextY = 0.5; }
 
-        onUpdate(node.id, {
-            ...node.data,
-            outpaint: { ...node.data.outpaint, x: nextX, y: nextY, ratio, scale: localScale, resolution, isLocked, imageRatio }
-        });
+        onUpdate(node.id, (prev: any) => ({
+            outpaint: { ...(prev.outpaint || {}), x: nextX, y: nextY, ratio, scale: localScale, resolution, isLocked, imageRatio }
+        }));
     };
 
     const renderCanvas = (isLarge: boolean = false) => (
@@ -215,7 +211,7 @@ export const ImageOutpaintUI: React.FC<ImageOutpaintUIProps> = ({ node, onUpdate
                 {RATIOS.map(r => (
                     <button
                         key={r.label}
-                        onClick={() => onUpdate(node.id, { ...node.data, outpaint: { ...node.data.outpaint, ratio: r.label, x: localX, y: localY, scale: localScale, resolution, isLocked, imageRatio } })}
+                        onClick={() => onUpdate(node.id, (prev: any) => ({ outpaint: { ...(prev.outpaint || {}), ratio: r.label, x: localX, y: localY, scale: localScale, resolution, isLocked, imageRatio } }))}
                         className={`px-2 py-1 rounded-md text-[9px] font-bold transition-all border ${ratio === r.label
                             ? 'bg-blue-500 border-blue-400 text-white shadow-lg shadow-blue-500/20'
                             : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-500'
@@ -260,7 +256,7 @@ export const ImageOutpaintUI: React.FC<ImageOutpaintUIProps> = ({ node, onUpdate
                     placeholder="例如：延伸的沙滩，更多的办公用品..."
                     className="w-full bg-slate-900 border border-slate-700/50 rounded-xl px-3 py-2 text-[10px] text-slate-300 focus:outline-none focus:ring-1 focus:ring-blue-500/50"
                     value={node.data.outpaint?.prompt || ''}
-                    onChange={(e) => onUpdate(node.id, { ...node.data, outpaint: { ...node.data.outpaint, prompt: e.target.value, x: localX, y: localY, scale: localScale, resolution, isLocked, imageRatio } })}
+                    onChange={(e) => onUpdate(node.id, (prev: any) => ({ outpaint: { ...(prev.outpaint || {}), prompt: e.target.value, x: localX, y: localY, scale: localScale, resolution, isLocked, imageRatio } }))}
                 />
             </div>
 
@@ -371,7 +367,7 @@ export const ImageOutpaintUI: React.FC<ImageOutpaintUIProps> = ({ node, onUpdate
                                             <button
                                                 key={r.label}
                                                 disabled={isLocked}
-                                                onClick={() => onUpdate(node.id, { ...node.data, outpaint: { ...node.data.outpaint, ratio: r.label, x: localX, y: localY, scale: localScale, resolution, isLocked, imageRatio } })}
+                                                onClick={() => onUpdate(node.id, (prev: any) => ({ outpaint: { ...(prev.outpaint || {}), ratio: r.label, x: localX, y: localY, scale: localScale, resolution, isLocked, imageRatio } }))}
                                                 className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all ${ratio === r.label && !isLocked
                                                     ? 'bg-blue-500 border-blue-400 text-white'
                                                     : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-500'
@@ -388,7 +384,7 @@ export const ImageOutpaintUI: React.FC<ImageOutpaintUIProps> = ({ node, onUpdate
                                     <div className="flex items-center justify-between">
                                         <label className="text-[10px] uppercase font-black tracking-widest text-slate-500">快速对齐</label>
                                         <button
-                                            onClick={() => onUpdate(node.id, { ...node.data, outpaint: { ...node.data.outpaint, isLocked: !isLocked, imageRatio } })}
+                                            onClick={() => onUpdate(node.id, (prev: any) => ({ outpaint: { ...(prev.outpaint || {}), isLocked: !isLocked, imageRatio } }))}
                                             className={`flex items-center gap-1.5 px-2 py-1 rounded-lg transition-all border ${isLocked ? 'bg-amber-500/20 border-amber-500/50 text-amber-400' : 'bg-slate-800 border-white/5 text-slate-500 hover:text-slate-300'}`}
                                         >
                                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
@@ -413,7 +409,7 @@ export const ImageOutpaintUI: React.FC<ImageOutpaintUIProps> = ({ node, onUpdate
                                         placeholder="例如：延伸的沙滩，更多的办公用品..."
                                         className="w-full bg-slate-800 border border-slate-700 rounded-2xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none"
                                         value={node.data.outpaint?.prompt || ''}
-                                        onChange={(e) => onUpdate(node.id, { ...node.data, outpaint: { ...node.data.outpaint, prompt: e.target.value, x: localX, y: localY, scale: localScale, resolution, isLocked, imageRatio } })}
+                                        onChange={(e) => onUpdate(node.id, (prev: any) => ({ outpaint: { ...(prev.outpaint || {}), prompt: e.target.value, x: localX, y: localY, scale: localScale, resolution, isLocked, imageRatio } }))}
                                     />
                                 </div>
 

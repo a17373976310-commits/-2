@@ -211,7 +211,7 @@ export const ImageSlicerUI: React.FC<ImageSlicerUIProps> = ({
     }, [node.data.image, node.data.sourceNodeId, allNodes]);
 
     useEffect(() => {
-        onUpdate(node.id, { ...node.data, regions, margin, slices, sensitivity, rows, cols, detectMode });
+        onUpdate(node.id, { regions, margin, slices, sensitivity, rows, cols, detectMode });
     }, [regions, margin, slices, sensitivity, rows, cols, detectMode]);
 
     useEffect(() => {
@@ -345,7 +345,7 @@ export const ImageSlicerUI: React.FC<ImageSlicerUIProps> = ({
                     if (!file) return;
                     const reader = new FileReader();
                     reader.onload = (ev) => {
-                        onUpdate(node.id, { ...node.data, image: ev.target?.result as string, sourceNodeId: null });
+                        onUpdate(node.id, { image: ev.target?.result as string, sourceNodeId: null });
                         setSlices([]);
                         setRegions([]);
                     };
@@ -369,7 +369,7 @@ export const ImageSlicerUI: React.FC<ImageSlicerUIProps> = ({
                             </button>
                             <button
                                 onClick={() => {
-                                    onUpdate(node.id, { ...node.data, image: null, sourceNodeId: null, regions: [], slices: [] });
+                                    onUpdate(node.id, { image: null, sourceNodeId: null, regions: [], slices: [] });
                                     setRegions([]);
                                     setSlices([]);
                                 }}
@@ -383,7 +383,7 @@ export const ImageSlicerUI: React.FC<ImageSlicerUIProps> = ({
                         onClick={() => {
                             setRegions([]);
                             setSlices([]);
-                            onUpdate(node.id, { ...node.data, regions: [], slices: [] });
+                            onUpdate(node.id, { regions: [], slices: [] });
                         }}
                         className="text-[9px] text-slate-400 hover:text-slate-300 font-bold"
                     >

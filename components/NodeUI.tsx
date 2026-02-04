@@ -1,4 +1,5 @@
 
+
 import React, { useState, useRef, useMemo, useEffect } from 'react';
 import { NodeType, AppNode, ApiConfig, ApiProvider, PluginCategory } from '../types';
 import { PLUGINS } from '../constants';
@@ -26,10 +27,13 @@ interface NodeUIProps {
   globalCategoryModel?: string;
   apiConfig: ApiConfig;
   onImageClick: (src: string) => void;
+  onAddNode: (type: NodeType, pos?: { x: number, y: number }, data?: any) => AppNode | null;
   isPaused?: boolean;
 }
 
-export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDelete, globalCategoryModel, apiConfig, onImageClick, isPaused }) => {
+
+export const NodeUI: React.FC<NodeUIProps> = React.memo(({ node, allNodes, onUpdate, onDelete, onAddNode, globalCategoryModel, apiConfig, onImageClick, isPaused }) => {
+
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
@@ -39,6 +43,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
   const [isResizing, setIsResizing] = useState(false);
   const [tempWidth, setTempWidth] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const nodeRef = useRef<HTMLDivElement>(null);
 
   // Image label input state
   const [labelInputs, setLabelInputs] = useState<Record<number, string>>({});
@@ -65,7 +70,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
 
     const handleMouseUp = () => {
       setIsResizing(false);
-      onUpdate(node.id, { ...node.data, width: currentWidth });
+      onUpdate(node.id, { width: currentWidth });
       setTempWidth(null);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
@@ -81,6 +86,42 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
       loadTemplates();
     }
   }, [node.type]);
+
+  // 监听节点高度变化，更新到 node.data.height 供 ConnectionLines 使用
+  const lastHeightRef = useRef<number>(0);
+  const lastUpdateTimeRef = useRef<number>(0);
+
+  useEffect(() => {
+    if (!nodeRef.current) return;
+
+    const updateHeight = () => {
+      if (!nodeRef.current) return;
+      const height = nodeRef.current.getBoundingClientRect().height;
+      if (height <= 0) return;
+
+      // 节流：每 500ms 最多更新一次
+      const now = Date.now();
+      if (now - lastUpdateTimeRef.current < 500) return;
+
+      // 阈值：高度变化超过 20px 才更新
+      if (Math.abs(height - lastHeightRef.current) < 20) return;
+
+      // 检查是否真的需要更新（避免重复设置相同的值）
+      if (Math.abs(height - (node.data.height || 0)) < 5) return;
+
+      lastHeightRef.current = height;
+      lastUpdateTimeRef.current = now;
+      onUpdate(node.id, { ...node.data, height });
+    };
+
+    const resizeObserver = new ResizeObserver(updateHeight);
+    resizeObserver.observe(nodeRef.current);
+
+    // 初始更新
+    updateHeight();
+
+    return () => resizeObserver.disconnect();
+  }, [node.id]); // 减少依赖项，只在节点变化时重新绑定
 
   const loadTemplates = async () => {
     const data = await historyService.getTemplates();
@@ -144,8 +185,100 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [hoveredImage, isUploadAreaHovered]);
 
-  // Get image labels from node data
-  const imageLabels: Record<number, string[]> = node.data.imageLabels || {};
+  // ===== 优化后的节点关系数据计算（合并多次遍历） =====
+  const nodeRelations = useMemo(() => {
+    // 创建节点映射，避免多次遍历 allNodes
+    const nodeMap = new Map<string, AppNode>();
+    const availableSources: AppNode[] = [];
+
+    for (const n of allNodes) {
+      nodeMap.set(n.id, n);
+      if (n.id !== node.id) {
+        availableSources.push(n);
+      }
+    }
+
+    const sourceNode = nodeMap.get(node.data.sourceNodeId || '');
+
+    // 递归查找所有继承数据（一次遍历完成所有查找）
+    const findInheritedData = (nodeId: string | undefined, visited = new Set<string>()): {
+      images: string[];
+      labels: Record<number, string[]>;
+      ratio: { ratio: string; sourceTitle: string } | null;
+      outpaintConfig: any | null;
+    } => {
+      if (!nodeId || visited.has(nodeId)) {
+        return { images: [], labels: {}, ratio: null, outpaintConfig: null };
+      }
+      visited.add(nodeId);
+
+      const n = nodeMap.get(nodeId);
+      if (!n) {
+        return { images: [], labels: {}, ratio: null, outpaintConfig: null };
+      }
+
+      const localImages = n.data.images || (n.data.image ? [n.data.image] : []);
+
+      // 如果当前节点有本地图片，返回其数据
+      if (localImages.length > 0) {
+        return {
+          images: localImages,
+          labels: n.data.imageLabels || {},
+          ratio: n.type === NodeType.IMAGE_OUTPAINT
+            ? { ratio: n.data.outpaint?.ratio || '1:1', sourceTitle: n.titleZh }
+            : null,
+          outpaintConfig: n.type === NodeType.IMAGE_OUTPAINT ? n.data.outpaint : null
+        };
+      }
+
+      // 继续向上查找
+      return findInheritedData(n.data.sourceNodeId, visited);
+    };
+
+    const inherited = findInheritedData(node.data.sourceNodeId);
+
+    // 检查本地是否有图片
+    const localImages = node.data.images || (node.data.image ? [node.data.image] : []);
+    const hasLocalImages = localImages.length > 0;
+
+    // 有效的继承数据（当没有本地图片时使用）
+    const inheritedImages = hasLocalImages ? localImages : inherited.images;
+    const inheritedLabels = hasLocalImages ? {} : inherited.labels;
+
+    // 最终生效的标签
+    const imageLabels: Record<number, string[]> = node.data.imageLabels || {};
+    const effectiveLabels = hasLocalImages ? imageLabels : inheritedLabels;
+
+    // 比例继承信息
+    const inheritanceInfo = node.type === NodeType.IMAGE_GEN ? inherited.ratio : null;
+    const activeRatio = inheritanceInfo ? inheritanceInfo.ratio : (node.data.ratio || '1:1');
+
+    return {
+      availableSources,
+      sourceNode,
+      hasLocalImages,
+      inheritedImages,
+      inheritedLabels,
+      imageLabels,
+      effectiveLabels,
+      inheritanceInfo,
+      activeRatio,
+      inheritedOutpaintConfig: inherited.outpaintConfig
+    };
+  }, [allNodes, node.id, node.data.sourceNodeId, node.data.images, node.data.image, node.data.imageLabels, node.data.ratio, node.type]);
+
+  // 解构以便使用
+  const {
+    availableSources,
+    sourceNode,
+    hasLocalImages,
+    inheritedImages,
+    inheritanceInfo,
+    activeRatio,
+    inheritedOutpaintConfig,
+    effectiveLabels,
+    imageLabels
+  } = nodeRelations;
 
   // Image label handlers
   const addLabel = (imgIndex: number, label: string) => {
@@ -172,9 +305,10 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
 
   // Generate label context for AI (used in API calls)
   const generateLabelContext = (): string => {
-    const entries = Object.entries(imageLabels).filter(([_, labels]) => labels.length > 0);
+    const labels = (node.data.imageLabels as Record<number, string[]>) || {};
+    const entries = Object.entries(labels).filter(([_, l]) => l.length > 0);
     if (entries.length === 0) return '';
-    const lines = entries.map(([idx, labels]) => `- 图片${parseInt(idx) + 1}: [${labels.join(', ')}]`);
+    const lines = entries.map(([idx, l]) => `- 图片${parseInt(idx) + 1}: [${l.join(', ')}]`);
     return `用户提供的参考图片说明：\n${lines.join('\n')}\n\n`;
   };
 
@@ -200,114 +334,10 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
     activeModel?.includes('veo-3.1-generate-preview') ||
     activeModel?.includes('gemini-3-pro');
 
-  const availableSources = useMemo(() => {
-    return allNodes.filter(n => n.id !== node.id);
-  }, [allNodes, node.id]);
-
-  const sourceNode = useMemo(() => {
-    return allNodes.find(n => n.id === node.data.sourceNodeId);
-  }, [allNodes, node.data.sourceNodeId]);
-
-  // Recursive helper to find images up the chain
-  const findInheritedImages = (nodeId: string | undefined, visited = new Set<string>()): string[] => {
-    if (!nodeId || visited.has(nodeId)) return [];
-    visited.add(nodeId);
-    const n = allNodes.find(item => item.id === nodeId);
-    if (!n) return [];
-
-    const local = n.data.images || (n.data.image ? [n.data.image] : []);
-    if (local.length > 0) return local;
-
-    return findInheritedImages(n.data.sourceNodeId, visited);
-  };
-
-  // Recursive helper to find image labels up the chain (follows same path as images)
-  const findInheritedLabels = (nodeId: string | undefined, visited = new Set<string>()): Record<number, string[]> => {
-    if (!nodeId || visited.has(nodeId)) return {};
-    visited.add(nodeId);
-    const n = allNodes.find(item => item.id === nodeId);
-    if (!n) return {};
-
-    const localImages = n.data.images || (n.data.image ? [n.data.image] : []);
-    // If this node has local images, return its labels (if any)
-    if (localImages.length > 0) {
-      return n.data.imageLabels || {};
-    }
-
-    // Otherwise, keep searching up the chain
-    return findInheritedLabels(n.data.sourceNodeId, visited);
-  };
-
-  // Check if we have local images (not inherited)
-  const hasLocalImages = useMemo(() => {
-    const localImages = node.data.images || (node.data.image ? [node.data.image] : []);
-    return localImages.length > 0;
-  }, [node.data.images, node.data.image]);
-
-  const inheritedImages = useMemo(() => {
-    const localImages = node.data.images || (node.data.image ? [node.data.image] : []);
-    if (localImages.length > 0) return localImages;
-    return findInheritedImages(node.data.sourceNodeId);
-  }, [node.data.images, node.data.image, node.data.sourceNodeId, allNodes]);
-
-  // Get inherited labels (only when images are also inherited)
-  const inheritedLabels = useMemo(() => {
-    if (hasLocalImages) return {}; // Use local only, don't inherit
-    return findInheritedLabels(node.data.sourceNodeId);
-  }, [hasLocalImages, node.data.sourceNodeId, allNodes]);
-
-  // Effective labels: use local if available, otherwise use inherited
-  const effectiveLabels: Record<number, string[]> = useMemo(() => {
-    if (hasLocalImages) {
-      return imageLabels; // Local images = use local labels only
-    }
-    return inheritedLabels; // Inherited images = use inherited labels
-  }, [hasLocalImages, imageLabels, inheritedLabels]);
-
-  // Recursive helper to find outpaint ratio up the chain
-  const findInheritedRatio = (nodeId: string | undefined, visited = new Set<string>()): { ratio: string; sourceTitle: string } | null => {
-    if (!nodeId || visited.has(nodeId)) return null;
-    visited.add(nodeId);
-    const n = allNodes.find(item => item.id === nodeId);
-    if (!n) return null;
-    if (n.type === NodeType.IMAGE_OUTPAINT) {
-      return { ratio: n.data.outpaint?.ratio || '1:1', sourceTitle: n.titleZh };
-    }
-    return findInheritedRatio(n.data.sourceNodeId, visited);
-  };
-
-  const inheritanceInfo = useMemo(() => {
-    if (node.type === NodeType.IMAGE_GEN) {
-      return findInheritedRatio(node.data.sourceNodeId);
-    }
-    return null;
-  }, [node.data.sourceNodeId, allNodes, node.type]);
-
-  const activeRatio = useMemo(() => {
-    if (inheritanceInfo) return inheritanceInfo.ratio;
-    return node.data.ratio || '1:1';
-  }, [inheritanceInfo, node.data.ratio]);
-
-  // Recursive helper to find outpaint config up the chain
-  const findInheritedOutpaintConfig = (nodeId: string | undefined, visited = new Set<string>()): any | null => {
-    if (!nodeId || visited.has(nodeId)) return null;
-    visited.add(nodeId);
-    const n = allNodes.find(item => item.id === nodeId);
-    if (!n) return null;
-    if (n.type === NodeType.IMAGE_OUTPAINT) {
-      return n.data.outpaint;
-    }
-    return findInheritedOutpaintConfig(n.data.sourceNodeId, visited);
-  };
-
-  const inheritedOutpaintConfig = useMemo(() => {
-    return findInheritedOutpaintConfig(node.data.sourceNodeId);
-  }, [node.data.sourceNodeId, allNodes]);
-
   const handleRun = async () => {
     // Check if globally paused
     if (isPaused) {
-      setError('全局任务已暂停，请点击右上角“恢复”按钮继续。');
+      setError('全局任务已暂停，请点击右上角"恢复"按钮继续。');
       logger.warn('任务被暂停', node.id, node.titleZh);
       return;
     }
@@ -323,11 +353,20 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
     if (sourceNode) {
       if (sourceNode.data.result) {
         const sourceResult = sourceNode.data.result;
-        // Check if result is an image (base64 string starting with data:image)
-        // If so, don't add it to the prompt - it should only be used as a reference image
-        const isImageResult = typeof sourceResult === 'string' && sourceResult.startsWith('data:image');
+        // 优化后的类型检查：更严格地检查结果是否为图片
+        const isImageResult =
+          typeof sourceResult === 'string' &&
+          (sourceResult.startsWith('data:image') || sourceResult.startsWith('http'));
 
-        if (isImageResult) {
+        // 检查是否为包含图片数据的对象
+        const isImageObjectResult =
+          typeof sourceResult === 'object' &&
+          sourceResult !== null &&
+          'url' in sourceResult &&
+          typeof sourceResult.url === 'string' &&
+          (sourceResult.url.startsWith('data:image') || sourceResult.url.startsWith('http'));
+
+        if (isImageResult || isImageObjectResult) {
           // Result is an image - don't add to prompt, just log
           logger.info(`从 [${sourceNode.titleZh}] 继承图片结果`, node.id, node.titleZh);
         } else {
@@ -366,7 +405,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
           }
 
           // Pass through images to help downstream nodes
-          onUpdate(node.id, { ...node.data, result, images: inheritedImages });
+          onUpdate(node.id, { result, images: inheritedImages });
           return; // Early return as we already called onUpdate
         case NodeType.IMAGE_GEN:
           setStatus('图像生成中...');
@@ -381,7 +420,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
             );
           } else {
             // Pass all inherited images and their labels for better context
-            const labelsArray = inheritedImages.map((_, i) => effectiveLabels[i]?.join(', ') || '');
+            const labelsArray = inheritedImages.map((_, i) => ((effectiveLabels[i] as string[]) || []).join(', ') || '');
             result = await apiService.generateImage(
               finalPrompt,
               { ratio: activeRatio, model: activeModel },
@@ -419,6 +458,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
           );
           break;
         case NodeType.TEXT_PRO:
+        case NodeType.TEXT_FAST:
           setStatus('逻辑计算中...');
           result = await apiService.chatPro(finalPrompt, activeModel || '', provider);
           break;
@@ -478,7 +518,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
           result = optimizedOutpaintPrompt;
 
           // Pass through images and config to help downstream nodes
-          onUpdate(node.id, { ...node.data, result, images: inheritedImages });
+          onUpdate(node.id, { result, images: inheritedImages });
           return; // Early return
       }
 
@@ -504,7 +544,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
       }
 
       logger.success(`处理完成！`, node.id, node.titleZh);
-      onUpdate(node.id, { ...node.data, result });
+      onUpdate(node.id, { result });
     } catch (err: any) {
       setError(err.message || "执行错误");
       logger.error(err.message, node.id, node.titleZh);
@@ -515,22 +555,41 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
   };
 
 
+  // 优化后的文件上传处理：添加文件大小检查
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    if (files.length > 0) {
-      const readers = files.map((file: File) => {
-        return new Promise<string>((resolve) => {
+    if (files.length === 0) return;
+
+    // 文件大小检查（10MB = 10 * 1024 * 1024 bytes）
+    const MAX_FILE_SIZE = 10 * 1024 * 1024;
+    const oversizedFiles = files.filter(file => (file as File).size > MAX_FILE_SIZE);
+
+    if (oversizedFiles.length > 0) {
+      logger.warn(`以下文件超过10MB限制，将被跳过: ${oversizedFiles.map(f => (f as File).name).join(', ')}`);
+      alert(`以下文件超过10MB限制: ${oversizedFiles.map(f => (f as File).name).join(', ')}\n请选择更小的图片。`);
+    }
+
+    const validFiles = files.filter(file => (file as File).size <= MAX_FILE_SIZE);
+    if (validFiles.length === 0) return;
+
+    try {
+      const readers = validFiles.map((file: File) => {
+        return new Promise<string>((resolve, reject) => {
           const reader = new FileReader();
           reader.onloadend = () => resolve(reader.result as string);
+          reader.onerror = () => reject(new Error(`读取文件 ${file.name} 失败`));
           reader.readAsDataURL(file);
         });
       });
+
       const results = await Promise.all(readers);
       onUpdate(node.id, {
-        ...node.data,
         images: [...(node.data.images || []), ...results],
         image: results[0] // 兼容旧版
       });
+      logger.success(`成功上传 ${results.length} 张图片`);
+    } catch (err) {
+      logger.error('上传图片失败: ' + (err as Error).message);
     }
   };
 
@@ -545,6 +604,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
 
   return (
     <div
+      ref={nodeRef}
       onWheel={(e) => e.stopPropagation()} // 核心修复：阻止缩放联动
       style={{ width: nodeWidth }}
       className={`group relative bg-[#1e293b]/95 border-2 transition-all duration-300 rounded-3xl overflow-hidden flex flex-col shadow-2xl backdrop-blur-md cursor-auto
@@ -611,11 +671,11 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
                       const input = document.createElement('input');
                       input.type = 'file';
                       input.accept = '.txt,.md';
-                      input.onchange = (e: any) => {
-                        const file = e.target.files?.[0];
+                      input.onchange = (e: Event) => {
+                        const file = (e.target as HTMLInputElement).files?.[0];
                         if (file) {
                           const reader = new FileReader();
-                          reader.onload = (re) => onUpdate(node.id, { ...node.data, promptEngineering: re.target?.result });
+                          reader.onload = (re) => onUpdate(node.id, { ...node.data, promptEngineering: re.target?.result as string });
                           reader.readAsText(file);
                         }
                       };
@@ -777,10 +837,12 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
             node={node}
             allNodes={allNodes}
             onUpdate={onUpdate}
+            onAddNode={onAddNode}
             apiConfig={apiConfig}
             isPaused={isPaused}
             globalCategoryModel={globalCategoryModel}
           />
+
         )}
 
         {node.type === NodeType.MULTI_IMAGE_GEN && (
@@ -844,7 +906,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
                 </label>
                 {hasLocal && (
                   <button
-                    onClick={(e) => { e.stopPropagation(); onUpdate(node.id, { ...node.data, images: [], image: null }); }}
+                    onClick={(e) => { e.stopPropagation(); onUpdate(node.id, { images: [], image: null }); }}
                     className="text-[7px] text-red-400 hover:text-red-300 font-bold uppercase"
                   >
                     清空全部
@@ -865,7 +927,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
                   const imageUrl = e.dataTransfer.getData('text/plain');
                   if (imageUrl && imageUrl.startsWith('data:image')) {
                     const currentImages = node.data.images || (node.data.image ? [node.data.image] : []);
-                    onUpdate(node.id, { ...node.data, images: [...currentImages, imageUrl], image: imageUrl });
+                    onUpdate(node.id, { images: [...currentImages, imageUrl], image: imageUrl });
                     logger.success('图片已添加');
                   }
                 }}
@@ -905,7 +967,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   const newImages = node.data.images.filter((_: any, i: number) => i !== idx);
-                                  onUpdate(node.id, { ...node.data, images: newImages, image: newImages[0] || null });
+                                  onUpdate(node.id, { images: newImages, image: newImages[0] || null });
                                 }}
                                 className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover/img:opacity-100 transition-opacity shadow-lg"
                               >
@@ -1017,12 +1079,41 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
                     复制提示词
                   </button>
                 </div>
-              ) : (node.type === NodeType.IMAGE_GEN || node.type === NodeType.IMAGE_EDIT || node.type === NodeType.MULTI_IMAGE_GEN) && typeof node.data.result === 'string' ? (
-                <img
-                  src={node.data.result}
-                  className="w-full h-auto cursor-zoom-in hover:opacity-90 transition-opacity"
-                  alt="AI Synthesized"
-                  onClick={() => onImageClick(node.data.result)}
+              ) : typeof node.data.result === 'string' && (node.data.result.startsWith('data:image') || node.data.result.startsWith('blob:') || node.data.result.startsWith('http')) ? (
+                <div className="relative">
+                  <img
+                    src={node.data.result}
+                    crossOrigin="anonymous"
+                    className="w-full h-auto cursor-zoom-in hover:opacity-90 transition-opacity"
+                    alt="AI Result"
+                    onClick={() => onImageClick(node.data.result)}
+                    onError={(e) => {
+                      // If CORS fails, try without crossOrigin
+                      const img = e.currentTarget;
+                      if (img.crossOrigin) {
+                        img.crossOrigin = '';
+                        img.src = node.data.result;
+                      } else {
+                      }
+                    }}
+                  />
+                  {/* Show URL for external images as fallback */}
+                  {node.data.result.startsWith('http') && (
+                    <a
+                      href={node.data.result}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="absolute bottom-2 right-2 bg-black/50 text-white text-[8px] px-2 py-1 rounded hover:bg-black/70 transition-colors"
+                    >
+                      在新标签打开
+                    </a>
+                  )}
+                </div>
+              ) : typeof node.data.result === 'string' && node.data.result.includes('<svg') ? (
+                <div
+                  className="w-full h-auto bg-slate-900 rounded-xl overflow-hidden cursor-zoom-in hover:opacity-90 transition-opacity p-2"
+                  dangerouslySetInnerHTML={{ __html: node.data.result }}
+                  onClick={() => onImageClick('data:image/svg+xml;base64,' + btoa(node.data.result))}
                 />
               ) : typeof node.data.result === 'object' ? (
                 <div className="p-4 space-y-4">
@@ -1057,4 +1148,4 @@ export const NodeUI: React.FC<NodeUIProps> = ({ node, allNodes, onUpdate, onDele
       {/* Labels are now inline under each image - no modal needed */}
     </div>
   );
-};
+});

@@ -64,7 +64,7 @@ export const IntentParserUI: React.FC<IntentParserUIProps> = ({
                 parsedIntents = response.split('\n').filter(s => s.trim());
             }
 
-            onUpdate(node.id, { ...node.data, input, result: parsedIntents });
+            onUpdate(node.id, { input, result: parsedIntents });
             logger.success(`解析完成，提取出 ${parsedIntents.length} 个意图`);
         } catch (err: any) {
             logger.error('解析失败: ' + err.message);
@@ -75,7 +75,7 @@ export const IntentParserUI: React.FC<IntentParserUIProps> = ({
 
     const removeIntent = (idx: number) => {
         const newIntents = intents.filter((_: any, i: number) => i !== idx);
-        onUpdate(node.id, { ...node.data, result: newIntents });
+        onUpdate(node.id, { result: newIntents });
     };
 
     return (

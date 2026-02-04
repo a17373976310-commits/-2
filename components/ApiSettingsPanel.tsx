@@ -8,6 +8,56 @@ interface ApiSettingsPanelProps {
     onClose: () => void;
 }
 
+// 解析模型输入为数组
+const parseModelsInput = (input: string | string[] | undefined): string[] => {
+    if (Array.isArray(input)) return input;
+    if (typeof input === 'string') return input.split(',').map(m => m.trim()).filter(Boolean);
+    return [];
+};
+
+// 验证 API Key 格式
+const validateApiKey = (apiKey: string): { valid: boolean; message?: string } => {
+    const trimmedKey = apiKey.trim();
+    if (!trimmedKey) {
+        return { valid: false, message: 'API Key 不能为空' };
+    }
+    // 检查常见的 API Key 前缀（不同服务商有不同的前缀）
+    const validPrefixes = ['sk-', 'sk-proj-', 'sk-ant-', 'sk-or-', 'hf_'];
+    const hasValidPrefix = validPrefixes.some(prefix => trimmedKey.toLowerCase().startsWith(prefix));
+    if (!hasValidPrefix && trimmedKey.length < 10) {
+        return { valid: false, message: 'API Key 格式不正确，应以 sk- 等有效前缀开头' };
+    }
+    return { valid: true };
+};
+
+// 验证 URL 格式并自动补全 /v1
+const validateAndNormalizeUrl = (url: string, format: ApiFormat): { valid: boolean; normalizedUrl?: string; message?: string } => {
+    let baseUrl = url.trim();
+    
+    // 自动补全协议头
+    if (!baseUrl.match(/^https?:\/\//i)) {
+        baseUrl = 'https://' + baseUrl;
+    }
+    
+    try {
+        const urlObj = new URL(baseUrl);
+        // 确保是 http 或 https 协议
+        if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
+            return { valid: false, message: 'URL 协议必须是 http 或 https' };
+        }
+    } catch {
+        return { valid: false, message: 'API 基础地址格式不正确，请输入有效的 URL（如：https://api.openai.com/v1）' };
+    }
+    
+    // 自动补全 /v1 结尾（如果不是 stability 格式且不以 /v1 结尾）
+    if (format !== 'stability' && !baseUrl.endsWith('/v1') && !baseUrl.endsWith('/v1/')) {
+        // 移除末尾的斜杠，然后添加 /v1
+        baseUrl = baseUrl.replace(/\/+$/, '') + '/v1';
+    }
+    
+    return { valid: true, normalizedUrl: baseUrl };
+};
+
 export const ApiSettingsPanel: React.FC<ApiSettingsPanelProps> = ({ config, onUpdate, onClose }) => {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [formData, setFormData] = useState<Partial<ApiProvider>>({
@@ -47,19 +97,48 @@ export const ApiSettingsPanel: React.FC<ApiSettingsPanelProps> = ({ config, onUp
     };
 
     const handleSave = () => {
+        // 基础非空验证
         if (!formData.name || !formData.baseUrl || !formData.apiKey) {
             alert("请填写完整信息");
             return;
         }
 
+        const trimmedName = formData.name.trim();
+        
+        // 名称去重检查
+        const existingProvider = config.providers.find(
+            p => p.name.toLowerCase() === trimmedName.toLowerCase() && p.id !== editingId && editingId !== 'new'
+        );
+        if (existingProvider && editingId === 'new') {
+            alert(`已存在名称为 "${trimmedName}" 的提供商，请使用其他名称`);
+            return;
+        }
+
+        // API Key 格式验证
+        const apiKeyValidation = validateApiKey(formData.apiKey);
+        if (!apiKeyValidation.valid) {
+            alert(apiKeyValidation.message);
+            return;
+        }
+
+        // URL 格式验证和自动补全
+        const urlValidation = validateAndNormalizeUrl(
+            formData.baseUrl, 
+            (formData.format as ApiFormat) || 'openai'
+        );
+        if (!urlValidation.valid) {
+            alert(urlValidation.message);
+            return;
+        }
+
         const provider: ApiProvider = {
             id: editingId === 'new' ? Math.random().toString(36).substr(2, 9) : editingId!,
-            name: formData.name!,
-            baseUrl: formData.baseUrl!,
-            apiKey: formData.apiKey!,
+            name: trimmedName,
+            baseUrl: urlValidation.normalizedUrl!,
+            apiKey: formData.apiKey.trim(),
             format: (formData.format as ApiFormat) || 'openai',
-            models: typeof formData.models === 'string' ? (formData.models as string).split(',').map(m => m.trim()) : formData.models || [],
-            imageModels: typeof formData.imageModels === 'string' ? (formData.imageModels as string).split(',').map(m => m.trim()) : formData.imageModels || [],
+            models: parseModelsInput(formData.models),
+            imageModels: parseModelsInput(formData.imageModels),
             isDefault: formData.isDefault
         };
 
@@ -128,6 +207,9 @@ export const ApiSettingsPanel: React.FC<ApiSettingsPanelProps> = ({ config, onUp
                                     value={formData.baseUrl}
                                     onChange={e => setFormData({ ...formData, baseUrl: e.target.value })}
                                 />
+                                <p className="text-slate-600 text-[10px] px-1">
+                                    支持自动补全协议头 (https://) 和 /v1 路径（Stability 格式除外）
+                                </p>
                             </div>
 
                             <div className="space-y-1.5">
@@ -139,15 +221,28 @@ export const ApiSettingsPanel: React.FC<ApiSettingsPanelProps> = ({ config, onUp
                                     value={formData.apiKey}
                                     onChange={e => setFormData({ ...formData, apiKey: e.target.value })}
                                 />
+                                <p className="text-slate-600 text-[10px] px-1">
+                                    常见的 API Key 前缀：sk-、sk-proj-、sk-ant-、sk-or-、hf_
+                                </p>
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-slate-500 text-[10px] uppercase font-black tracking-widest px-1">支持的模型 (逗号分隔)</label>
+                                <label className="text-slate-500 text-[10px] uppercase font-black tracking-widest px-1">支持的模型 (常规 - 逗号分隔)</label>
                                 <textarea
-                                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:ring-2 focus:ring-blue-500/50 outline-none min-h-[80px]"
+                                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:ring-2 focus:ring-blue-500/50 outline-none min-h-[60px]"
                                     placeholder="gpt-4o, claude-3-opus..."
                                     value={Array.isArray(formData.models) ? formData.models.join(', ') : formData.models}
                                     onChange={e => setFormData({ ...formData, models: e.target.value })}
+                                />
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-slate-500 text-[10px] uppercase font-black tracking-widest px-1">图像模型 (逗号分隔)</label>
+                                <textarea
+                                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:ring-2 focus:ring-blue-500/50 outline-none min-h-[60px]"
+                                    placeholder="nano-banana-2, nano-banana-2-2k, nano-banana-2-4k..."
+                                    value={Array.isArray(formData.imageModels) ? formData.imageModels.join(', ') : formData.imageModels}
+                                    onChange={e => setFormData({ ...formData, imageModels: e.target.value })}
                                 />
                             </div>
 

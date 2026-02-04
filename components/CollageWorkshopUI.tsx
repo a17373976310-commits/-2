@@ -22,7 +22,7 @@ export const CollageWorkshopUI: React.FC<CollageWorkshopUIProps> = ({
     // Initialize selectedIndices if empty and source has images
     useEffect(() => {
         if (selectedIndices.length === 0 && availableImages.length > 0) {
-            onUpdate(node.id, { ...node.data, selectedIndices: availableImages.map((_: any, i: number) => i) });
+            onUpdate(node.id, { selectedIndices: availableImages.map((_: any, i: number) => i) });
         }
     }, [availableImages.length]);
 
@@ -30,7 +30,7 @@ export const CollageWorkshopUI: React.FC<CollageWorkshopUIProps> = ({
         const newIndices = selectedIndices.includes(idx)
             ? selectedIndices.filter((i: number) => i !== idx)
             : [...selectedIndices, idx];
-        onUpdate(node.id, { ...node.data, selectedIndices: newIndices });
+        onUpdate(node.id, { selectedIndices: newIndices });
     };
 
     const moveItem = (fromIndex: number, toIndex: number) => {
@@ -38,7 +38,7 @@ export const CollageWorkshopUI: React.FC<CollageWorkshopUIProps> = ({
         const newIndices = [...selectedIndices];
         const [removed] = newIndices.splice(fromIndex, 1);
         newIndices.splice(toIndex, 0, removed);
-        onUpdate(node.id, { ...node.data, selectedIndices: newIndices });
+        onUpdate(node.id, { selectedIndices: newIndices });
     };
 
     const generateCollage = async () => {
@@ -93,7 +93,7 @@ export const CollageWorkshopUI: React.FC<CollageWorkshopUIProps> = ({
             });
 
             const resultBase64 = canvas.toDataURL('image/png');
-            onUpdate(node.id, { ...node.data, result: resultBase64 });
+            onUpdate(node.id, { result: resultBase64 });
             logger.success('拼图合成成功！');
         } catch (err: any) {
             logger.error('拼图失败: ' + err.message);
@@ -117,7 +117,7 @@ export const CollageWorkshopUI: React.FC<CollageWorkshopUIProps> = ({
                 <label className="text-slate-500 text-[8px] uppercase font-black tracking-widest px-1">数据来源</label>
                 <select
                     value={node.data.sourceNodeId || ''}
-                    onChange={(e) => onUpdate(node.id, { ...node.data, sourceNodeId: e.target.value, selectedIndices: [] })}
+                    onChange={(e) => onUpdate(node.id, { sourceNodeId: e.target.value, selectedIndices: [] })}
                     className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-[10px] text-slate-300 outline-none focus:border-blue-500/50"
                 >
                     <option value="">请选择来源节点...</option>

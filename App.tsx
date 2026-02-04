@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { AppNode, NodeType, PluginMetadata, PluginCategory, Workflow, LogEntry } from './types';
 import { PluginLibrary } from './components/PluginLibrary';
 import { NodeUI } from './components/NodeUI';
@@ -16,20 +16,32 @@ import { ConnectionLines } from './components/ConnectionLines';
 import { AIChatSidebar } from './components/AIChatSidebar';
 
 const App: React.FC = () => {
-  const INITIAL_TRANSFORM = { x: window.innerWidth / 4, y: window.innerHeight / 4, scale: 0.8 };
   const [nodes, setNodes] = useState<AppNode[]>([]);
-  const [transform, setTransform] = useState(INITIAL_TRANSFORM);
+  const [transform, setTransform] = useState(() => ({
+    x: window.innerWidth / 4,
+    y: window.innerHeight / 4,
+    scale: 0.8
+  }));
   const [isPanning, setIsPanning] = useState(false);
   const [isSpacePressed, setIsSpacePressed] = useState(false);
   const [draggingNodeId, setDraggingNodeId] = useState<string | null>(null);
   const [contextMenu, setContextMenu] = useState<{ x: number, y: number, visible: boolean } | null>(null);
 
-  const [categoryModels, setCategoryModels] = useState<Record<PluginCategory, string>>({
-    [PluginCategory.VISUAL]: 'nano-banana-2',
-    [PluginCategory.VIDEO]: 'luma-dream-machine',
-    [PluginCategory.LOGIC]: 'gpt-4o',
-    [PluginCategory.INTERACT]: 'whisper-1',
+  const [categoryModels, setCategoryModels] = useState<Record<PluginCategory, string>>(() => {
+    try {
+      const saved = localStorage.getItem('categoryModels');
+      if (saved) return JSON.parse(saved);
+    } catch (e) { console.error('Failed to load category models', e); }
+    return {
+      [PluginCategory.VISUAL]: 'nano-banana-2',
+      [PluginCategory.VIDEO]: 'luma-dream-machine',
+      [PluginCategory.LOGIC]: 'gpt-4o',
+      [PluginCategory.INTERACT]: 'whisper-1',
+    };
   });
+
+  const [fetchedModelsMap, setFetchedModelsMap] = useState<Record<string, string[]>>({});
+  const [customModels, setCustomModels] = useState<Record<PluginCategory, string>>({});
 
   const [apiConfig, setApiConfig] = useState<ApiConfig>(() => {
     const saved = localStorage.getItem('apiConfig');
@@ -43,10 +55,30 @@ const App: React.FC = () => {
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [logs, setLogs] = useState<LogEntry[]>([]);
 
-  // Subscribe to logs for AI Chat
+  // 优化：缓存去重后的节点列表
+  const uniqueNodes = useMemo(() => {
+    const seenIds = new Set<string>();
+    return nodes.filter(n => {
+      if (seenIds.has(n.id)) {
+        console.warn(`检测到重复节点 ID: ${n.id}`);
+        return false;
+      }
+      seenIds.add(n.id);
+      return true;
+    });
+  }, [nodes]);
+
+  // Subscribe to logs for AI Chat - 优化：使用函数式更新避免依赖 logs
   useEffect(() => {
     const unsubscribe = logger.subscribe((entry) => {
-      setLogs(prev => [...prev.slice(-50), entry]); // Keep last 50 logs
+      setLogs(prev => {
+        const next = [...prev.slice(-50), entry];
+        // 如果内容相同，返回 prev 避免重渲染
+        if (next.length === prev.length && next[next.length - 1] === prev[prev.length - 1]) {
+          return prev;
+        }
+        return next;
+      });
     });
     return unsubscribe;
   }, []);
@@ -54,6 +86,10 @@ const App: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('apiConfig', JSON.stringify(apiConfig));
   }, [apiConfig]);
+
+  useEffect(() => {
+    localStorage.setItem('categoryModels', JSON.stringify(categoryModels));
+  }, [categoryModels]);
 
   useEffect(() => {
     logger.info("Infinite Canvas 系统已启动。");
@@ -72,9 +108,12 @@ const App: React.FC = () => {
     };
   }, []);
 
-  const addNode = (plugin: PluginMetadata, pos?: { x: number, y: number }) => {
+  // 优化：使用 useCallback 缓存 addNode 函数
+  const addNode = useCallback((plugin: PluginMetadata, pos?: { x: number, y: number }, initialData?: any) => {
     const newNode: AppNode = {
-      id: Math.random().toString(36).substr(2, 9),
+      id: typeof crypto !== 'undefined' && crypto.randomUUID
+        ? crypto.randomUUID()
+        : Math.random().toString(36).substr(2, 9),
       type: plugin.type,
       position: pos || {
         x: (window.innerWidth / 2 - transform.x) / transform.scale - 150,
@@ -82,7 +121,8 @@ const App: React.FC = () => {
       },
       data: {
         model: SUGGESTED_MODELS[plugin.category][0].id,
-        sourceNodeId: null
+        sourceNodeId: null,
+        ...initialData
       },
       title: plugin.title,
       titleZh: plugin.titleZh
@@ -90,35 +130,60 @@ const App: React.FC = () => {
     setNodes(prev => [...prev, newNode]);
     setContextMenu(null);
     logger.info(`节点已生成: ${plugin.titleZh}`);
-  };
+    return newNode;
+  }, [transform.x, transform.y, transform.scale]);
 
-  const updateNode = (id: string, data: any) => {
-    setNodes(prev => prev.map(n => n.id === id ? { ...n, data } : n));
-  };
+  // 优化：使用 useCallback 缓存 updateNode 函数
+  const updateNode = useCallback((id: string, dataOrFn: any) => {
+    setNodes(prev => prev.map(n => {
+      if (n.id === id) {
+        const delta = typeof dataOrFn === 'function' ? dataOrFn(n.data) : dataOrFn;
+        return { ...n, data: { ...n.data, ...delta } };
+      }
+      return n;
+    }));
+  }, []);
 
-  const deleteNode = (id: string) => {
+  // 优化：使用 useCallback 缓存 deleteNode 函数
+  const deleteNode = useCallback((id: string) => {
     setNodes(prev => prev.filter(n => n.id !== id));
     logger.warn(`节点已移除。`);
-  };
+  }, []);
 
-  const handleLoadWorkflow = (workflow: Workflow) => {
+  // 优化：使用 useCallback 缓存 handleLoadWorkflow 函数
+  const handleLoadWorkflow = useCallback((workflow: Workflow) => {
     setNodes(workflow.nodes);
     setTransform(workflow.transform);
     if (workflow.categoryModels) setCategoryModels(workflow.categoryModels);
     logger.success(`工作流加载成功: ${workflow.name}`);
-  };
+  }, []);
 
-  const handleClearCanvas = () => {
+  // 优化：使用 useCallback 缓存 handleClearCanvas 函数
+  const handleClearCanvas = useCallback(() => {
     setNodes([]);
     logger.warn("画布已清空。");
-  };
+  }, []);
 
-  const handleResetTransform = () => {
-    setTransform(INITIAL_TRANSFORM);
+  // 优化：使用 useCallback 缓存 handleResetTransform 函数
+  const handleResetTransform = useCallback(() => {
+    setTransform({
+      x: window.innerWidth / 4,
+      y: window.innerHeight / 4,
+      scale: 0.8
+    });
     logger.info("视图已重置。");
-  };
+  }, []);
 
-  const handleMouseDown = (e: React.MouseEvent) => {
+  const lastMousePos = useRef({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // 性能优化：使用 RAF 节流拖拽更新
+  const rafIdRef = useRef<number | null>(null);
+  const pendingDragRef = useRef<{ dx: number; dy: number } | null>(null);
+  const pendingPanRef = useRef<{ dx: number; dy: number } | null>(null);
+
+  // 优化：使用 useCallback 缓存 handleMouseDown 函数
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if (e.button === 2) {
       setContextMenu({ x: e.clientX, y: e.clientY, visible: true });
       return;
@@ -130,33 +195,86 @@ const App: React.FC = () => {
       setIsPanning(true);
     }
     lastMousePos.current = { x: e.clientX, y: e.clientY };
-  };
+  }, [isSpacePressed]);
 
-  const lastMousePos = useRef({ x: 0, y: 0 });
-  const containerRef = useRef<HTMLDivElement>(null);
+  // 性能优化：RAF 更新函数
+  const processDragUpdate = useCallback(() => {
+    rafIdRef.current = null;
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const dx = e.clientX - lastMousePos.current.x;
-    const dy = e.clientY - lastMousePos.current.y;
-
-    if (isPanning) {
+    if (pendingPanRef.current) {
+      const { dx, dy } = pendingPanRef.current;
+      pendingPanRef.current = null;
       setTransform(prev => ({ ...prev, x: prev.x + dx, y: prev.y + dy }));
-    } else if (draggingNodeId) {
+    }
+
+    if (pendingDragRef.current && draggingNodeId) {
+      const { dx, dy } = pendingDragRef.current;
+      pendingDragRef.current = null;
       setNodes(prev => prev.map(n => n.id === draggingNodeId ? {
         ...n,
         position: { x: n.position.x + dx / transform.scale, y: n.position.y + dy / transform.scale }
       } : n));
     }
+  }, [draggingNodeId, transform.scale]);
+
+  // 优化：使用 useCallback 缓存 handleMouseMove 函数（添加 RAF 节流）
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    const dx = e.clientX - lastMousePos.current.x;
+    const dy = e.clientY - lastMousePos.current.y;
+
+    if (isPanning) {
+      pendingPanRef.current = { dx, dy };
+    } else if (draggingNodeId) {
+      pendingDragRef.current = { dx, dy };
+    }
+
+    // 使用 RAF 节流更新，避免每帧都触发 React 渲染
+    if (!rafIdRef.current && (isPanning || draggingNodeId)) {
+      rafIdRef.current = requestAnimationFrame(processDragUpdate);
+    }
 
     lastMousePos.current = { x: e.clientX, y: e.clientY };
-  };
+  }, [isPanning, draggingNodeId, processDragUpdate]);
 
-  const handleMouseUp = () => {
+  // 清理 RAF
+  useEffect(() => {
+    return () => {
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+      }
+    };
+  }, []);
+
+  // 优化：使用 useCallback 缓存 handleMouseUp 函数
+  const handleMouseUp = useCallback(() => {
+    // 立即执行 pending 的更新，避免位置丢失
+    if (rafIdRef.current) {
+      cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = null;
+    }
+
+    // 执行最后的更新
+    if (pendingPanRef.current) {
+      const { dx, dy } = pendingPanRef.current;
+      setTransform(prev => ({ ...prev, x: prev.x + dx, y: prev.y + dy }));
+      pendingPanRef.current = null;
+    }
+
+    if (pendingDragRef.current && draggingNodeId) {
+      const { dx, dy } = pendingDragRef.current;
+      setNodes(prev => prev.map(n => n.id === draggingNodeId ? {
+        ...n,
+        position: { x: n.position.x + dx / transform.scale, y: n.position.y + dy / transform.scale }
+      } : n));
+      pendingDragRef.current = null;
+    }
+
     setIsPanning(false);
     setDraggingNodeId(null);
-  };
+  }, [draggingNodeId, transform.scale]);
 
-  const handleWheel = (e: React.WheelEvent) => {
+  // 优化：使用 useCallback 缓存 handleWheel 函数
+  const handleWheel = useCallback((e: React.WheelEvent) => {
     // 缩放逻辑
     const delta = -e.deltaY;
     const factor = Math.pow(1.1, delta / 100);
@@ -176,7 +294,56 @@ const App: React.FC = () => {
         y: mouseY - worldY * newScale,
       });
     }
-  };
+  }, [transform.scale, transform.x, transform.y]);
+
+  // 优化：使用 useCallback 缓存暂停切换函数
+  const handleTogglePause = useCallback(() => {
+    setIsPaused(prev => {
+      const newPaused = !prev;
+      logger.warn(newPaused ? '已暂停所有任务' : '已恢复所有任务');
+      return newPaused;
+    });
+  }, []);
+
+  // 优化：使用 useCallback 缓存节点拖拽开始函数
+  const handleNodeMouseDown = useCallback((e: React.MouseEvent, nodeId: string) => {
+    // 仅左键且非空格键按下时，阻止背景平移并触发节点拖拽
+    if (e.button === 0 && !isSpacePressed) {
+      e.stopPropagation();
+      setDraggingNodeId(nodeId);
+    }
+  }, [isSpacePressed]);
+
+  // 优化：使用 useCallback 缓存添加节点函数（供 NodeUI 使用）
+  const handleAddNodeFromUI = useCallback((type: NodeType, pos?: { x: number, y: number }, data?: any) => {
+    const plugin = PLUGINS.find(p => p.type === type);
+    if (plugin) return addNode(plugin, pos, data);
+    return null;
+  }, [addNode]);
+
+  // 优化：使用 useCallback 缓存右键菜单添加节点函数
+  const handleContextMenuAddNode = useCallback((plugin: PluginMetadata) => {
+    if (contextMenu) {
+      const worldX = (contextMenu.x - transform.x) / transform.scale;
+      const worldY = (contextMenu.y - transform.y) / transform.scale;
+      addNode(plugin, { x: worldX, y: worldY });
+    }
+  }, [contextMenu, transform.x, transform.y, transform.scale, addNode]);
+
+  // 优化：使用 useCallback 缓存缩放调整函数
+  const handleZoomOut = useCallback(() => {
+    setTransform(p => ({ ...p, scale: Math.max(0.1, p.scale - 0.1) }));
+  }, []);
+
+  const handleZoomIn = useCallback(() => {
+    setTransform(p => ({ ...p, scale: Math.min(3, p.scale + 0.1) }));
+  }, []);
+
+  // 优化：使用 useCallback 缓存 AI Chat 相关函数
+  const handleAIChatAddNode = useCallback((type: string) => {
+    const plugin = PLUGINS.find(p => p.type === type);
+    if (plugin) addNode(plugin);
+  }, [addNode]);
 
   return (
     <div
@@ -201,67 +368,56 @@ const App: React.FC = () => {
         }}
       >
         <ConnectionLines nodes={nodes} />
-        {(() => {
-          const seenIds = new Set<string>();
-          return nodes.filter(n => {
-            if (seenIds.has(n.id)) return false;
-            seenIds.add(n.id);
-            return true;
-          }).map(node => {
-            const plugin = PLUGINS.find(p => p.type === node.type);
-            const categoryModel = plugin ? categoryModels[plugin.category] : undefined;
+        {uniqueNodes.map(node => {
+          const plugin = PLUGINS.find(p => p.type === node.type);
+          const categoryModel = plugin ? categoryModels[plugin.category] : undefined;
 
-            return (
-              <div
-                key={node.id}
-                className="absolute pointer-events-auto"
-                style={{
-                  left: node.position.x,
-                  top: node.position.y,
-                  zIndex: draggingNodeId === node.id ? 100 : 1
-                }}
-                onMouseDown={(e) => {
-                  // 仅左键且非空格键按下时，阻止背景平移并触发节点拖拽
-                  if (e.button === 0 && !isSpacePressed) {
-                    e.stopPropagation();
-                    setDraggingNodeId(node.id);
-                  }
-                }}
-              >
-                {node.type === NodeType.AUDIO_LIVE ? (
-                  <LiveAudioUI node={node} onUpdate={updateNode} onDelete={deleteNode} />
-                ) : (
-                  <NodeUI
-                    node={node}
-                    allNodes={nodes}
-                    onUpdate={updateNode}
-                    onDelete={deleteNode}
-                    globalCategoryModel={categoryModel}
-                    apiConfig={apiConfig}
-                    onImageClick={setLightboxImage}
-                    isPaused={isPaused}
-                  />
-                )}
-              </div>
-            );
-          })
-        })()}
+          return (
+            <div
+              key={node.id}
+              className="absolute pointer-events-auto"
+              style={{
+                left: node.position.x,
+                top: node.position.y,
+                zIndex: draggingNodeId === node.id ? 100 : 1
+              }}
+              onMouseDown={(e) => handleNodeMouseDown(e, node.id)}
+            >
+              {node.type === NodeType.AUDIO_LIVE ? (
+                <LiveAudioUI node={node} onUpdate={updateNode} onDelete={deleteNode} />
+              ) : (
+                <NodeUI
+                  node={node}
+                  allNodes={uniqueNodes}
+                  onUpdate={updateNode}
+                  onDelete={deleteNode}
+                  onAddNode={handleAddNodeFromUI}
+                  globalCategoryModel={categoryModel}
+                  apiConfig={apiConfig}
+                  onImageClick={setLightboxImage}
+                  isPaused={isPaused}
+                />
+
+              )}
+            </div>
+          );
+        })}
       </div>
 
       <PluginLibrary
         onAddNode={addNode}
         categoryModels={categoryModels}
         setCategoryModels={setCategoryModels}
+        fetchedModelsMap={fetchedModelsMap}
+        setFetchedModelsMap={setFetchedModelsMap}
+        apiConfig={apiConfig}
         onOpenSettings={() => setShowSettings(true)}
       />
 
       <div className="fixed top-6 right-[220px] z-[210] flex gap-3">
         {/* 暂停按钮 */}
         <button
-          onClick={() => {
-            setIsPaused(!isPaused);
-            logger.warn(isPaused ? '已恢复所有任务' : '已暂停所有任务');
-          }}
+          onClick={handleTogglePause}
           className={`backdrop-blur-2xl px-4 py-3 rounded-2xl border shadow-2xl flex items-center gap-3 transition-all group ${isPaused
             ? 'bg-amber-500/20 border-amber-500/50 hover:bg-amber-500/30'
             : 'bg-slate-900/40 border-white/10 hover:border-white/20 hover:bg-slate-800/60'
@@ -358,14 +514,13 @@ const App: React.FC = () => {
         globalApiKey={apiConfig.providers[0]?.apiKey || ''}
         nodes={nodes}
         selectedNodeId={selectedNodeId}
-        onAddNode={(type: string) => {
-          const plugin = PLUGINS.find(p => p.type === type);
-          if (plugin) addNode(plugin);
-        }}
-        onUpdateNode={(id: string, data: any) => {
-          updateNode(id, data);
-        }}
+        onAddNode={handleAIChatAddNode}
+        onUpdateNode={updateNode}
         logs={logs}
+        categoryModels={categoryModels}
+        setCategoryModels={setCategoryModels}
+        fetchedModelsMap={fetchedModelsMap}
+        setFetchedModelsMap={setFetchedModelsMap}
       />
 
       {contextMenu?.visible && (
@@ -379,11 +534,7 @@ const App: React.FC = () => {
             <button
               key={p.type}
               className="w-full text-left px-4 py-2 hover:bg-white/5 text-slate-300 text-[11px] flex items-center gap-3 transition-colors group"
-              onClick={() => {
-                const worldX = (contextMenu.x - transform.x) / transform.scale;
-                const worldY = (contextMenu.y - transform.y) / transform.scale;
-                addNode(p, { x: worldX, y: worldY });
-              }}
+              onClick={() => handleContextMenuAddNode(p)}
             >
               <span className="group-hover:scale-125 transition-transform">{p.icon}</span>
               <span className="font-medium group-hover:text-blue-400">{p.titleZh}</span>
@@ -400,8 +551,8 @@ const App: React.FC = () => {
           </div>
           <div className="h-6 w-[1px] bg-white/10"></div>
           <div className="flex items-center gap-1.5">
-            <button onClick={() => setTransform(p => ({ ...p, scale: Math.max(0.1, p.scale - 0.1) }))} className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 text-white/50 hover:text-white flex items-center justify-center text-xs transition-all">-</button>
-            <button onClick={() => setTransform(p => ({ ...p, scale: Math.min(3, p.scale + 0.1) }))} className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 text-white/50 hover:text-white flex items-center justify-center text-xs transition-all">+</button>
+            <button onClick={handleZoomOut} className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 text-white/50 hover:text-white flex items-center justify-center text-xs transition-all">-</button>
+            <button onClick={handleZoomIn} className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 text-white/50 hover:text-white flex items-center justify-center text-xs transition-all">+</button>
           </div>
         </div>
       </div>

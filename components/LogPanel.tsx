@@ -7,17 +7,40 @@ export const LogPanel: React.FC = () => {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [filter, setFilter] = useState<LogEntry['level'] | 'all'>('all');
-  const [position, setPosition] = useState({ x: window.innerWidth - 424, y: window.innerHeight - 344 });
+  const [position, setPosition] = useState(() => ({
+    x: Math.max(20, window.innerWidth - 424),
+    y: Math.max(20, window.innerHeight - 344)
+  }));
   const [isDragging, setIsDragging] = useState(false);
   const hasDragged = useRef(false);
   const dragOffset = useRef({ x: 0, y: 0 });
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let batchTimeout: NodeJS.Timeout | null = null;
+    let pendingLogs: LogEntry[] = [];
+
     const unsubscribe = logger.subscribe((entry) => {
-      setLogs(prev => [...prev, entry]);
+      pendingLogs.push(entry);
+      
+      // 批量更新：每 100ms 更新一次，减少重渲染
+      if (!batchTimeout) {
+        batchTimeout = setTimeout(() => {
+          setLogs(prev => {
+            const combined = [...prev, ...pendingLogs];
+            pendingLogs = [];
+            batchTimeout = null;
+            // 只保留最近 100 条日志
+            return combined.slice(-100);
+          });
+        }, 100);
+      }
     });
-    return unsubscribe;
+
+    return () => {
+      unsubscribe();
+      if (batchTimeout) clearTimeout(batchTimeout);
+    };
   }, []);
 
   useEffect(() => {
@@ -25,6 +48,18 @@ export const LogPanel: React.FC = () => {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [logs, isOpen, filter]);
+
+  // 窗口大小变化时，确保面板不会超出屏幕边界
+  useEffect(() => {
+    const handleResize = () => {
+      setPosition(prev => ({
+        x: Math.min(prev.x, window.innerWidth - 400),
+        y: Math.min(prev.y, window.innerHeight - 320)
+      }));
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     e.stopPropagation(); // 阻止事件冒泡到画布

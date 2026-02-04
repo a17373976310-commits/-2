@@ -118,13 +118,7 @@ export const MultiImageGenUI: React.FC<MultiImageGenUIProps> = ({
                         const reader = new FileReader();
                         reader.onload = (e) => {
                             const base64 = e.target?.result as string;
-                            const currentImages = node.data.images || [];
-                            if (currentImages.length < MAX_IMAGES) {
-                                onUpdate(node.id, { ...node.data, images: [...currentImages, base64] });
-                                logger.success('图片已粘贴');
-                            } else {
-                                logger.warn(`已达到最大图片数量 (${MAX_IMAGES})`);
-                            }
+                            onUpdate(node.id, (prev: any) => ({ images: [...(prev.images || []), base64] }));
                         };
                         reader.readAsDataURL(blob);
                         return;
@@ -161,10 +155,7 @@ export const MultiImageGenUI: React.FC<MultiImageGenUIProps> = ({
             const reader = new FileReader();
             reader.onload = (ev) => {
                 const base64 = ev.target?.result as string;
-                const currentImages = node.data.images || [];
-                if (currentImages.length < MAX_IMAGES) {
-                    onUpdate(node.id, { ...node.data, images: [...currentImages, base64] });
-                }
+                onUpdate(node.id, (prev: any) => ({ images: [...(prev.images || []).slice(0, MAX_IMAGES - 1), base64] }));
             };
             reader.readAsDataURL(file);
         });
@@ -192,7 +183,7 @@ export const MultiImageGenUI: React.FC<MultiImageGenUIProps> = ({
         const [draggedItem] = newImages.splice(draggedIndex, 1);
         newImages.splice(dropIndex, 0, draggedItem);
 
-        onUpdate(node.id, { ...node.data, images: newImages });
+        onUpdate(node.id, { images: newImages });
         setDraggedIndex(null);
         setDragOverIndex(null);
         logger.info(`图片顺序已调整: #${draggedIndex + 1} → #${dropIndex + 1}`);
@@ -205,14 +196,14 @@ export const MultiImageGenUI: React.FC<MultiImageGenUIProps> = ({
 
     const removeImage = (index: number) => {
         const newImages = allImages.filter((_, i) => i !== index);
-        onUpdate(node.id, { ...node.data, images: newImages });
+        onUpdate(node.id, { images: newImages });
     };
 
     // Import inherited images to local
     const importInheritedImages = () => {
         if (inheritedImages.length > 0) {
             const combined = [...localImages, ...inheritedImages].slice(0, MAX_IMAGES);
-            onUpdate(node.id, { ...node.data, images: combined });
+            onUpdate(node.id, { images: combined });
             logger.success(`已导入 ${inheritedImages.length} 张继承图片`);
         }
     };
@@ -243,7 +234,7 @@ export const MultiImageGenUI: React.FC<MultiImageGenUIProps> = ({
             ...annotations,
             [annotatingImageIndex]: [...currentAnnotations, newAnnotation]
         };
-        onUpdate(node.id, { ...node.data, annotations: updatedAnnotations });
+        onUpdate(node.id, { annotations: updatedAnnotations });
         setPendingAnnotation(null);
         setAnnotationInput('');
         logger.success(`标注已添加: "${newAnnotation.label}"`);
@@ -255,7 +246,7 @@ export const MultiImageGenUI: React.FC<MultiImageGenUIProps> = ({
             ...annotations,
             [imgIndex]: currentAnnotations.filter((_, i) => i !== annIndex)
         };
-        onUpdate(node.id, { ...node.data, annotations: updatedAnnotations });
+        onUpdate(node.id, { annotations: updatedAnnotations });
     };
 
     const closeAnnotationModal = () => {
@@ -337,7 +328,7 @@ export const MultiImageGenUI: React.FC<MultiImageGenUIProps> = ({
                 nodeType: node.type,
             });
 
-            onUpdate(node.id, { ...node.data, result: generatedImage });
+            onUpdate(node.id, { result: generatedImage });
             logger.success(`多图生成完成，使用了 ${allImages.length} 张参考图`);
         } catch (err: any) {
             logger.error(`生成失败: ${err.message}`);
@@ -358,7 +349,7 @@ export const MultiImageGenUI: React.FC<MultiImageGenUIProps> = ({
                 <select
                     className="w-full bg-slate-900 border border-slate-700/50 rounded-xl px-3 py-2 text-[10px] text-slate-300 font-bold focus:outline-none focus:ring-1 focus:ring-violet-500/50 appearance-none cursor-pointer"
                     value={node.data.sourceNodeId || ''}
-                    onChange={(e) => onUpdate(node.id, { ...node.data, sourceNodeId: e.target.value })}
+                    onChange={(e) => onUpdate(node.id, { sourceNodeId: e.target.value })}
                 >
                     <option value="">无 / 使用本地图片</option>
                     {availableSources.map(s => <option key={`${node.id}-src-${s.id}`} value={s.id}>{s.titleZh} ({s.id.substring(0, 4)})</option>)}
@@ -381,7 +372,7 @@ export const MultiImageGenUI: React.FC<MultiImageGenUIProps> = ({
                     </label>
                     {allImages.length > 0 && (
                         <button
-                            onClick={() => onUpdate(node.id, { ...node.data, images: [] })}
+                            onClick={() => onUpdate(node.id, { images: [] })}
                             className="text-[7px] text-red-400 hover:text-red-300 font-bold uppercase"
                         >
                             清空本地图片
@@ -407,13 +398,9 @@ export const MultiImageGenUI: React.FC<MultiImageGenUIProps> = ({
                         setIsUploadAreaHovered(false);
                         const imageUrl = e.dataTransfer.getData('text/plain');
                         if (imageUrl && imageUrl.startsWith('data:image')) {
-                            const currentImages = node.data.images || [];
-                            if (currentImages.length < MAX_IMAGES) {
-                                onUpdate(node.id, { ...node.data, images: [...currentImages, imageUrl] });
-                                logger.success('图片已添加');
-                            } else {
-                                logger.warn(`已达到最大图片数量 (${MAX_IMAGES})`);
-                            }
+                            onUpdate(node.id, (prev: any) => ({ images: [...(prev.images || []), imageUrl] }));
+                        } else {
+                            logger.warn(`已达到最大图片数量 (${MAX_IMAGES})`);
                         }
                     }}
                     className={`border-2 border-dashed rounded-2xl p-3 transition-all min-h-[140px] ${allImages.length < MAX_IMAGES
@@ -540,12 +527,12 @@ export const MultiImageGenUI: React.FC<MultiImageGenUIProps> = ({
                     className={`w-full bg-slate-900/50 border border-slate-700/50 rounded-2xl p-4 text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500/50 min-h-[100px] transition-all resize-none shadow-inner ${isPromptInherited ? 'opacity-70 italic' : ''}`}
                     placeholder={isPromptInherited ? inheritedPrompt : "描述你想生成的图像..."}
                     value={node.data.prompt || ''}
-                    onChange={(e) => onUpdate(node.id, { ...node.data, prompt: e.target.value })}
+                    onChange={(e) => onUpdate(node.id, { prompt: e.target.value })}
                 />
                 {isPromptInherited && (
                     <div className="px-1">
                         <button
-                            onClick={() => onUpdate(node.id, { ...node.data, prompt: inheritedPrompt })}
+                            onClick={() => onUpdate(node.id, { prompt: inheritedPrompt })}
                             className="text-[7px] text-blue-400 hover:text-blue-300 font-bold uppercase"
                         >
                             复制继承提示词到本地编辑
@@ -559,7 +546,7 @@ export const MultiImageGenUI: React.FC<MultiImageGenUIProps> = ({
                 <label className="text-slate-500 text-[8px] uppercase font-black tracking-widest px-1">比例</label>
                 <select
                     value={ratio}
-                    onChange={(e) => onUpdate(node.id, { ...node.data, ratio: e.target.value })}
+                    onChange={(e) => onUpdate(node.id, { ratio: e.target.value })}
                     className="w-full bg-slate-900 border border-slate-700/50 rounded-xl px-3 py-2 text-[10px] text-slate-300 font-bold focus:outline-none focus:ring-1 focus:ring-violet-500/50 appearance-none cursor-pointer"
                 >
                     {['1:1', '3:4', '4:3', '9:16', '16:9', '5:4', '4:5', '2:3', '3:2', '21:9'].map(r => (
@@ -586,89 +573,91 @@ export const MultiImageGenUI: React.FC<MultiImageGenUIProps> = ({
             </button>
 
             {/* Annotation Modal */}
-            {annotatingImageIndex !== null && allImages[annotatingImageIndex] && (
-                <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4" onClick={closeAnnotationModal}>
-                    <div className="relative max-w-4xl max-h-[90vh] w-full" onClick={(e) => e.stopPropagation()}>
-                        {/* Header */}
-                        <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between p-3 bg-gradient-to-b from-black/80 to-transparent">
-                            <div className="text-white text-sm font-bold">
-                                🎯 标注模式 - 参考图 #{annotatingImageIndex + 1}
+            {
+                annotatingImageIndex !== null && allImages[annotatingImageIndex] && (
+                    <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4" onClick={closeAnnotationModal}>
+                        <div className="relative max-w-4xl max-h-[90vh] w-full" onClick={(e) => e.stopPropagation()}>
+                            {/* Header */}
+                            <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between p-3 bg-gradient-to-b from-black/80 to-transparent">
+                                <div className="text-white text-sm font-bold">
+                                    🎯 标注模式 - 参考图 #{annotatingImageIndex + 1}
+                                </div>
+                                <button onClick={closeAnnotationModal} className="text-white/70 hover:text-white p-2">
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
                             </div>
-                            <button onClick={closeAnnotationModal} className="text-white/70 hover:text-white p-2">
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        </div>
 
-                        {/* Image with annotations */}
-                        <div className="relative cursor-crosshair" onClick={handleAnnotationClick}>
-                            <img
-                                src={allImages[annotatingImageIndex]}
-                                alt="Annotating"
-                                className="w-full h-auto max-h-[70vh] object-contain rounded-xl"
-                            />
-                            {/* Existing annotations */}
-                            {(annotations[annotatingImageIndex] || []).map((ann, annIdx) => (
-                                <div
-                                    key={annIdx}
-                                    className="absolute group"
-                                    style={{ left: `${ann.x}%`, top: `${ann.y}%`, transform: 'translate(-50%, -50%)' }}
-                                >
-                                    <div className="w-4 h-4 bg-yellow-400 border-2 border-white rounded-full shadow-lg animate-pulse" />
-                                    <div className="absolute left-5 top-1/2 -translate-y-1/2 bg-yellow-400 text-black text-[10px] font-bold px-2 py-1 rounded-lg shadow-lg whitespace-nowrap">
-                                        {ann.label}
-                                        <button
-                                            onClick={(e) => { e.stopPropagation(); removeAnnotation(annotatingImageIndex, annIdx); }}
-                                            className="ml-2 text-red-600 hover:text-red-800 font-black"
-                                        >
-                                            ×
-                                        </button>
+                            {/* Image with annotations */}
+                            <div className="relative cursor-crosshair" onClick={handleAnnotationClick}>
+                                <img
+                                    src={allImages[annotatingImageIndex]}
+                                    alt="Annotating"
+                                    className="w-full h-auto max-h-[70vh] object-contain rounded-xl"
+                                />
+                                {/* Existing annotations */}
+                                {(annotations[annotatingImageIndex] || []).map((ann, annIdx) => (
+                                    <div
+                                        key={annIdx}
+                                        className="absolute group"
+                                        style={{ left: `${ann.x}%`, top: `${ann.y}%`, transform: 'translate(-50%, -50%)' }}
+                                    >
+                                        <div className="w-4 h-4 bg-yellow-400 border-2 border-white rounded-full shadow-lg animate-pulse" />
+                                        <div className="absolute left-5 top-1/2 -translate-y-1/2 bg-yellow-400 text-black text-[10px] font-bold px-2 py-1 rounded-lg shadow-lg whitespace-nowrap">
+                                            {ann.label}
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); removeAnnotation(annotatingImageIndex, annIdx); }}
+                                                className="ml-2 text-red-600 hover:text-red-800 font-black"
+                                            >
+                                                ×
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
-                            {/* Pending annotation */}
-                            {pendingAnnotation && (
-                                <div
-                                    className="absolute"
-                                    style={{ left: `${pendingAnnotation.x}%`, top: `${pendingAnnotation.y}%`, transform: 'translate(-50%, -50%)' }}
-                                >
-                                    <div className="w-5 h-5 bg-blue-500 border-2 border-white rounded-full shadow-lg ring-4 ring-blue-500/30" />
-                                    <div className="absolute left-6 top-1/2 -translate-y-1/2 flex gap-1" onClick={(e) => e.stopPropagation()}>
-                                        <input
-                                            autoFocus
-                                            type="text"
-                                            value={annotationInput}
-                                            onChange={(e) => setAnnotationInput(e.target.value)}
-                                            onKeyDown={(e) => { if (e.key === 'Enter') confirmAnnotation(); if (e.key === 'Escape') setPendingAnnotation(null); }}
-                                            placeholder="输入标签..."
-                                            className="bg-white text-black text-xs px-2 py-1 rounded-lg shadow-xl w-32 outline-none"
-                                        />
-                                        <button
-                                            onClick={confirmAnnotation}
-                                            className="bg-blue-500 text-white text-xs px-2 py-1 rounded-lg shadow-xl hover:bg-blue-400"
-                                        >
-                                            ✓
-                                        </button>
-                                        <button
-                                            onClick={() => setPendingAnnotation(null)}
-                                            className="bg-slate-600 text-white text-xs px-2 py-1 rounded-lg shadow-xl hover:bg-slate-500"
-                                        >
-                                            ✕
-                                        </button>
+                                ))}
+                                {/* Pending annotation */}
+                                {pendingAnnotation && (
+                                    <div
+                                        className="absolute"
+                                        style={{ left: `${pendingAnnotation.x}%`, top: `${pendingAnnotation.y}%`, transform: 'translate(-50%, -50%)' }}
+                                    >
+                                        <div className="w-5 h-5 bg-blue-500 border-2 border-white rounded-full shadow-lg ring-4 ring-blue-500/30" />
+                                        <div className="absolute left-6 top-1/2 -translate-y-1/2 flex gap-1" onClick={(e) => e.stopPropagation()}>
+                                            <input
+                                                autoFocus
+                                                type="text"
+                                                value={annotationInput}
+                                                onChange={(e) => setAnnotationInput(e.target.value)}
+                                                onKeyDown={(e) => { if (e.key === 'Enter') confirmAnnotation(); if (e.key === 'Escape') setPendingAnnotation(null); }}
+                                                placeholder="输入标签..."
+                                                className="bg-white text-black text-xs px-2 py-1 rounded-lg shadow-xl w-32 outline-none"
+                                            />
+                                            <button
+                                                onClick={confirmAnnotation}
+                                                className="bg-blue-500 text-white text-xs px-2 py-1 rounded-lg shadow-xl hover:bg-blue-400"
+                                            >
+                                                ✓
+                                            </button>
+                                            <button
+                                                onClick={() => setPendingAnnotation(null)}
+                                                className="bg-slate-600 text-white text-xs px-2 py-1 rounded-lg shadow-xl hover:bg-slate-500"
+                                            >
+                                                ✕
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            )}
-                        </div>
+                                )}
+                            </div>
 
-                        {/* Instructions */}
-                        <div className="text-center text-slate-400 text-[10px] mt-3">
-                            👆 点击图片添加标注点 • 标注会自动增强提示词
+                            {/* Instructions */}
+                            <div className="text-center text-slate-400 text-[10px] mt-3">
+                                👆 点击图片添加标注点 • 标注会自动增强提示词
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )
+            }
 
-        </div>
+        </div >
     );
 };

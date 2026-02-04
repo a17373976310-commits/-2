@@ -18,20 +18,34 @@ interface Message {
         copy: string;
         useUserImage: boolean;
     };
+    proposal?: {
+        nodes: Array<{ type: string; data: any }>;
+    };
+    pendingActions?: Array<{
+        type: 'ADD_NODE' | 'UPDATE_NODE';
+        params: any;
+        description: string;
+        executed?: boolean;
+        cancelled?: boolean;
+    }>;
 }
+
 
 interface AIChatUIProps {
     node: AppNode;
     allNodes: AppNode[];
     onUpdate: (id: string, data: any) => void;
+    onAddNode: (type: any, pos?: { x: number, y: number }, data?: any) => AppNode | null;
     apiConfig: ApiConfig;
+
     isPaused?: boolean;
     globalCategoryModel?: string;
 }
 
 export const AIChatUI: React.FC<AIChatUIProps> = ({
-    node, allNodes, onUpdate, apiConfig, isPaused, globalCategoryModel
+    node, allNodes, onUpdate, onAddNode, apiConfig, isPaused, globalCategoryModel
 }) => {
+
     const [loading, setLoading] = useState(false);
     const [input, setInput] = useState('');
     const [pendingFiles, setPendingFiles] = useState<string[]>([]);
@@ -144,25 +158,71 @@ export const AIChatUI: React.FC<AIChatUIProps> = ({
                         useUserImage
                     }
                 };
-                onUpdate(node.id, { ...node.data, messages: [...currentMessages, assistantMsg] });
+                onUpdate(node.id, (prev: any) => ({ messages: [...(prev.messages || []), assistantMsg] }));
             } else {
+                // Check for [PROPOSAL] directive
+                const proposalMatch = response.match(/\[PROPOSAL\]([\s\S]*?)\[\/PROPOSAL\]/);
+                let proposal = undefined;
+                let cleanResponse = response;
+
+                if (proposalMatch) {
+                    try {
+                        proposal = JSON.parse(proposalMatch[1]);
+                        cleanResponse = response.replace(/\[PROPOSAL\][\s\S]*?\[\/PROPOSAL\]/, '').trim();
+                    } catch (e) {
+                        console.error('Failed to parse proposal JSON', e);
+                    }
+                }
+
                 // Check for [STYLE_DNA] directive
-                const dnaMatch = response.match(/\[STYLE_DNA\]([\s\S]*?)\[\/STYLE_DNA\]/);
+                const dnaMatch = cleanResponse.match(/\[STYLE_DNA\]([\s\S]*?)\[\/STYLE_DNA\]/);
                 if (dnaMatch) {
                     setVisualDNA(dnaMatch[1].trim());
                     logger.success('视觉 DNA 已提取');
                 }
 
-                const assistantMsg: Message = { role: 'assistant', content: response };
-                onUpdate(node.id, { ...node.data, messages: [...currentMessages, assistantMsg] });
+                // Check for node directives
+                const pendingActions: any[] = [];
+                const addNodeMatches = cleanResponse.matchAll(/\[ADD_NODE:([\w_]+)\]/g);
+                for (const match of addNodeMatches) {
+                    pendingActions.push({
+                        type: 'ADD_NODE',
+                        params: { type: match[1] },
+                        description: `添加节点: ${match[1]}`
+                    });
+                }
+
+                const updateNodeMatches = cleanResponse.matchAll(/\[UPDATE_NODE:([\w]+):prompt="([^"]+)"\]/g);
+                for (const match of updateNodeMatches) {
+                    pendingActions.push({
+                        type: 'UPDATE_NODE',
+                        params: { id: match[1], prompt: match[2] },
+                        description: `更新节点 ${match[1]} 的提示词`
+                    });
+                }
+
+                cleanResponse = cleanResponse
+                    .replace(/\[ADD_NODE:[\w_]+\]/g, '')
+                    .replace(/\[UPDATE_NODE:[^\]]+\]/g, '')
+                    .replace(/\[STYLE_DNA\][\s\S]*?\[\/STYLE_DNA\]/, '')
+                    .trim();
+
+                const assistantMsg: Message = {
+                    role: 'assistant',
+                    content: cleanResponse || (pendingActions.length > 0 ? "我建议执行以下操作：" : ""),
+                    proposal,
+                    pendingActions: pendingActions.length > 0 ? pendingActions : undefined
+                };
+                onUpdate(node.id, (prev: any) => ({ messages: [...(prev.messages || []), assistantMsg] }));
             }
+
         } catch (err: any) {
             logger.error('对话失败: ' + err.message);
             const errorMsg: Message = {
                 role: 'assistant',
                 content: `❌ 对话失败: ${err.message}`
             };
-            onUpdate(node.id, { ...node.data, messages: [...currentMessages, errorMsg] });
+            onUpdate(node.id, (prev: any) => ({ messages: [...(prev.messages || []), errorMsg] }));
         } finally {
             setLoading(false);
         }
@@ -215,26 +275,95 @@ export const AIChatUI: React.FC<AIChatUIProps> = ({
             );
 
             // Update the specific message with the generated image
-            const updatedMessages = [...messages];
-            updatedMessages[msgIndex] = {
-                ...msg,
-                generatedImage,
-                content: msg.content + `\n\n✅ "${module}" 生成完成！`
-            };
-            onUpdate(node.id, { ...node.data, messages: updatedMessages });
+            onUpdate(node.id, (prev: any) => {
+                const updated = [...(prev.messages || [])];
+                updated[msgIndex] = {
+                    ...updated[msgIndex],
+                    generatedImage,
+                    content: updated[msgIndex].content + `\n\n✅ "${module}" 生成完成！`
+                };
+                return { messages: updated };
+            });
             logger.success(`模块 "${module}" 生成完成`);
         } catch (err: any) {
             logger.error('图像生成失败: ' + err.message);
-            const updatedMessages = [...messages];
-            updatedMessages[msgIndex] = {
-                ...msg,
-                content: msg.content + `\n\n❌ "${module}" 生成失败: ${err.message}`
-            };
-            onUpdate(node.id, { ...node.data, messages: updatedMessages });
+            onUpdate(node.id, (prev: any) => {
+                const updated = [...(prev.messages || [])];
+                updated[msgIndex] = {
+                    ...updated[msgIndex],
+                    content: updated[msgIndex].content + `\n\n❌ "${module}" 生成失败: ${err.message}`
+                };
+                return { messages: updated };
+            });
         } finally {
             setGeneratingImage(false);
         }
     };
+
+    const handleDeployWorkflow = (proposal: any) => {
+        if (!proposal || !proposal.nodes) return;
+
+        let lastNodeId = node.id;
+        const spacing = 450;
+
+        proposal.nodes.forEach((nodeConfig: any, index: number) => {
+            const newNode = onAddNode(
+                nodeConfig.type,
+                { x: node.position.x + (index + 1) * spacing, y: node.position.y },
+                { ...nodeConfig.data, sourceNodeId: lastNodeId }
+            );
+            if (newNode) {
+                lastNodeId = newNode.id;
+            }
+        });
+
+        logger.success(`工作流已部署，共生成 ${proposal.nodes.length} 个节点`);
+    };
+
+    const handleConfirmAction = (msgIndex: number, actionIndex: number) => {
+        const msg = messages[msgIndex];
+        if (!msg || !msg.pendingActions) return;
+
+        const action = msg.pendingActions[actionIndex];
+        if (action.executed || action.cancelled) return;
+
+        try {
+            if (action.type === 'ADD_NODE') {
+                onAddNode(action.params.type);
+            } else if (action.type === 'UPDATE_NODE') {
+                const targetNode = allNodes.find(n => n.id === action.params.id);
+                onUpdate(action.params.id, { prompt: action.params.prompt });
+            }
+
+            onUpdate(node.id, (prev: any) => {
+                const updated = [...(prev.messages || [])];
+                const msg = updated[msgIndex];
+                const newActions = [...(msg.pendingActions || [])];
+                newActions[actionIndex] = { ...newActions[actionIndex], executed: true };
+                updated[msgIndex] = { ...msg, pendingActions: newActions };
+                return { messages: updated };
+            });
+
+            logger.success(`操作已执行: ${action.description}`);
+        } catch (err: any) {
+            logger.error('执行失败: ' + err.message);
+        }
+    };
+
+    const handleCancelAction = (msgIndex: number, actionIndex: number) => {
+        const msg = messages[msgIndex];
+        if (!msg || !msg.pendingActions) return;
+
+        onUpdate(node.id, (prev: any) => {
+            const updated = [...(prev.messages || [])];
+            const msg = updated[msgIndex];
+            const newActions = [...(msg.pendingActions || [])];
+            newActions[actionIndex] = { ...newActions[actionIndex], cancelled: true };
+            updated[msgIndex] = { ...msg, pendingActions: newActions };
+            return { messages: updated };
+        });
+    };
+
 
     const handleSend = async () => {
         if (isPaused) {
@@ -249,12 +378,13 @@ export const AIChatUI: React.FC<AIChatUIProps> = ({
             files: pendingFiles.length > 0 ? pendingFiles : undefined
         };
 
-        const newMessages = [...messages, userMsg];
-        onUpdate(node.id, { ...node.data, messages: newMessages });
+        onUpdate(node.id, (prev: any) => {
+            const nextMessages = [...(prev.messages || []), userMsg];
+            processMessage(userMsg, nextMessages);
+            return { messages: nextMessages };
+        });
         setInput('');
         setPendingFiles([]);
-
-        await processMessage(userMsg, newMessages);
     };
 
     const handleRegenerate = async () => {
@@ -268,15 +398,16 @@ export const AIChatUI: React.FC<AIChatUIProps> = ({
         const lastUserMsg = messages[actualIndex];
 
         // Remove all messages after the last user message
-        const newMessages = messages.slice(0, actualIndex + 1);
-        onUpdate(node.id, { ...node.data, messages: newMessages });
-
-        await processMessage(lastUserMsg, newMessages);
+        onUpdate(node.id, (prev: any) => {
+            const nextMessages = (prev.messages || []).slice(0, actualIndex + 1);
+            processMessage(lastUserMsg, nextMessages);
+            return { messages: nextMessages };
+        });
     };
 
     const clearHistory = () => {
         if (confirm('确定要清空对话历史吗？')) {
-            onUpdate(node.id, { ...node.data, messages: [] });
+            onUpdate(node.id, { messages: [] });
         }
     };
 
@@ -315,7 +446,7 @@ export const AIChatUI: React.FC<AIChatUIProps> = ({
                 <div className="flex items-center gap-3">
                     <select
                         value={node.data.sourceNodeId || ''}
-                        onChange={(e) => onUpdate(node.id, { ...node.data, sourceNodeId: e.target.value })}
+                        onChange={(e) => onUpdate(node.id, { sourceNodeId: e.target.value })}
                         className="bg-transparent border-none text-[9px] text-blue-400 outline-none cursor-pointer"
                     >
                         <option value="">无上下文</option>
@@ -412,6 +543,68 @@ export const AIChatUI: React.FC<AIChatUIProps> = ({
                                     </div>
                                 </div>
                             )}
+
+                            {/* Workflow Proposal UI */}
+                            {m.proposal && (
+                                <div className="mt-3 p-3 rounded-xl border border-blue-500/20 bg-blue-500/5 space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest flex items-center gap-2">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                                            🚀 建议工作流
+                                        </span>
+                                        <span className="text-[9px] text-slate-500 font-mono">{m.proposal.nodes.length} 节点</span>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2">
+                                        {m.proposal.nodes.map((n, idx) => (
+                                            <div key={idx} className="flex items-center gap-1 bg-slate-800/50 px-2 py-1 rounded-lg border border-white/5">
+                                                <span className="text-[10px] text-slate-300">{n.type}</span>
+                                                {idx < m.proposal!.nodes.length - 1 && <span className="text-slate-600">→</span>}
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <button
+                                        onClick={() => handleDeployWorkflow(m.proposal)}
+                                        className="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold rounded-lg transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
+                                    >
+                                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        一键部署到画布
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* Pending Actions UI */}
+                            {m.pendingActions && m.pendingActions.length > 0 && (
+                                <div className="mt-3 space-y-2">
+                                    {m.pendingActions.map((action, actionIdx) => (
+                                        <div key={actionIdx} className="p-3 rounded-xl border border-white/10 bg-slate-900/50 space-y-2">
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">建议操作</span>
+                                                {action.executed && <span className="text-[9px] text-emerald-500 font-bold">已执行 ✅</span>}
+                                                {action.cancelled && <span className="text-[9px] text-slate-500 font-bold">已取消 ✕</span>}
+                                            </div>
+                                            <div className="text-[10px] text-slate-300 font-medium">
+                                                {action.description}
+                                            </div>
+                                            {!action.executed && !action.cancelled && (
+                                                <div className="flex gap-2">
+                                                    <button
+                                                        onClick={() => handleConfirmAction(i, actionIdx)}
+                                                        className="flex-1 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-[9px] font-bold rounded-lg transition-all"
+                                                    >
+                                                        确认执行
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleCancelAction(i, actionIdx)}
+                                                        className="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-400 text-[9px] font-bold rounded-lg transition-all"
+                                                    >
+                                                        取消
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 ))}
@@ -497,3 +690,4 @@ export const AIChatUI: React.FC<AIChatUIProps> = ({
         </div>
     );
 };
+
