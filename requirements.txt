@@ -1,2 +1,0 @@
-# No external dependencies required for standard library history server
-# But file is needed to trigger Zeabur build process
