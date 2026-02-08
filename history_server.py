@@ -339,10 +339,11 @@ def main():
     os.makedirs(TEMPLATES_DIR, exist_ok=True)
     os.makedirs(WORKFLOWS_DIR, exist_ok=True)
     
-    server = ThreadingHTTPServer(("localhost", 5001), HistoryHandler)
+    port = int(os.environ.get("PORT", 5001))
+    server = ThreadingHTTPServer(("0.0.0.0", port), HistoryHandler)
     print("=" * 50)
     print("📁 历史记录服务已启动 (多线程模式)")
-    print(f"📍 监听地址: http://localhost:5001")
+    print(f"📍 监听地址: http://0.0.0.0:{port}")
     print(f"💾 保存目录: {HISTORY_DIR}")
     print("=" * 50)
     print("按 Ctrl+C 停止服务")

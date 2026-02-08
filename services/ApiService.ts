@@ -223,9 +223,55 @@ export class ApiService {
     }
   }
 
+  /**
+   * Extract prompt from JSON if necessary
+   */
+  private extractPrompt(text: string): string {
+    if (!text) return "";
+    let clean = text.trim();
+
+    // Remove markdown code blocks if present
+    if (clean.startsWith('```')) {
+      const match = clean.match(/```(?:json)?([\s\S]*?)```/);
+      if (match && match[1]) clean = match[1].trim();
+    }
+
+    // Check if it's JSON
+    if (clean.startsWith('{') && clean.endsWith('}')) {
+      try {
+        const obj = JSON.parse(clean);
+        // Common keys from optimizer
+        const val = obj.nano_banana_en || obj.optimized_prompt || obj.prompt || obj.content || Object.values(obj)[0];
+        if (typeof val === 'string') return val;
+      } catch (e) {
+        // Not valid JSON, return as is
+      }
+    }
+
+    return text;
+  }
+
+  /**
+   * Remove explicit aspect ratio and resolution keywords from the prompt
+   * to avoid conflicting with UI-selected parameters.
+   */
+  private sanitizePrompt(text: string): string {
+    if (!text) return "";
+    // Remove complex ratio patterns like "aspect ratio 3:4", "--ar 16:9", "ratio: 1:1"
+    return text.replace(/\b(aspect ratio|ratio|--ar|--aspect)\s*[：:]?\s*\d+:\d+\b/gi, '')
+      .replace(/\b(resolution|size)\s*[：:]?\s*(2K|4K|1024x1024|1024|768|1792|896x1120|1120x896|832x1248|1248x832|1792x768|768x1792)\b/gi, '')
+      .replace(/\s*[，,]\s*$/g, '')
+      .replace(/\s+--ar\s+\d+:\d+/gi, '')
+      .trim();
+  }
+
   async getPromptTemplate(name: string): Promise<string> {
+    const HISTORY_API_BASE = (typeof window !== 'undefined' && (window as any).__HISTORY_API_BASE__)
+      || import.meta.env.VITE_HISTORY_API_BASE
+      || "http://localhost:5001";
+
     try {
-      const response = await fetch(`http://localhost:5001/api/prompts/get?name=${name}`);
+      const response = await fetch(`${HISTORY_API_BASE}/api/prompts/get?name=${name}`);
       if (!response.ok) throw new Error(`Failed to fetch prompt template: ${response.statusText}`);
       const data = await response.json();
       return data.prompt || '';
@@ -240,37 +286,56 @@ export class ApiService {
 
     if (provider.format === 'openai') {
       const modelName = config.model || '';
-      const isGeminiNativeModel = false;
-      const isGeminiChatImageModel = modelName.includes('gemini-3-pro-visual') || modelName.includes('gemini-3-pro-image-preview');
-      const isGeminiImage = modelName.includes('nano-banana') || modelName.includes('gemini-') || modelName.includes('veo-') || modelName.includes('imagen');
+      const cleanPrompt = this.extractPrompt(prompt);
+
+      // 0. Global Pre-processing for OpenAI Format
+      const imageList = Array.isArray(base64Images) ? base64Images : (base64Images ? [base64Images] : []);
+      let labelContext = "";
+      if (imageList.length > 0) {
+        labelContext = imageList.map((_, i) => {
+          const label = (labels && labels[i]) ? ` (${labels[i]})` : "";
+          return `- [Image ${i + 1}] / [图${i + 1}]${label}`;
+        }).join("\n");
+      }
+      const enhancedPrompt = imageList.length > 0
+        ? `Visual Context:\n${labelContext}\n\n[Prompt]:\n${cleanPrompt}`
+        : cleanPrompt;
+
+      const isGeminiNativeModel = (modelName.includes('gemini-3-pro-image-preview') ||
+        modelName.includes('gemini-2.5-flash-image')) && !modelName.includes('nano-banana');
+
+      const isGeminiChatImageModel = !isGeminiNativeModel && (modelName.includes('gemini-3-pro') || modelName.includes('gemini-2.5'));
+      const isGeminiImage = !isGeminiNativeModel && !isGeminiChatImageModel && (modelName.includes('gemini-') || modelName.includes('veo-') || modelName.includes('imagen'));
       const isDoubaoSeedream = modelName.includes('doubao-seedream');
+      const isNanoBanana = modelName.includes('nano-banana');
 
       // 1. Native Gemini Path (v1beta/generateContent)
       if (isGeminiNativeModel) {
-        logger.info(`Using Native Gemini v1beta protocol: [${modelName}]`, 'ApiService');
+        logger.info(`Using Official Native Gemini path for [${modelName}]`, 'ApiService');
 
-        const nativeParts: any[] = [{ text: prompt }];
-        if (base64Images) {
-          const imageList = Array.isArray(base64Images) ? base64Images : [base64Images];
-          for (const img of imageList) {
-            const compressed = await this.compressImage(img, 1024, 0.7);
-            const base64Data = compressed.includes(',') ? compressed.split(',')[1] : compressed;
-            const mimeType = compressed.includes('png') ? 'image/png' : 'image/jpeg';
-            nativeParts.push({ inlineData: { mimeType, data: base64Data } });
-          }
+        const nativeParts: any[] = [];
+        for (const img of imageList) {
+          const compressed = await this.compressImage(img, 1024, 0.7);
+          const base64Data = compressed.includes(',') ? compressed.split(',')[1] : compressed;
+          const mimeType = compressed.includes('png') ? 'image/png' : 'image/jpeg';
+          nativeParts.push({ inlineData: { mimeType, data: base64Data } });
         }
+        nativeParts.push({ text: enhancedPrompt });
 
-        const nativeBody = {
-          contents: [{ parts: nativeParts }],
-          generationConfig: { temperature: 0.4, topP: 1, topK: 32, maxOutputTokens: 2048 }
+        const nativeBody: any = {
+          contents: [{ role: "user", parts: nativeParts }],
+          generationConfig: {
+            responseModalities: ["IMAGE"],
+            imageConfig: {
+              aspectRatio: config.ratio,
+              imageSize: modelName.includes('4k') ? "4K" : (modelName.includes('2k') ? "2K" : "1K")
+            }
+          }
         };
 
         const adjustedProvider = { ...provider };
-        if (adjustedProvider.baseUrl.endsWith('/v1')) {
-          adjustedProvider.baseUrl = adjustedProvider.baseUrl.replace('/v1', '/v1beta');
-        } else if (adjustedProvider.baseUrl.endsWith('/v1/')) {
-          adjustedProvider.baseUrl = adjustedProvider.baseUrl.replace('/v1/', '/v1beta/');
-        }
+        if (adjustedProvider.baseUrl.endsWith('/v1')) adjustedProvider.baseUrl = adjustedProvider.baseUrl.replace('/v1', '/v1beta');
+        else if (adjustedProvider.baseUrl.endsWith('/v1/')) adjustedProvider.baseUrl = adjustedProvider.baseUrl.replace('/v1/', '/v1beta/');
 
         const nativeData = await this.request(adjustedProvider, `/models/${modelName}:generateContent`, nativeBody, 600000);
         const responseParts = nativeData.candidates?.[0]?.content?.parts || [];
@@ -279,47 +344,70 @@ export class ApiService {
           if (p.inlineData?.data) {
             return `data:${p.inlineData.mimeType || 'image/png'};base64,${p.inlineData.data}`;
           }
-          if (p.text) {
-            const t = p.text.trim();
-            const markdownMatch = t.match(/!\[.*?\]\((.*?)\)/);
-            if (markdownMatch && markdownMatch[1]) return markdownMatch[1];
-            if (t.startsWith('data:image') || t.startsWith('http')) return t;
-            if (t.length > 1000 && !t.includes(' ')) return `data:image/png;base64,${t}`;
-          }
         }
-        throw new Error("Native Gemini 接口解析画面失败");
+        throw new Error("Gemini 原生接口未返回图像");
       }
 
       // 2. Chat-based Path (Gemini Visuals)
       if (isGeminiChatImageModel) {
-        logger.info(`Using Chat-based image generation: [${modelName}]`, 'ApiService');
+        logger.info(`Using Multimodal Chat path for [${modelName}]`, 'ApiService');
+
+        const extraParams: any = {
+          aspect_ratio: config.ratio,
+          generationConfig: {
+            responseModalities: ["IMAGE"],
+            imageConfig: {
+              aspectRatio: config.ratio,
+              imageSize: (modelName.includes('4k') || modelName.includes('large')) ? "4K" : (modelName.includes('2k') ? "2K" : "1K")
+            }
+          }
+        };
+
         const chatResult = await this.chatPro(
-          prompt,
+          enhancedPrompt,
           modelName,
           provider,
-          Array.isArray(base64Images) ? base64Images : (base64Images ? [base64Images] : []),
-          "You are a professional image generation engine. Analyze the user prompt and reference images to generate a high-quality, aesthetically pleasing visual result. Follow all technical and artistic instructions precisely.",
+          imageList,
+          "You are a professional image generation engine. Analyze the prompt and ALL images accurately.",
           undefined,
-          labels
+          labels,
+          undefined,
+          extraParams
         );
 
+        if (chatResult.startsWith('data:image') || chatResult.startsWith('http')) return chatResult;
         const markdownMatch = chatResult.match(/!\[.*?\]\((.*?)\)/);
         if (markdownMatch && markdownMatch[1]) return markdownMatch[1];
-        if (chatResult.startsWith('data:image') || chatResult.startsWith('http')) return chatResult;
         if (chatResult.length > 1000 && !chatResult.includes(' ')) return `data:image/png;base64,${chatResult.trim()}`;
-        if (chatResult.length < 500) throw new Error(`模型返回了非图像内容: ${chatResult}`);
-        return chatResult;
+        throw new Error(`模型未返回图像 URL 或 Base64`);
       }
 
-      // 3. Standard API Path (JSON)
-      let enhancedPrompt = prompt;
-      if (labels && labels.length > 0 && Array.isArray(base64Images)) {
-        const labelDescriptions = labels
-          .map((label, i) => i === 0 ? `【主体参考】: ${label || '产品主体'}` : `【参考元素】: ${label || '风格元素'}`)
-          .join("\n");
-        enhancedPrompt = `你是一个图像生成专家。保持主体形状一致，根据指令修改背景和细节。\n${labelDescriptions}\n\n【作图指令】\n${prompt}`;
+      // 3. Special Path: Nano-Banana Multi-Image (FormData)
+      // Per api-341817449, multi-image mix requires /images/edits with physical FormData
+      if (isNanoBanana && imageList.length > 1) {
+        logger.info(`🚨 PHYSICAL MULTIPART RELAY for [${modelName}]: ${imageList.length} images to /images/edits`, 'ApiService');
+
+        const formData = new FormData();
+        formData.append('model', modelName);
+        formData.append('prompt', enhancedPrompt);
+        formData.append('response_format', 'url');
+        formData.append('aspect_ratio', config.ratio);
+        if (modelName.includes('2k')) formData.append('image_size', '2K');
+        if (modelName.includes('4k')) formData.append('image_size', '4K');
+
+        for (let i = 0; i < imageList.length; i++) {
+          const compressed = await this.compressImage(imageList[i], 1024, 0.7);
+          const blob = await this.imageToBlob(compressed);
+          formData.append('image', blob, `ref_image_${i + 1}.png`);
+        }
+
+        const data = await this.request(provider, '/images/edits', formData, 600000);
+        const imageItem = data.data?.[0];
+        if (!imageItem) throw new Error("Nano-Banana Edits 未返回图像");
+        return imageItem.url || imageItem.b64_json;
       }
 
+      // 4. Standard API Path (JSON)
       const standardBody: any = {
         model: modelName || provider.imageModels?.[0] || "nano-banana-2",
         prompt: enhancedPrompt,
@@ -338,32 +426,31 @@ export class ApiService {
         standardBody.size = this.mapRatioToSize(config.ratio);
       }
 
-      if (base64Images) {
-        const imageList = Array.isArray(base64Images) ? base64Images : [base64Images];
-        if (imageList.length > 0) {
-          standardBody.images = await Promise.all(imageList.map(async img => {
-            const compressed = await this.compressImage(img, 1024, 0.7);
-            return compressed.includes(',') ? compressed.split(',')[1] : compressed;
-          }));
-          standardBody.image = standardBody.images[0];
-          standardBody.image_reference = standardBody.images[0];
-        }
+      if (imageList.length > 0) {
+        const processedImages = await Promise.all(imageList.map(async img => {
+          const compressed = await this.compressImage(img, 1024, 0.7);
+          return compressed.includes(',') ? compressed.split(',')[1] : compressed;
+        }));
+
+        standardBody.images = processedImages;
+        standardBody.image = processedImages[0];
+        standardBody.image_reference = (processedImages.length > 1 || isNanoBanana) ? processedImages : processedImages[0];
+        standardBody.image_references = standardBody.image_reference;
       }
 
-      logger.info(`Sending Standard JSON request for model: ${standardBody.model}`, 'ApiService');
+      if (isNanoBanana) {
+        standardBody.aspect_ratio = config.ratio;
+        if (modelName.includes('2k')) standardBody.image_size = '2K';
+        if (modelName.includes('4k')) standardBody.image_size = '4K';
+      }
+
       const standardData = await this.request(provider, '/images/generations', standardBody, 600000);
       const imageItem = standardData.data?.[0];
       if (!imageItem) throw new Error("API 未返回图像数据");
+      return imageItem.url || imageItem.b64_json;
 
-      let result = imageItem.url || imageItem.b64_json;
-      if (!result) throw new Error("API 未返回有效的图像数据");
-      if (result.length > 100 && !result.startsWith('http') && !result.startsWith('data:')) {
-        result = `data:image/png;base64,${result}`;
-      }
-      return result;
     } else if (provider.format === 'stability') {
-      // Stability AI SDXL / Core API format
-      const url = `${provider.baseUrl.replace(/\/$/, '')}/v1/generation/${config.model || 'nano-banana-2-4k'}/text-to-image`;
+      const url = `${provider.baseUrl.replace(/\/$/, '')}/v1/generation/${config.model || 'stable-diffusion-xl-1024-v1-0'}/text-to-image`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -379,7 +466,7 @@ export class ApiService {
           steps: 30,
           samples: 1,
         }),
-        signal: AbortSignal.timeout(600000) // 10 minutes timeout for stability
+        signal: AbortSignal.timeout(600000)
       });
 
       if (!response.ok) throw new Error(`Stability API 错误: ${response.status}`);
@@ -389,6 +476,7 @@ export class ApiService {
 
     throw new Error(`不支持的 API 格式: ${provider.format}`);
   }
+
 
   private mapRatioToSize(ratio: string): string {
     const map: Record<string, string> = {
@@ -447,7 +535,8 @@ export class ApiService {
     systemPrompt?: string,
     history?: { role: string, content: string, images?: string[], imageLabels?: string[] }[],
     imageLabels?: string[],
-    setThinkingStatus?: (status: string) => void
+    setThinkingStatus?: (status: string) => void,
+    extraParams?: Record<string, any>
   ) {
     if (!provider) throw new Error("未指定 API 提供商");
 
@@ -459,7 +548,6 @@ export class ApiService {
     // 1. Prepare all history images for compression in parallel to speed up preparation
     // Flatten all images into a single list with metadata so we can parallelize
     const historyImageTasks: Promise<string>[] = [];
-    const historyImagesByMsg: string[][] = [];
 
     if (history && history.length > 0) {
       for (const msg of history) {
@@ -506,10 +594,17 @@ export class ApiService {
     }
 
     // 3. Add current user message
+    // EXPLICIT IMAGE INDEXING: Force the model to see every image by prepending labels
     let currentLabelContext = "";
-    if (imageLabels && imageLabels.some(l => l)) {
-      currentLabelContext = "参考图标签：\n" + imageLabels.map((l, i) => `- 图${i + 1}: ${l || '未标注'}`).join('\n') + "\n\n";
+    if (processedCurrentImages.length > 0) {
+      currentLabelContext = "Visual References provided in this message:\n";
+      processedCurrentImages.forEach((_, i) => {
+        const customLabel = (imageLabels && imageLabels[i]) ? ` (${imageLabels[i]})` : "";
+        currentLabelContext += `- [Image ${i + 1}]${customLabel}\n`;
+      });
+      currentLabelContext += "\n[Instructions]:\n";
     }
+
     const userContent: any[] = [{ type: "text", text: currentLabelContext + prompt }];
     if (processedCurrentImages.length > 0) {
       processedCurrentImages.forEach(img => {
@@ -519,19 +614,38 @@ export class ApiService {
 
     messages.push({ role: "user", content: userContent });
 
-    // Determine timeout based on model
-    // Complex designs and reflection loops need more time. default to 300s for flash/pro/thinking models.
+    // Determine timeout: 600s for image models (Nano Banana, Imagen, etc)
     const lowerModel = (model || '').toLowerCase();
+    const isImageModel = lowerModel.includes('banana') || lowerModel.includes('image') || lowerModel.includes('veo') || lowerModel.includes('imagen');
     const isThinkingModel = lowerModel.includes('thinking') ||
       lowerModel.includes('pro') ||
       lowerModel.includes('flash') ||
       lowerModel.includes('plus');
-    const timeout = isThinkingModel ? 300000 : 120000;
 
-    const data = await this.request(provider, '/chat/completions', {
+    // For Chat path with images, use a generous 10-minute timeout to avoid erroring
+    const timeout = isImageModel ? 600000 : (isThinkingModel ? 300000 : 240000);
+
+    const requestBody: any = {
       model: model || provider.models[0],
       messages: messages
-    }, timeout);
+    };
+
+    // Universal multi-image relay: attach images to top-level for proxy compatibility
+    if (processedCurrentImages.length > 0) {
+      const flatImages = processedCurrentImages.map(img => img.includes(',') ? img.split(',')[1] : img);
+      requestBody.images = flatImages;
+      requestBody.image_reference = flatImages;
+      requestBody.image_references = flatImages;
+      requestBody.image = flatImages[0];
+      logger.info(`[chatPro] Redundantly attached ${flatImages.length} images to top-level payload for proxy compatibility`, 'ApiService');
+    }
+
+    // Add any extra parameters (like aspect_ratio)
+    if (extraParams) {
+      Object.assign(requestBody, extraParams);
+    }
+
+    const data = await this.request(provider, '/chat/completions', requestBody, timeout);
     return data.choices[0].message.content;
   }
 

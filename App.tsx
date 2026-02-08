@@ -59,10 +59,7 @@ const App: React.FC = () => {
   const uniqueNodes = useMemo(() => {
     const seenIds = new Set<string>();
     return nodes.filter(n => {
-      if (seenIds.has(n.id)) {
-        console.warn(`检测到重复节点 ID: ${n.id}`);
-        return false;
-      }
+      if (!n || !n.id || seenIds.has(n.id)) return false;
       seenIds.add(n.id);
       return true;
     });

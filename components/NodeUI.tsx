@@ -47,6 +47,7 @@ export const NodeUI: React.FC<NodeUIProps> = React.memo(({ node, allNodes, onUpd
 
   // Image label input state
   const [labelInputs, setLabelInputs] = useState<Record<number, string>>({});
+  const [corsFailedImages, setCorsFailedImages] = useState<Set<string>>(new Set());
 
   // Node dimensions
   const nodeWidth = tempWidth || node.data.width || 320; // Use tempWidth if resizing
@@ -104,14 +105,16 @@ export const NodeUI: React.FC<NodeUIProps> = React.memo(({ node, allNodes, onUpd
       if (now - lastUpdateTimeRef.current < 500) return;
 
       // 阈值：高度变化超过 20px 才更新
-      if (Math.abs(height - lastHeightRef.current) < 20) return;
+      if (Math.abs(height - lastHeightRef.current) < 10) return;
 
-      // 检查是否真的需要更新（避免重复设置相同的值）
-      if (Math.abs(height - (node.data.height || 0)) < 5) return;
+      // 深度检查：避免反复刷写相同高度
+      if (node.data.height === height) return;
 
       lastHeightRef.current = height;
       lastUpdateTimeRef.current = now;
-      onUpdate(node.id, { ...node.data, height });
+
+      // 仅在高度真正变化时才静默更新（不触发全局 logger 震荡）
+      onUpdate(node.id, { height });
     };
 
     const resizeObserver = new ResizeObserver(updateHeight);
@@ -1082,18 +1085,16 @@ export const NodeUI: React.FC<NodeUIProps> = React.memo(({ node, allNodes, onUpd
               ) : typeof node.data.result === 'string' && (node.data.result.startsWith('data:image') || node.data.result.startsWith('blob:') || node.data.result.startsWith('http')) ? (
                 <div className="relative">
                   <img
-                    src={node.data.result}
-                    crossOrigin="anonymous"
+                    src={corsFailedImages.has(node.data.result) ? "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" : node.data.result}
+                    crossOrigin={corsFailedImages.has(node.data.result) ? undefined : "anonymous"}
                     className="w-full h-auto cursor-zoom-in hover:opacity-90 transition-opacity"
-                    alt="AI Result"
+                    alt={corsFailedImages.has(node.data.result) ? "加载失败" : "AI Result"}
                     onClick={() => onImageClick(node.data.result)}
                     onError={(e) => {
-                      // If CORS fails, try without crossOrigin
-                      const img = e.currentTarget;
-                      if (img.crossOrigin) {
-                        img.crossOrigin = '';
-                        img.src = node.data.result;
-                      } else {
+                      const src = node.data.result;
+                      if (!corsFailedImages.has(src)) {
+                        setCorsFailedImages(prev => new Set(prev).add(src));
+                        logger.warn(`图片加载失败，已停止重试: ${src.substring(0, 50)}...`);
                       }
                     }}
                   />
