@@ -1,8 +1,0 @@
-{
-  "name": "Gemini Infinite Canvas (ComfyStyle)",
-  "description": "A node-based infinite canvas for orchestrating Gemini AI workflows including image generation, editing, search grounding, and real-time audio.",
-  "requestFramePermissions": [
-    "camera",
-    "microphone"
-  ]
-}
