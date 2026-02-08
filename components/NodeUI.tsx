@@ -48,6 +48,21 @@ export const NodeUI: React.FC<NodeUIProps> = React.memo(({ node, allNodes, onUpd
   // Image label input state
   const [labelInputs, setLabelInputs] = useState<Record<number, string>>({});
   const [corsFailedImages, setCorsFailedImages] = useState<Set<string>>(new Set());
+  const [showMasterConfig, setShowMasterConfig] = useState(false);
+
+  const handleMasterToggle = () => {
+    if (showMasterConfig) {
+      setShowMasterConfig(false);
+      return;
+    }
+    const pw = prompt("请输入验证密码以解锁核心逻辑控制:", "");
+    if (pw === "1234") {
+      setShowMasterConfig(true);
+      logger.success("核心逻辑控制已解锁");
+    } else if (pw !== null) {
+      alert("验证失败，权限不足。");
+    }
+  };
 
   // Node dimensions
   const nodeWidth = tempWidth || node.data.width || 320; // Use tempWidth if resizing
@@ -665,70 +680,100 @@ export const NodeUI: React.FC<NodeUIProps> = React.memo(({ node, allNodes, onUpd
           if (!isLogic) return null;
 
           return (
-            <div className="space-y-3">
+            <div className={`space-y-3 transition-all duration-500 ${!showMasterConfig ? 'opacity-40 grayscale-[0.8]' : ''}`}>
               <div className="flex items-center justify-between px-1">
-                <label className="text-slate-500 text-[8px] uppercase font-black tracking-widest">提示词工程模板</label>
-                <div className="flex gap-2">
+                <div className="flex items-center gap-2">
+                  <label className="text-slate-500 text-[8px] uppercase font-black tracking-widest">提示词工程模板</label>
                   <button
-                    onClick={() => {
-                      const input = document.createElement('input');
-                      input.type = 'file';
-                      input.accept = '.txt,.md';
-                      input.onchange = (e: Event) => {
-                        const file = (e.target as HTMLInputElement).files?.[0];
-                        if (file) {
-                          const reader = new FileReader();
-                          reader.onload = (re) => onUpdate(node.id, { ...node.data, promptEngineering: re.target?.result as string });
-                          reader.readAsText(file);
-                        }
-                      };
-                      input.click();
-                    }}
-                    className="text-[7px] bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 px-2 py-1 rounded-md border border-blue-500/20 transition-all uppercase font-bold"
+                    onClick={handleMasterToggle}
+                    className={`p-1 rounded-md transition-all ${showMasterConfig ? 'text-emerald-400 bg-emerald-500/10' : 'text-slate-600 bg-slate-800'}`}
+                    title={showMasterConfig ? "锁定配置" : "点击解锁核心配置"}
                   >
-                    上传
+                    {showMasterConfig ? (
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg>
+                    ) : (
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    )}
                   </button>
-                  <button
-                    onClick={handleSaveTemplate}
-                    className="text-[7px] bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-md border border-emerald-500/20 transition-all uppercase font-bold"
-                  >
-                    保存
-                  </button>
-                  {node.data.promptEngineering && (
-                    <button
-                      onClick={() => onUpdate(node.id, { ...node.data, promptEngineering: '' })}
-                      className="text-[7px] bg-red-500/10 hover:bg-red-500/20 text-red-400 px-2 py-1 rounded-md border border-red-500/20 transition-all uppercase font-bold"
-                    >
-                      清空
-                    </button>
-                  )}
                 </div>
+                {showMasterConfig && (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        const input = document.createElement('input');
+                        input.type = 'file';
+                        input.accept = '.txt,.md';
+                        input.onchange = (e: Event) => {
+                          const file = (e.target as HTMLInputElement).files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (re) => onUpdate(node.id, { ...node.data, promptEngineering: re.target?.result as string });
+                            reader.readAsText(file);
+                          }
+                        };
+                        input.click();
+                      }}
+                      className="text-[7px] bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 px-2 py-1 rounded-md border border-blue-500/20 transition-all uppercase font-bold"
+                    >
+                      上传
+                    </button>
+                    <button
+                      onClick={handleSaveTemplate}
+                      className="text-[7px] bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-md border border-emerald-500/20 transition-all uppercase font-bold"
+                    >
+                      保存
+                    </button>
+                    {node.data.promptEngineering && (
+                      <button
+                        onClick={() => onUpdate(node.id, { ...node.data, promptEngineering: '' })}
+                        className="text-[7px] bg-red-500/10 hover:bg-red-500/20 text-red-400 px-2 py-1 rounded-md border border-red-500/20 transition-all uppercase font-bold"
+                      >
+                        清空
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
 
-              <div className="space-y-1.5">
-                <select
-                  className="w-full bg-slate-900 border border-slate-700/50 rounded-xl px-3 py-2 text-[10px] text-slate-300 font-bold focus:outline-none focus:ring-1 focus:ring-blue-500/50 appearance-none cursor-pointer"
-                  onChange={(e) => {
-                    const selected = templates.find(t => t.name === e.target.value);
-                    if (selected) {
-                      onUpdate(node.id, { ...node.data, promptEngineering: selected.content });
-                    }
-                  }}
-                  value=""
+              {showMasterConfig ? (
+                <>
+                  <div className="space-y-1.5 animate-in fade-in zoom-in-95 duration-300">
+                    <select
+                      className="w-full bg-slate-900 border border-slate-700/50 rounded-xl px-3 py-2 text-[10px] text-slate-300 font-bold focus:outline-none focus:ring-1 focus:ring-blue-500/50 appearance-none cursor-pointer"
+                      onChange={(e) => {
+                        const selected = templates.find(t => t.name === e.target.value);
+                        if (selected) {
+                          onUpdate(node.id, { ...node.data, promptEngineering: selected.content });
+                        }
+                      }}
+                      value=""
+                    >
+                      <option value="" disabled>选择已保存模板...</option>
+                      {templates.map(t => (
+                        <option key={t.name} value={t.name}>{t.name}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <textarea
+                    className="w-full bg-slate-950/50 border border-slate-700/30 rounded-xl p-3 text-slate-400 text-[10px] focus:outline-none focus:ring-1 focus:ring-blue-500/30 min-h-[120px] transition-all resize-none font-mono animate-in slide-in-from-top-2 duration-300"
+                    placeholder="输入自定义优化指令（System Prompt）... 如果为空则使用默认逻辑。"
+                    value={node.data.promptEngineering || ''}
+                    onChange={(e) => onUpdate(node.id, { ...node.data, promptEngineering: e.target.value })}
+                  />
+                </>
+              ) : (
+                <div
+                  onClick={handleMasterToggle}
+                  className="w-full bg-slate-900/30 border border-slate-800/50 border-dashed rounded-xl p-6 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-slate-800/40 transition-all group/mask"
                 >
-                  <option value="" disabled>选择已保存模板...</option>
-                  {templates.map(t => (
-                    <option key={t.name} value={t.name}>{t.name}</option>
-                  ))}
-                </select>
-              </div>
-
-              <textarea
-                className="w-full bg-slate-950/50 border border-slate-700/30 rounded-xl p-3 text-slate-400 text-[10px] focus:outline-none focus:ring-1 focus:ring-blue-500/30 min-h-[120px] transition-all resize-none font-mono"
-                placeholder="输入自定义优化指令（System Prompt）... 如果为空则使用默认逻辑。"
-                value={node.data.promptEngineering || ''}
-                onChange={(e) => onUpdate(node.id, { ...node.data, promptEngineering: e.target.value })}
-              />
+                  <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-600 group-hover/mask:text-amber-500/50 transition-colors">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                  </div>
+                  <span className="text-[9px] text-slate-600 font-black uppercase tracking-widest">核心逻辑已加密</span>
+                  <span className="text-[7px] text-slate-700 uppercase italic">点击解锁以进行高级提示词工程</span>
+                </div>
+              )}
             </div>
           );
         })()}
