@@ -339,7 +339,7 @@ def main():
     os.makedirs(TEMPLATES_DIR, exist_ok=True)
     os.makedirs(WORKFLOWS_DIR, exist_ok=True)
     
-    port = int(os.environ.get("PORT", 5001))
+    port = int(os.environ.get("PORT", 8080))
     server = ThreadingHTTPServer(("0.0.0.0", port), HistoryHandler)
     print("=" * 50)
     print("📁 历史记录服务已启动 (多线程模式)")
