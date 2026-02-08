@@ -364,7 +364,7 @@ const App: React.FC = () => {
           transition: isPanning || draggingNodeId ? 'none' : 'transform 0.1s cubic-bezier(0.2, 0.0, 0, 1.0)'
         }}
       >
-        <ConnectionLines nodes={nodes} />
+        <ConnectionLines nodes={uniqueNodes} />
         {uniqueNodes.map(node => {
           const plugin = PLUGINS.find(p => p.type === node.type);
           const categoryModel = plugin ? categoryModels[plugin.category] : undefined;
@@ -475,7 +475,7 @@ const App: React.FC = () => {
       )}
 
       <WorkflowPanel
-        currentNodes={nodes}
+        currentNodes={uniqueNodes}
         currentTransform={transform}
         categoryModels={categoryModels}
         onLoadWorkflow={handleLoadWorkflow}

@@ -56,11 +56,82 @@ export const NodeUI: React.FC<NodeUIProps> = React.memo(({ node, allNodes, onUpd
       return;
     }
     const pw = prompt("请输入验证密码以解锁核心逻辑控制:", "");
-    if (pw === "1234") {
+    if (pw === "810526") {
       setShowMasterConfig(true);
       logger.success("核心逻辑控制已解锁");
     } else if (pw !== null) {
       alert("验证失败，权限不足。");
+    }
+  };
+
+  const [selectedTemplate, setSelectedTemplate] = useState<string>("");
+  const [showBatchDelete, setShowBatchDelete] = useState(false);
+  const [selectedBatchTemplates, setSelectedBatchTemplates] = useState<Set<string>>(new Set());
+
+  const handleBatchDelete = async () => {
+    if (selectedBatchTemplates.size === 0) return;
+
+    const pw = prompt(`请输入验证密码以确认批量删除 ${selectedBatchTemplates.size} 个模板:`, "");
+    if (pw !== "810526") {
+      if (pw !== null) alert("验证失败，权限不足。");
+      return;
+    }
+
+    if (!confirm(`确定要永久删除这 ${selectedBatchTemplates.size} 个模板吗？此操作不可撤销。`)) return;
+
+    setLoading(true);
+    try {
+      let successCount = 0;
+      for (const name of selectedBatchTemplates) {
+        const result = await historyService.deleteTemplate(name);
+        if (result.success) successCount++;
+      }
+      logger.success(`成功删除 ${successCount} 个模板`);
+      setSelectedBatchTemplates(new Set());
+      setShowBatchDelete(false);
+      loadTemplates();
+    } catch (err) {
+      logger.error(`批量删除过程中发生错误: ${(err as Error).message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleBatchTemplate = (name: string) => {
+    const next = new Set(selectedBatchTemplates);
+    if (next.has(name)) {
+      next.delete(name);
+    } else {
+      next.add(name);
+    }
+    setSelectedBatchTemplates(next);
+  };
+
+  const handleDeleteTemplate = async () => {
+    if (!selectedTemplate) return;
+
+    const pw = prompt(`请输入验证密码以确认删除模板 "${selectedTemplate}":`, "");
+    if (pw !== "810526") {
+      if (pw !== null) alert("验证失败，权限不足。");
+      return;
+    }
+
+    if (!confirm(`确定要永久删除模板 "${selectedTemplate}" 吗？此操作不可撤销。`)) return;
+
+    setLoading(true);
+    try {
+      const result = await historyService.deleteTemplate(selectedTemplate);
+      if (result.success) {
+        logger.success(`模板 "${selectedTemplate}" 已删除`);
+        setSelectedTemplate("");
+        loadTemplates(); // Reload the list
+      } else {
+        logger.error(`删除失败: ${result.error}`);
+      }
+    } catch (err) {
+      logger.error(`发生错误: ${(err as Error).message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -680,7 +751,7 @@ export const NodeUI: React.FC<NodeUIProps> = React.memo(({ node, allNodes, onUpd
           if (!isLogic) return null;
 
           return (
-            <div className={`space-y-3 transition-all duration-500 ${!showMasterConfig ? 'opacity-40 grayscale-[0.8]' : ''}`}>
+            <div className="space-y-3">
               <div className="flex items-center justify-between px-1">
                 <div className="flex items-center gap-2">
                   <label className="text-slate-500 text-[8px] uppercase font-black tracking-widest">提示词工程模板</label>
@@ -696,72 +767,143 @@ export const NodeUI: React.FC<NodeUIProps> = React.memo(({ node, allNodes, onUpd
                     )}
                   </button>
                 </div>
-                {showMasterConfig && (
-                  <div className="flex gap-2">
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      const input = document.createElement('input');
+                      input.type = 'file';
+                      input.accept = '.txt,.md';
+                      input.onchange = (e: Event) => {
+                        const file = (e.target as HTMLInputElement).files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onload = (re) => onUpdate(node.id, { ...node.data, promptEngineering: re.target?.result as string });
+                          reader.readAsText(file);
+                        }
+                      };
+                      input.click();
+                    }}
+                    className="text-[7px] bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 px-2 py-1 rounded-md border border-blue-500/20 transition-all uppercase font-bold"
+                  >
+                    上传
+                  </button>
+                  <button
+                    onClick={handleSaveTemplate}
+                    className="text-[7px] bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-md border border-emerald-500/20 transition-all uppercase font-bold"
+                  >
+                    保存
+                  </button>
+                  {node.data.promptEngineering && (
                     <button
-                      onClick={() => {
-                        const input = document.createElement('input');
-                        input.type = 'file';
-                        input.accept = '.txt,.md';
-                        input.onchange = (e: Event) => {
-                          const file = (e.target as HTMLInputElement).files?.[0];
-                          if (file) {
-                            const reader = new FileReader();
-                            reader.onload = (re) => onUpdate(node.id, { ...node.data, promptEngineering: re.target?.result as string });
-                            reader.readAsText(file);
-                          }
-                        };
-                        input.click();
-                      }}
-                      className="text-[7px] bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 px-2 py-1 rounded-md border border-blue-500/20 transition-all uppercase font-bold"
+                      onClick={() => onUpdate(node.id, { ...node.data, promptEngineering: '' })}
+                      className="text-[7px] bg-red-500/10 hover:bg-red-500/20 text-red-400 px-2 py-1 rounded-md border border-red-500/20 transition-all uppercase font-bold"
                     >
-                      上传
+                      清空
                     </button>
-                    <button
-                      onClick={handleSaveTemplate}
-                      className="text-[7px] bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-md border border-emerald-500/20 transition-all uppercase font-bold"
-                    >
-                      保存
-                    </button>
-                    {node.data.promptEngineering && (
-                      <button
-                        onClick={() => onUpdate(node.id, { ...node.data, promptEngineering: '' })}
-                        className="text-[7px] bg-red-500/10 hover:bg-red-500/20 text-red-400 px-2 py-1 rounded-md border border-red-500/20 transition-all uppercase font-bold"
-                      >
-                        清空
-                      </button>
-                    )}
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
-              {showMasterConfig ? (
-                <>
-                  <div className="space-y-1.5 animate-in fade-in zoom-in-95 duration-300">
-                    <select
-                      className="w-full bg-slate-900 border border-slate-700/50 rounded-xl px-3 py-2 text-[10px] text-slate-300 font-bold focus:outline-none focus:ring-1 focus:ring-blue-500/50 appearance-none cursor-pointer"
-                      onChange={(e) => {
-                        const selected = templates.find(t => t.name === e.target.value);
-                        if (selected) {
-                          onUpdate(node.id, { ...node.data, promptEngineering: selected.content });
-                        }
-                      }}
-                      value=""
+              <div className="space-y-1.5 flex gap-2">
+                <select
+                  className="flex-1 bg-slate-900 border border-slate-700/50 rounded-xl px-3 py-2 text-[10px] text-slate-300 font-bold focus:outline-none focus:ring-1 focus:ring-blue-500/50 appearance-none cursor-pointer"
+                  onChange={(e) => {
+                    setSelectedTemplate(e.target.value);
+                    const selected = templates.find(t => t.name === e.target.value);
+                    if (selected) {
+                      onUpdate(node.id, { ...node.data, promptEngineering: selected.content });
+                    }
+                  }}
+                  value={selectedTemplate}
+                >
+                  <option value="" disabled>选择已保存模板...</option>
+                  {templates.map(t => (
+                    <option key={t.name} value={t.name}>{t.name}</option>
+                  ))}
+                </select>
+                <div className="flex gap-2">
+                  {selectedTemplate && (
+                    <button
+                      onClick={handleDeleteTemplate}
+                      disabled={loading}
+                      className="p-2 h-full bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-xl border border-red-500/20 transition-all group/del"
+                      title="删除选中模板"
                     >
-                      <option value="" disabled>选择已保存模板...</option>
-                      {templates.map(t => (
-                        <option key={t.name} value={t.name}>{t.name}</option>
-                      ))}
-                    </select>
+                      <svg className="w-4 h-4 group-hover/del:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                      </svg>
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setShowBatchDelete(!showBatchDelete)}
+                    className={`p-2 h-full rounded-xl border transition-all ${showBatchDelete ? 'bg-amber-500/20 border-amber-500/40 text-amber-400' : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-500'}`}
+                    title="批量管理模板"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {showBatchDelete && (
+                <div className="bg-slate-900/80 border border-white/5 rounded-2xl p-4 space-y-3 animate-in fade-in zoom-in-95 duration-200">
+                  <div className="flex items-center justify-between border-b border-white/5 pb-2">
+                    <span className="text-[10px] font-black uppercase text-slate-400">批量管理模板 ({templates.length})</span>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setSelectedBatchTemplates(new Set(templates.map(t => t.name)))}
+                        className="text-[8px] text-blue-400 hover:text-white uppercase font-bold"
+                      >全选</button>
+                      <button
+                        onClick={() => setSelectedBatchTemplates(new Set())}
+                        className="text-[8px] text-slate-500 hover:text-white uppercase font-bold"
+                      >重置</button>
+                    </div>
                   </div>
 
-                  <textarea
-                    className="w-full bg-slate-950/50 border border-slate-700/30 rounded-xl p-3 text-slate-400 text-[10px] focus:outline-none focus:ring-1 focus:ring-blue-500/30 min-h-[120px] transition-all resize-none font-mono animate-in slide-in-from-top-2 duration-300"
-                    placeholder="输入自定义优化指令（System Prompt）... 如果为空则使用默认逻辑。"
-                    value={node.data.promptEngineering || ''}
-                    onChange={(e) => onUpdate(node.id, { ...node.data, promptEngineering: e.target.value })}
-                  />
-                </>
+                  <div className="grid grid-cols-1 gap-1 max-h-40 overflow-y-auto custom-scrollbar pr-1">
+                    {templates.map(t => (
+                      <label
+                        key={`batch-${t.name}`}
+                        className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all ${selectedBatchTemplates.has(t.name) ? 'bg-red-500/10 border-red-500/20' : 'bg-white/5 hover:bg-white/10'}`}
+                      >
+                        <input
+                          type="checkbox"
+                          className="w-3 h-3 rounded bg-slate-800 border-slate-700 text-red-500 focus:ring-0"
+                          checked={selectedBatchTemplates.has(t.name)}
+                          onChange={() => toggleBatchTemplate(t.name)}
+                        />
+                        <span className="text-[10px] text-slate-300 truncate flex-1">{t.name}</span>
+                      </label>
+                    ))}
+                  </div>
+
+                  <div className="pt-2 flex gap-2">
+                    <button
+                      onClick={handleBatchDelete}
+                      disabled={loading || selectedBatchTemplates.size === 0}
+                      className="flex-1 bg-red-600 hover:bg-red-500 disabled:opacity-30 disabled:hover:bg-red-600 text-white py-2 rounded-xl text-[10px] font-bold transition-all transition-transform active:scale-95 flex items-center justify-center gap-2"
+                    >
+                      <span>🔥 批量删除选中的 {selectedBatchTemplates.size} 个</span>
+                    </button>
+                    <button
+                      onClick={() => setShowBatchDelete(false)}
+                      className="px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 py-2 rounded-xl text-[10px] font-bold transition-all"
+                    >
+                      取消
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {showMasterConfig ? (
+                <textarea
+                  className="w-full bg-slate-950/50 border border-slate-700/30 rounded-xl p-3 text-slate-400 text-[10px] focus:outline-none focus:ring-1 focus:ring-blue-500/30 min-h-[120px] transition-all resize-none font-mono animate-in slide-in-from-top-2 duration-300"
+                  placeholder="输入自定义优化指令（System Prompt）... 如果为空则使用默认逻辑。"
+                  value={node.data.promptEngineering || ''}
+                  onChange={(e) => onUpdate(node.id, { ...node.data, promptEngineering: e.target.value })}
+                />
               ) : (
                 <div
                   onClick={handleMasterToggle}
@@ -771,7 +913,7 @@ export const NodeUI: React.FC<NodeUIProps> = React.memo(({ node, allNodes, onUpd
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                   </div>
                   <span className="text-[9px] text-slate-600 font-black uppercase tracking-widest">核心逻辑已加密</span>
-                  <span className="text-[7px] text-slate-700 uppercase italic">点击解锁以进行高级提示词工程</span>
+                  <span className="text-[7px] text-slate-700 uppercase italic">点击解锁以查看或编辑提示词</span>
                 </div>
               )}
             </div>

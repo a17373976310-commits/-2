@@ -97,51 +97,18 @@ export const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
 
   const handleDelete = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (confirm('确定要删除这个工作流吗？')) {
+    const pw = prompt('请输入验证密码以确认删除工作流:', '');
+    if (pw !== '810526') {
+      if (pw !== null) alert('验证失败，权限不足。');
+      return;
+    }
+    if (confirm('确定要删除这个工作流吗？此操作不可撤销。')) {
       const updated = workflows.filter(w => w.id !== id);
       saveWorkflows(updated);
       logger.warn(`工作流已删除。`);
     }
   };
 
-  const handleExport = () => {
-    if (workflows.length === 0) {
-      logger.error("没有可导出的工作流。");
-      return;
-    }
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(workflows, null, 2));
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", `gemini_workflows_${new Date().toISOString().split('T')[0]}.json`);
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-    logger.info("工作流已导出至本地文件。");
-  };
-
-  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      try {
-        const imported = JSON.parse(event.target?.result as string);
-        if (Array.isArray(imported)) {
-          // 合并并去重
-          const existingIds = new Set(workflows.map(w => w.id));
-          const uniqueImported = imported.filter(w => !existingIds.has(w.id));
-          saveWorkflows([...uniqueImported, ...workflows]);
-          logger.success(`成功导入 ${uniqueImported.length} 个新工作流。`);
-        } else {
-          throw new Error("格式错误");
-        }
-      } catch (err) {
-        logger.error("导入失败：文件格式无效。");
-      }
-    };
-    reader.readAsText(file);
-    e.target.value = ''; // 重置 input
-  };
 
   return (
     <div className="fixed top-6 right-6 z-[200]" ref={dropdownRef}>
@@ -218,16 +185,6 @@ export const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
           </div>
 
           <div className="p-4 bg-white/[0.02] border-t border-white/5 grid grid-cols-2 gap-2">
-            <button
-              onClick={handleExport}
-              className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-[9px] font-black uppercase tracking-widest text-slate-400 hover:text-white transition-all border border-white/5"
-            >
-              导出 JSON
-            </button>
-            <label className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-[9px] font-black uppercase tracking-widest text-slate-400 hover:text-white transition-all border border-white/5 cursor-pointer">
-              导入 JSON
-              <input type="file" className="hidden" accept=".json" onChange={handleImport} />
-            </label>
             <button
               onClick={onResetTransform}
               className="col-span-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-[9px] font-black uppercase tracking-widest text-slate-300 transition-all border border-white/5"
