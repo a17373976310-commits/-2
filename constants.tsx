@@ -26,6 +26,7 @@ export const SUGGESTED_MODELS: Record<string, { id: string, label: string }[]> =
         { id: 'gpt-5.2', label: 'GPT-5.2 (Sonnet 3.5)' },
         { id: 'gemini-2.0-flash-exp', label: 'Gemini 2.0 Flash' },
         { id: 'o1-preview', label: 'O1 Preview' },
+        { id: 'gemini-3-flash-preview', label: 'Gemini 3 Flash' },
     ],
     [PluginCategory.INTERACT]: [
         { id: 'whisper-1', label: 'Whisper 1' },
@@ -34,6 +35,7 @@ export const SUGGESTED_MODELS: Record<string, { id: string, label: string }[]> =
 };
 
 export const PLUGINS: PluginMetadata[] = [
+    // --- VISUAL CATEGORY ---
     {
         type: NodeType.IMAGE_GEN,
         category: PluginCategory.VISUAL,
@@ -95,14 +97,14 @@ export const PLUGINS: PluginMetadata[] = [
         color: 'bg-cyan-500'
     },
     {
-        type: NodeType.VIDEO_GEN,
-        category: PluginCategory.VIDEO,
-        title: 'Video Gen',
-        titleZh: '文生视频',
-        description: 'Create short videos from snippets',
-        descriptionZh: '将描述词或图片转化为动态视频',
-        icon: '📹',
-        color: 'bg-red-500'
+        type: NodeType.IMAGE_COLLAGE,
+        category: PluginCategory.VISUAL,
+        title: 'Image Collage',
+        titleZh: '智能拼贴',
+        description: 'Create beautiful collages and layouts',
+        descriptionZh: '将多张图片智能组合成精美画册或拼贴画',
+        icon: '🧩',
+        color: 'bg-violet-500'
     },
     {
         type: NodeType.CAMERA_3D,
@@ -115,6 +117,80 @@ export const PLUGINS: PluginMetadata[] = [
         color: 'bg-orange-500'
     },
     {
+        type: NodeType.SVG_TEXT_OVERLAY,
+        category: PluginCategory.VISUAL,
+        title: 'SVG Overlay',
+        titleZh: 'SVG 文字覆层',
+        description: 'Generate precise text overlays',
+        descriptionZh: '生成可缩放的 SVG 文字与图形覆盖图层',
+        icon: '✒️',
+        color: 'bg-blue-600'
+    },
+
+    // --- VIDEO CATEGORY ---
+    {
+        type: NodeType.VIDEO_GEN,
+        category: PluginCategory.VIDEO,
+        title: 'Video Gen',
+        titleZh: '文生视频',
+        description: 'Create short videos from snippets',
+        descriptionZh: '将描述词或图片转化为动态视频',
+        icon: '📹',
+        color: 'bg-red-500'
+    },
+
+    // --- LOGIC CATEGORY ---
+    {
+        type: NodeType.SEARCH,
+        category: PluginCategory.LOGIC,
+        title: 'Network Search',
+        titleZh: '联网搜索',
+        description: 'Search the web for real-time information',
+        descriptionZh: '接入实时互联网信息进行搜索与验证',
+        icon: '🌐',
+        color: 'bg-sky-600'
+    },
+    {
+        type: NodeType.IMAGE_ANALYSIS,
+        category: PluginCategory.LOGIC,
+        title: 'Image Analysis',
+        titleZh: '图像分析',
+        description: 'Analyze image content and details',
+        descriptionZh: '深入理解图片内容，提取视觉特征与属性',
+        icon: '🔍',
+        color: 'bg-violet-600'
+    },
+    {
+        type: NodeType.TEXT_FAST,
+        category: PluginCategory.LOGIC,
+        title: 'Text (Fast)',
+        titleZh: '文字 (快)',
+        description: 'Quick responses for simple logic',
+        descriptionZh: '极速响应的文字处理与逻辑转换',
+        icon: '⚡',
+        color: 'bg-slate-500'
+    },
+    {
+        type: NodeType.TEXT_PRO,
+        category: PluginCategory.LOGIC,
+        title: 'Text (Pro)',
+        titleZh: '文字 (强)',
+        description: 'Deep reasoning and complex text',
+        descriptionZh: '具备深度推理能力的复杂文本处理',
+        icon: '💎',
+        color: 'bg-slate-700'
+    },
+    {
+        type: NodeType.PROMPT_OPTIMIZER,
+        category: PluginCategory.LOGIC,
+        title: 'Prompt Optimizer',
+        titleZh: '提示词优化',
+        description: 'Optimize prompts for better results',
+        descriptionZh: '智能重构提示词，大幅提升 AI 输出质量',
+        icon: '🪄',
+        color: 'bg-teal-500'
+    },
+    {
         type: NodeType.INTENT_PARSER,
         category: PluginCategory.LOGIC,
         title: 'Intent Parser',
@@ -124,6 +200,8 @@ export const PLUGINS: PluginMetadata[] = [
         icon: '🚥',
         color: 'bg-slate-600'
     },
+
+    // --- INTERACT CATEGORY ---
     {
         type: NodeType.AI_CHAT,
         category: PluginCategory.INTERACT,
@@ -135,13 +213,23 @@ export const PLUGINS: PluginMetadata[] = [
         color: 'bg-sky-500'
     },
     {
-        type: NodeType.SVG_TEXT_OVERLAY,
-        category: PluginCategory.VISUAL,
-        title: 'SVG Overlay',
-        titleZh: 'SVG 文字覆层',
-        description: 'Generate precise text overlays',
-        descriptionZh: '生成可缩放的 SVG 文字与图形覆盖图层',
-        icon: '✒️',
-        color: 'bg-blue-600'
+        type: NodeType.TTS,
+        category: PluginCategory.INTERACT,
+        title: 'Speech Synthesis',
+        titleZh: '语音合成',
+        description: 'Convert text to natural speech',
+        descriptionZh: '将文字转化为自然流畅的高保真语音',
+        icon: '🎙️',
+        color: 'bg-pink-500'
+    },
+    {
+        type: NodeType.AUDIO_LIVE,
+        category: PluginCategory.INTERACT,
+        title: 'Live Audio',
+        titleZh: '音视听 (实时)',
+        description: 'Real-time multi-modal interaction',
+        descriptionZh: '真正的实时多模态交互体验',
+        icon: '🎧',
+        color: 'bg-rose-600'
     }
 ];
